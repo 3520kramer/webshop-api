@@ -1,20 +1,6 @@
 const express = require("express");
 const app = express();
-var Sequelize = require('sequelize');
 
-const config = require('./configuration/settings');
-
-
-var sequelize1 = new Sequelize(config.DATABASE, config.USER, config.PASSWORD, {
-    host: 'localhost',
-    dialect: 'mysql',
-  
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000
-    },
-  });
 
 app.get("/", (req, res) => {
 
@@ -25,39 +11,17 @@ app.get("/", (req, res) => {
     res.send(response)
 });
 
-let User1 = sequelize1.define('users', {
-    user_id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true
-    },
-    firstName: {
-        type: Sequelize.STRING,
-        field: 'username' // Will result in an attribute that is firstName when user facing but first_name in the database
-      },
-    }, {
-      freezeTableName: true, // Model tableName will be the same as the model name
-      timestamps: false,
-      createdAt: false,
-      updatedAt: false,
-    });
+const userRoutes = require('./routes/users');
+app.use(userRoutes);
 
 
-app.get("/user1", (req, res) => {
-    let input = req.query.id
-    User1.findOne({where: {user_id: input}}).then(function (user) {
-        console.log(user);
-        res.send(user);
-    });
-  })
-  
-  
-  app.get("/users1", (req, res) => {    
-    User1.findAll().then(function (user) {
-        console.log(user);
-        res.send(user);
-    });
-  })
 
-app.listen(5000);
+const port = process.env.PORT ? process.env.PORT : 6000;
 
-app.listen(6000);
+// Error handling on server upstart
+app.listen(port, (error) => {
+    if (error) {
+        console.log("Error starting the server");
+    }
+    console.log("This server is running on port", port);
+});
