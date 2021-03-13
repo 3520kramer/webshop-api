@@ -1,5 +1,6 @@
 # Ignore our personal appsettings
-appsettings.js
+settings.js
+config.json
 
 # Logs
 logs
