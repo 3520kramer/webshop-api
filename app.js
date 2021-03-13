@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+const userRoutes = require('./routes/user-routes');
+app.use(userRoutes);
 
 app.get("/", (req, res) => {
 
@@ -10,11 +12,6 @@ app.get("/", (req, res) => {
 
     res.send(response)
 });
-
-const userRoutes = require('./routes/users');
-app.use(userRoutes);
-
-
 
 const port = process.env.PORT ? process.env.PORT : 6000;
 
