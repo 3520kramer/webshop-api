@@ -9,7 +9,12 @@ router.get("/user", (req, res) => {
       res.send(user);
   });
 })
-  
+
+router.post("/user", (req, res) => {
+  let input = req.body
+  console.log(input)
+  res.send("Nice")
+})
 
 router.get("/users", (req, res) => {    
   userModel.findAll().then(function (user) {
