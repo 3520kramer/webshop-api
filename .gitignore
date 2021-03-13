@@ -1,3 +1,6 @@
+# Ignore our personal appsettings
+appsettings.js
+
 # Logs
 logs
 *.log
