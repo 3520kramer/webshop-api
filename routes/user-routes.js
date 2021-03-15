@@ -1,6 +1,6 @@
-const userModel = require('../models/user');
 const router = require('express').Router();
-
+const userModel = require('../models/user');
+const userService = require('../services/user-service');
 
 router.get("/user", (req, res) => {
   let input = req.query.id
@@ -12,7 +12,8 @@ router.get("/user", (req, res) => {
 
 router.post("/user", (req, res) => {
   let input = req.body
-  console.log(input)
+  userService.createUser(input.username, input.password, input.created_date);
+  
   res.send("Nice")
 })
 
