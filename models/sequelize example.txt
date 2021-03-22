@@ -1,0 +1,9 @@
+EXAMPLE:
+sequelize-auto -h <host> -d <database> -u <user> -x [password] -p [port]  --dialect [dialect] -c [/path/to/config] -o [/path/to/models] -t [tableName]
+
+
+// GETS ALL TABLES:
+sequelize-auto -o "./models" -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql
+
+// GETS ONE SPECIFIC:
+sequelize-auto -o "./models" -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql -t products
