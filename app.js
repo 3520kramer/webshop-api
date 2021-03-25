@@ -1,11 +1,9 @@
 const express = require("express");
-
 const app = express();
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-const userRoutes = require('./routes/user-routes');
-app.use(userRoutes);
 
 app.get("/", (req, res) => {
 
@@ -15,6 +13,13 @@ app.get("/", (req, res) => {
 
     res.send(response)
 });
+
+const userRoutes = require('./routes/user-routes');
+const productRoutes = require('./routes/product-routes');
+
+app.use(userRoutes);
+app.use(productRoutes);
+
 
 const port = process.env.PORT ? process.env.PORT : 6000;
 
