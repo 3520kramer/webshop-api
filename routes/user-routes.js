@@ -1,27 +1,49 @@
 const router = require('express').Router();
-const userModel = require('../models/user');
 const userService = require('../services/user-service');
 
-router.get("/user", (req, res) => {
-  let input = req.query.id
-  userModel.findOne({where: {user_id: input}}).then(function (user) {
-      console.log(user);
-      res.send(user);
-  });
-})
+router.get("/user", async (req, res) => {
+  let user_id = req.query.user_id;
 
-router.post("/user", (req, res) => {
-  let input = req.body
-  userService.createUser(input.username, input.password, input.created_date);
+  let user = await userService.getUser(user_id);
   
-  res.send("Nice")
+  res.send(user)
 })
 
-router.get("/users", (req, res) => {    
-  userModel.findAll().then(function (user) {
-      console.log(user);
-      res.send(user);
-  });
+router.post("/user", async (req, res) => {
+  let input = req.body;
+  
+  let newUser = await userService.createUser(
+    input //input.username, input.password, input.created_date 
+  );
+  
+  res.send(newUser)
+})
+
+router.post("/customer", async (req, res) => {
+  let input = req.body;
+  
+  let newUser = await userService.createCustomer(
+    input
+  );
+  
+  res.send(newUser)
+})
+
+router.post("/customer-and-user", async (req, res) => {
+  let _newUser = req.body.user;
+  let _newCustomer = req.body.customer;
+  
+  let newUserCustomer =  await userService.createCustomerAndUser(
+    _newUser, _newCustomer
+  );
+  
+  res.send(newUserCustomer)
+})
+
+router.get("/users", async (req, res) => {    
+  let users = await userService.getAllUsers();
+  
+  res.send(users);
 })
 
   module.exports = router;
