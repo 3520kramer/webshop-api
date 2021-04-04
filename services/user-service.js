@@ -9,8 +9,6 @@ const getUser = async (user_id) => {
     return await user;
 }
 
-// const createUser = async (username, password, created_date) => {
-    //let _newUser = { username, password, created_date }
 const createUser = async (_newUser) => {
     console.log("createUser", _newUser);
 
@@ -22,15 +20,23 @@ const createUser = async (_newUser) => {
     return await newUser;
 };
 
+const updateUser = async (_userToUpdate) => {
+    console.log("updateUser", _userToUpdate);
+
+    let userToUpdate = await getUser(_userToUpdate.user_id);
+    console.log(userToUpdate);
+
+    return await newUser;
+};
+
 // const createCustomer = async (first_name, last_name, street, email, phone, cities_postal_code, countries_iso) => {
 //    let _newCustomer = { first_name, last_name, street, email, phone, cities_postal_code, countries_iso }
 
 const createCustomer = async (_newCustomer) => {
     
-    let newCustomer = await models.customers.create(_newCustomer).then(result => {
-        console.log("newCustomer", result);
-        return result;
-    });
+    let newCustomer = await models.customers.create(_newCustomer);
+
+    console.log("newCustomer", newCustomer);
 
     return await newCustomer;
 };
@@ -39,10 +45,10 @@ const createCustomerAndUser = async (_newUser, _newCustomer) => {
     try {
         let result = await sequelize.transaction(async (t) => {
             const newUser = await models.users.create(_newUser, { transaction: t });
-            
+
             _newCustomer.users_user_id = newUser.user_id;
 
-            const newCustomer = await models.customers.create(_newCustomer, { transaction: t })
+            const newCustomer = await models.customers.create(_newCustomer, { transaction: t });
 
             return await newCustomer;
         });
