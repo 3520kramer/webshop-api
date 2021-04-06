@@ -23,6 +23,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(500),
       allowNull: true
     },
+    is_archived: {
+      type: DataTypes.TINYINT,
+      allowNull: false
+    },
     brands_brand_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
