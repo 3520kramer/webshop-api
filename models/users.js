@@ -19,6 +19,14 @@ module.exports = function(sequelize, DataTypes) {
     created_date: {
       type: DataTypes.DATEONLY,
       allowNull: false
+    },
+    is_archived: {
+      type: DataTypes.TINYINT,
+      allowNull: false
+    },
+    last_logged_in: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
     }
   }, {
     sequelize,
