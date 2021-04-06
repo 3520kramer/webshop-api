@@ -1,45 +1,101 @@
 const models = require('../database/connect').models;
 const sequelize = require('../database/connect').database;
 
-const getUser = async (user_id) => {
-    let user = models.users.findOne({where: {user_id: user_id}}).then(result => {
-        console.log("getUser", result);
-        return result;
-    });
-    return await user;
+const getUser = async (req, res) => {
+    let user_id = req.query.user_id;
+    console.log("getUser input", user_id);
+
+    try {
+        let user = await models.users.findOne({where: {user_id: user_id}})
+
+        console.log("getUser", user);
+    
+        if (!user) throw new Error("No user");
+
+        res.status(200).send(user);
+
+    } catch(error){
+        if(error.message === "No user"){
+            res.status(404).send(error.message);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+
 }
 
-const createUser = async (_newUser) => {
-    console.log("createUser", _newUser);
+const createUser = async (req, res) => {
+    let _newUser = req.body;
+    console.log("createUser input", _newUser);
 
-    let newUser = await models.users.create(_newUser).then(result => {
-        console.log("createUser", result);
-        return result;
-    })
+    try {
+        let newUser = await models.users.create(_newUser)
 
-    return await newUser;
-};
+        if (!newUser) throw new Error("No user");
 
-const updateUser = async (_userToUpdate) => {
-    console.log("updateUser", _userToUpdate);
+        console.log("getUser", user);
 
-    let userToUpdate = await getUser(_userToUpdate.user_id);
-    console.log(userToUpdate);
+        res.status(200).send(user);
 
-    return await newUser;
-};
+    } catch(error){
+        if(error.message === "No user"){
+            res.status(404).send(error.message);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+}
 
-// const createCustomer = async (first_name, last_name, street, email, phone, cities_postal_code, countries_iso) => {
-//    let _newCustomer = { first_name, last_name, street, email, phone, cities_postal_code, countries_iso }
-
-const createCustomer = async (_newCustomer) => {
+const updateUser = async (req, res) => {
+    let input = req.body; 
+    console.log("updateUser input", input);
     
-    let newCustomer = await models.customers.create(_newCustomer);
+    try{
+        const userToUpdate = await models.users.findOne({where: {user_id: input.user_id}});
+        
+        if (!userToUpdate) throw new Error("No user found");
+        
+        Object.entries(input).forEach(([key, value]) => {
+            console.log(`${key}: ${value}`);
+            
+            if(!userToUpdate.dataValues.hasOwnProperty(key)){
+                throw new Error(`Database object does not contain property "${key}"`);
+            }
+            userToUpdate[key] = value;
+        })
 
-    console.log("newCustomer", newCustomer);
+        await userToUpdate.save();
 
-    return await newCustomer;
+        res.send(userToUpdate);
+
+    }catch(error){
+        
+        if(error.message === "No user found"){
+            res.status(404).send(error.message)
+        }else{
+            res.status(400).send(error.message)
+        }
+    }
 };
+
+const getAllUsers = async (req, res) => {
+    try {
+        let users = await models.users.findAll();
+
+        console.log("getUsers", users);
+    
+        if (!users) throw new Error("No users");
+
+        res.status(200).send(user);
+
+    } catch(error){
+        if(error.message === "No users"){
+            res.status(404).send(error.message);
+        }else{
+            res.sendStatus(500);
+        }
+    }
+}
 
 const createCustomerAndUser = async (_newUser, _newCustomer) => {
     try {
@@ -63,19 +119,24 @@ const createCustomerAndUser = async (_newUser, _newCustomer) => {
         console.error(error)
     }
 }
-
-const getAllUsers = async () => {
-    let users = await models.users.findAll().then(result => {
-        console.log("getAllUsers", result);
-        return result
-    });
-    return users;
-}
+/* Trying to create generic error response */
+    // const sendErrorResponse = (error, res, messageAndCode=null, messagesAndCodes=null) => {
+    //     if (!messageAndCode && !messagesAndCodes){
+    //         res.sendStatus(500)
+    //     }else if(messageAndCode !== null){
+            
+    //     }
+    //     if(error.message === "No user"){
+    //         res.status(404).send(error.message);
+    //     }else{
+    //         res.sendStatus(500);
+    //     }
+    // }
 
 module.exports = {
     getUser,
     createUser,
+    updateUser,
     getAllUsers,
-    createCustomer,
     createCustomerAndUser,
 }
