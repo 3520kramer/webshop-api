@@ -30,7 +30,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'order_product',
-    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
