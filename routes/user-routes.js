@@ -10,7 +10,7 @@ router.get("/user", (req, res) => {
   });
 })
 
-router.post("/user", (req, res) => {
+router.post("/createuser", (req, res) => {
   let input = req.body
   userService.createUser(input.username, input.password, input.created_date);
   
