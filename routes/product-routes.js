@@ -10,7 +10,7 @@ router.post("/product", productService.createProduct);
 router.get("/product", productService.getOneProduct);
 
 // get all products
-router.get("/products", productService.getAllProducts)
+router.get("/products", productService.getAllProducts);
 
 // update product 
 router.put("/product", productService.updateProduct);
