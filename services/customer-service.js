@@ -3,6 +3,7 @@ const sequelize = require('../database/connect').database;
 
 const getCustomer = async (req, res) => {
     let customer_id = req.query.customer_id;
+
     console.log("getCustomers input", customer_id);
 
     try {
@@ -96,6 +97,8 @@ const getAllCustomers = async (req, res) => {
         }
     }
 }
+// no delete on customer
+// delete route is update is_archived
 
 module.exports = {
     getCustomer,

@@ -1,13 +1,25 @@
 const models = require('../database/connect').models;
 const sequelize = require('../database/connect').database;
 
-const getUser = async (req, res) => {
-    let user_id = req.query.user_id;
-    console.log("getUser input", user_id);
+const getUser = async (req, res) => {    
+    console.log(req.query.property)
+    let property = req.query.property;
+    let searchParams = {[property]: req.query.value}
+    console.log("getUser searchParams", searchParams);
+
+    let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
 
     try {
-        let user = await models.users.findOne({where: {user_id: user_id}})
-
+        let user = await models.customers.findOne({
+            where: !isUserProp ? searchParams : null,
+            include: [{
+                model: models.users, 
+                as: "users", 
+                where: isUserProp ? searchParams : null, 
+                required: true
+            }]
+        });
+        
         console.log("getUser", user);
     
         if (!user) throw new Error("No user");
@@ -18,30 +30,54 @@ const getUser = async (req, res) => {
         if(error.message === "No user"){
             res.status(404).send(error.message);
         }else{
-            res.sendStatus(500);
+            res.status(500).send(error.message);
         }
     }
-
 }
 
 const createUser = async (req, res) => {
-    let _newUser = req.body;
-    console.log("createUser input", _newUser);
+    let _newUser = req.body.user;
+    let _newCustomer = req.body.customer;
+    console.log("createUser input", _newUser, _newCustomer);
 
     try {
-        let newUser = await models.users.create(_newUser)
+        let result = await sequelize.transaction(async (t) => {
+            
+            const newCustomer = await models.customers.create(_newCustomer, { transaction: t });
+            console.log("newCustomer", newCustomer);
+            
+            _newUser.customers_customer_id = newCustomer.customer_id;
+            console.log("_newUser", _newUser);
+            
+            const newUser = await models.users.create(_newUser, { transaction: t });
+            
+            console.log("newUser", newUser);
 
-        if (!newUser) throw new Error("No user");
+            if (!newUser) throw new Error("No user");
+            
+            res.status(200).send(`User with user_id: ${newUser.user_id} and customer_id: ${newCustomer.customer_id} was created`);
 
-        console.log("getUser", user);
+            
 
-        res.status(200).send(user);
+            return await newCustomer;
+        });
+
+
+
+
+        // let newUser = await models.users.create(_newUser)
+
+        // if (!newUser) throw new Error("No user");
+
+        // console.log("getUser", user);
+
+        // res.status(200).send(user);
 
     } catch(error){
         if(error.message === "No user"){
             res.status(404).send(error.message);
         }else{
-            res.sendStatus(500);
+            res.status(500).send(error.message);
         }
     }
 }

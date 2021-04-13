@@ -78,6 +78,8 @@ function initModels(sequelize) {
   customers.hasMany(orders, { as: "orders", foreignKey: "customers_customer_id_billing"});
   orders.belongsTo(customers, { as: "customers_customer_id_delivery_customer", foreignKey: "customers_customer_id_delivery"});
   customers.hasMany(orders, { as: "customers_customer_id_delivery_orders", foreignKey: "customers_customer_id_delivery"});
+  users.belongsTo(customers, { as: "customers_customer", foreignKey: "customers_customer_id"});
+  customers.hasMany(users, { as: "users", foreignKey: "customers_customer_id"});
   b2b_orders.belongsTo(employees, { as: "employees_employee", foreignKey: "employees_employee_id"});
   employees.hasMany(b2b_orders, { as: "b2b_orders", foreignKey: "employees_employee_id"});
   invoices.belongsTo(employees, { as: "employees_employee", foreignKey: "employees_employee_id"});
@@ -110,8 +112,6 @@ function initModels(sequelize) {
   products.hasMany(stocks, { as: "stocks", foreignKey: "products_product_id"});
   orders.belongsTo(shippers, { as: "shippers_shipper", foreignKey: "shippers_shipper_id"});
   shippers.hasMany(orders, { as: "orders", foreignKey: "shippers_shipper_id"});
-  customers.belongsTo(users, { as: "users_user", foreignKey: "users_user_id"});
-  users.hasMany(customers, { as: "customers", foreignKey: "users_user_id"});
   b2b_orders.belongsTo(warehouses, { as: "warehouses_warehouse", foreignKey: "warehouses_warehouse_id"});
   warehouses.hasMany(b2b_orders, { as: "b2b_orders", foreignKey: "warehouses_warehouse_id"});
   orders.belongsTo(warehouses, { as: "warehouses_warehouse", foreignKey: "warehouses_warehouse_id"});

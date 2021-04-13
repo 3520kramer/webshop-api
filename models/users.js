@@ -27,6 +27,14 @@ module.exports = function(sequelize, DataTypes) {
     last_logged_in: {
       type: DataTypes.DATEONLY,
       allowNull: false
+    },
+    customers_customer_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'customers',
+        key: 'customer_id'
+      }
     }
   }, {
     sequelize,
@@ -47,6 +55,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "username" },
+        ]
+      },
+      {
+        name: "fk_users_customers1_idx",
+        using: "BTREE",
+        fields: [
+          { name: "customers_customer_id" },
         ]
       },
     ]

@@ -27,14 +27,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    users_user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'users',
-        key: 'user_id'
-      }
-    },
     cities_postal_code: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -62,13 +54,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "customer_id" },
-        ]
-      },
-      {
-        name: "fk_customers_users1_idx",
-        using: "BTREE",
-        fields: [
-          { name: "users_user_id" },
         ]
       },
       {
