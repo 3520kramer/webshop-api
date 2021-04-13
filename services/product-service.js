@@ -36,7 +36,7 @@ const createProduct = async (req, res) => {
         is_archived: input.is_archived 
       }, { transaction: t });
 
-      
+      console.log("product", product);
       if (product) {
         return res.status(201).json({product});
       }
