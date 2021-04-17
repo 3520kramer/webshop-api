@@ -21,4 +21,4 @@ var models = initModels(sequelize);
 module.exports.database = sequelize;
 module.exports.seq = Sequelize;
 module.exports.models = models;
-  
+

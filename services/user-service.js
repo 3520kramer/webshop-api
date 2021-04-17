@@ -1,10 +1,16 @@
 const models = require('../database/connect').models;
 const sequelize = require('../database/connect').database;
+const { Op } = require("sequelize");
+
+const getUser2 =  async (id) => {
+    let user = await models.users.findOne({ where: {user_id: id} });
+    return user;
+}
 
 const getUser = async (req, res) => {    
-    console.log(req.query.property)
     let property = req.query.property;
     let searchParams = {[property]: req.query.value}
+    
     console.log("getUser searchParams", searchParams);
 
     let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
@@ -14,13 +20,13 @@ const getUser = async (req, res) => {
             where: !isUserProp ? searchParams : null,
             include: [{
                 model: models.users, 
-                as: "users", 
+                as: "users_user", 
                 where: isUserProp ? searchParams : null, 
                 required: true
             }]
         });
         
-        console.log("getUser", user);
+        console.log("getUser user", user);
     
         if (!user) throw new Error("No user");
 
@@ -41,8 +47,7 @@ const createUser = async (req, res) => {
     console.log("createUser input", _newUser, _newCustomer);
 
     try {
-        let result = await sequelize.transaction(async (t) => {
-            
+        await sequelize.transaction(async (t) => {
             const newCustomer = await models.customers.create(_newCustomer, { transaction: t });
             console.log("newCustomer", newCustomer);
             
@@ -56,22 +61,7 @@ const createUser = async (req, res) => {
             if (!newUser) throw new Error("No user");
             
             res.status(200).send(`User with user_id: ${newUser.user_id} and customer_id: ${newCustomer.customer_id} was created`);
-
-            
-
-            return await newCustomer;
         });
-
-
-
-
-        // let newUser = await models.users.create(_newUser)
-
-        // if (!newUser) throw new Error("No user");
-
-        // console.log("getUser", user);
-
-        // res.status(200).send(user);
 
     } catch(error){
         if(error.message === "No user"){
@@ -128,7 +118,47 @@ const getAllUsers = async (req, res) => {
         if(error.message === "No users"){
             res.status(404).send(error.message);
         }else{
-            res.sendStatus(500);
+            res.status(500).send(error.message);
+        }
+    }
+}
+
+const searchUsers = async (req, res) => {    
+    let property = req.query.property;
+    let value = req.query.value;
+    
+    let searchParams = {
+        [property]: {
+            [Op.like]: `%${value}%`
+        }
+    }
+
+    console.log("getUser searchParams", searchParams);
+
+    let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
+
+    try {
+        let user = await models.customers.findOne({
+            where: !isUserProp ? searchParams : null,
+            include: [{
+                model: models.users, 
+                as: "users_user", 
+                where: isUserProp ? searchParams : null, 
+                required: true
+            }]
+        });
+        
+        console.log("getUser user", user);
+    
+        if (!user) throw new Error("No user");
+
+        res.status(200).send(user);
+
+    } catch(error){
+        if(error.message === "No user"){
+            res.status(404).send(error.message);
+        }else{
+            res.status(500).send(error.message);
         }
     }
 }
@@ -174,5 +204,7 @@ module.exports = {
     createUser,
     updateUser,
     getAllUsers,
+    searchUsers,
     createCustomerAndUser,
+    getUser2,
 }
