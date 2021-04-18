@@ -27,14 +27,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false
     },
-    users_user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'users',
-        key: 'user_id'
-      }
-    },
     cities_postal_code: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -50,6 +42,18 @@ module.exports = function(sequelize, DataTypes) {
         model: 'countries',
         key: 'iso'
       }
+    },
+    users_user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'user_id'
+      }
+    },
+    is_user_profile: {
+      type: DataTypes.TINYINT,
+      allowNull: false
     }
   }, {
     sequelize,
@@ -65,13 +69,6 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_customers_users1_idx",
-        using: "BTREE",
-        fields: [
-          { name: "users_user_id" },
-        ]
-      },
-      {
         name: "fk_customers_cities1_idx",
         using: "BTREE",
         fields: [
@@ -83,6 +80,13 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "countries_iso" },
+        ]
+      },
+      {
+        name: "fk_customers_users1_idx",
+        using: "BTREE",
+        fields: [
+          { name: "users_user_id" },
         ]
       },
     ]

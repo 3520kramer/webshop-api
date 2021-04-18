@@ -5,6 +5,7 @@ let User = database.define('users', {
     userId: {
       type: Sequelize.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
       field: 'user_id' // Will result in an attribute that is firstName when user facing but first_name in the database
     },
     username: {
