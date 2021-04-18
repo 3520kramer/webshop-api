@@ -104,4 +104,22 @@ router.get("/users/search", async (req, res) => {
     }
 });
 
+router.get("/users/orders", async (req, res) => {
+    try {
+        const user_id = req.query.user_id;
+        if (!user_id) throw new Error("No user_id");
+
+        const orders = await userService.getUsersOrders(user_id);
+        
+        if (!orders.error) {
+            res.status(200).send(orders);
+        } else {
+            res.status(500).send({ response: orders.error });
+        }
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+
 module.exports = router;
