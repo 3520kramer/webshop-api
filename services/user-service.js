@@ -2,209 +2,168 @@ const models = require('../database/connect').models;
 const sequelize = require('../database/connect').database;
 const { Op } = require("sequelize");
 
-const getUser2 =  async (id) => {
-    let user = await models.users.findOne({ where: {user_id: id} });
-    return user;
-}
-
-const getUser = async (req, res) => {    
-    let property = req.query.property;
-    let searchParams = {[property]: req.query.value}
-    
-    console.log("getUser searchParams", searchParams);
-
-    let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
-
+const getUser = async (id) => {
     try {
-        let user = await models.customers.findOne({
-            where: !isUserProp ? searchParams : null,
+        const user = await models.users.findOne({
+            where: { user_id: id },
             include: [{
-                model: models.users, 
-                as: "users_user", 
-                where: isUserProp ? searchParams : null, 
+                model: models.customers,
+                as: "customers",
                 required: true
             }]
         });
-        
-        console.log("getUser user", user);
-    
+        console.log("getUser", user);
+
         if (!user) throw new Error("No user");
 
-        res.status(200).send(user);
+        return user;
 
-    } catch(error){
-        if(error.message === "No user"){
-            res.status(404).send(error.message);
-        }else{
-            res.status(500).send(error.message);
-        }
+    } catch (error) {
+        return { error: error.message };
     }
 }
 
-const createUser = async (req, res) => {
-    let _newUser = req.body.user;
-    let _newCustomer = req.body.customer;
-    console.log("createUser input", _newUser, _newCustomer);
+const createUser = async (newUser) => {
+    console.log("createUser input user", newUser);
 
     try {
-        await sequelize.transaction(async (t) => {
-            const newCustomer = await models.customers.create(_newCustomer, { transaction: t });
-            console.log("newCustomer", newCustomer);
-            
-            _newUser.customers_customer_id = newCustomer.customer_id;
-            console.log("_newUser", _newUser);
-            
-            const newUser = await models.users.create(_newUser, { transaction: t });
-            
-            console.log("newUser", newUser);
+        if (!newUser.customers) throw new Error("The property 'customers' is required for creating a user");
 
-            if (!newUser) throw new Error("No user");
-            
-            res.status(200).send(`User with user_id: ${newUser.user_id} and customer_id: ${newCustomer.customer_id} was created`);
+        const createdUser = await models.users.create(newUser, {
+            include: [{
+                model: models.customers,
+                as: "customers"
+            }]
         });
 
-    } catch(error){
-        if(error.message === "No user"){
-            res.status(404).send(error.message);
-        }else{
-            res.status(500).send(error.message);
-        }
+        if (!createdUser) throw new Error("Error creating user");
+
+        return { user: createdUser.dataValues, customer: createdUser.customers[0].dataValues };
+
+    } catch (error) {
+        return { error: error.message };
     }
 }
 
-const updateUser = async (req, res) => {
-    let input = req.body; 
-    console.log("updateUser input", input);
-    
-    try{
-        const userToUpdate = await models.users.findOne({where: {user_id: input.user_id}});
-        
+const updateUser = async (user) => {
+    console.log("updateUser input user", user);
+
+    try {
+        const userToUpdate = await models.users.findOne({
+            where: { user_id: user.user_id },
+            include: [{
+                model: models.customers,
+                as: "customers",
+                where: { "is_user_profile": true },
+                required: true
+            }]
+        });
+
         if (!userToUpdate) throw new Error("No user found");
-        
-        Object.entries(input).forEach(([key, value]) => {
+
+        Object.entries(user).forEach(([key, value]) => {
             console.log(`${key}: ${value}`);
-            
-            if(!userToUpdate.dataValues.hasOwnProperty(key)){
-                throw new Error(`Database object does not contain property "${key}"`);
+
+            if (key === 'customers') return;
+
+            if (!userToUpdate.dataValues.hasOwnProperty(key)) {
+                throw new Error(`Database object does not contain property: ${key}`);
             }
             userToUpdate[key] = value;
         })
 
-        await userToUpdate.save();
+        Object.entries(user.customers).forEach(([key, value]) => {
+            console.log(`${key}: ${value}`);
 
-        res.send(userToUpdate);
+            if (!userToUpdate.customers[0].dataValues.hasOwnProperty(key)) {
+                throw new Error(`Database object does not contain property "${key}"`);
+            }
+            userToUpdate.customers[key] = value;
+        })
 
-    }catch(error){
-        
-        if(error.message === "No user found"){
-            res.status(404).send(error.message)
-        }else{
-            res.status(400).send(error.message)
-        }
+        const updatedUser = await userToUpdate.save();
+
+        return { user: updatedUser, customer: updatedUser.customers[0] };
+
+    } catch (error) {
+        return { error: error.message };
     }
 };
 
-const getAllUsers = async (req, res) => {
+// we don't delete, but we are setting is_archived to true
+const deleteUser = async (id) => {
+    try {
+        const userToUpdate = await models.users.findOne({
+            where: { user_id: id },
+
+        });
+
+        if (!userToUpdate) throw new Error("No user");
+
+        userToUpdate.is_archived = true;
+
+        await userToUpdate.save()
+
+        return userToUpdate;
+
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
+const getAllUsers = async () => {
     try {
         let users = await models.users.findAll();
 
-        console.log("getUsers", users);
-    
+        console.log("getAllUsers", users);
+
         if (!users) throw new Error("No users");
 
-        res.status(200).send(user);
+        return users;
 
-    } catch(error){
-        if(error.message === "No users"){
-            res.status(404).send(error.message);
-        }else{
-            res.status(500).send(error.message);
-        }
+    } catch (error) {
+        return { error: error.message };
     }
 }
 
-const searchUsers = async (req, res) => {    
-    let property = req.query.property;
-    let value = req.query.value;
-    
-    let searchParams = {
-        [property]: {
-            [Op.like]: `%${value}%`
-        }
-    }
-
-    console.log("getUser searchParams", searchParams);
-
-    let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
-
+const searchUsers = async (property, value) => {
     try {
-        let user = await models.customers.findOne({
-            where: !isUserProp ? searchParams : null,
+        let searchParams = {
+            [property]: {
+                [Op.like]: `%${value}%`
+            }
+        }
+
+        console.log("searchUsers searchParams", searchParams);
+
+        let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
+
+        let user = await models.users.findAll({
+            where: isUserProp ? searchParams : null,
             include: [{
-                model: models.users, 
-                as: "users_user", 
-                where: isUserProp ? searchParams : null, 
+                model: models.customers,
+                as: "customers",
+                where: !isUserProp ? searchParams : null,
                 required: true
             }]
         });
-        
-        console.log("getUser user", user);
-    
+
+        console.log("searchUsers user", user);
+
         if (!user) throw new Error("No user");
 
-        res.status(200).send(user);
+        return user;
 
-    } catch(error){
-        if(error.message === "No user"){
-            res.status(404).send(error.message);
-        }else{
-            res.status(500).send(error.message);
-        }
-    }
-}
-
-const createCustomerAndUser = async (_newUser, _newCustomer) => {
-    try {
-        let result = await sequelize.transaction(async (t) => {
-            const newUser = await models.users.create(_newUser, { transaction: t });
-
-            _newCustomer.users_user_id = newUser.user_id;
-
-            const newCustomer = await models.customers.create(_newCustomer, { transaction: t });
-
-            return await newCustomer;
-        });
-
-        // If the execution reaches this line, the transaction has been committed successfully
-        // `result` is whatever was returned from the transaction callback
-        return result;
-        
     } catch (error) {
-        // If the execution reaches this line, an error occurred.
-        // The transaction has already been rolled back automatically
-        console.error(error)
+        return { error: error.message };
     }
 }
-/* Trying to create generic error response */
-    // const sendErrorResponse = (error, res, messageAndCode=null, messagesAndCodes=null) => {
-    //     if (!messageAndCode && !messagesAndCodes){
-    //         res.sendStatus(500)
-    //     }else if(messageAndCode !== null){
-            
-    //     }
-    //     if(error.message === "No user"){
-    //         res.status(404).send(error.message);
-    //     }else{
-    //         res.sendStatus(500);
-    //     }
-    // }
 
 module.exports = {
     getUser,
     createUser,
     updateUser,
+    deleteUser,
     getAllUsers,
     searchUsers,
-    createCustomerAndUser,
-    getUser2,
 }
