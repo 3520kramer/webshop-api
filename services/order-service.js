@@ -1,133 +1,231 @@
-const { Op } = require("sequelize");
-const DataTypes = require("sequelize").DataTypes;
 const sequelize = require('../database/connect').database;
-const orderModel = require('../models/orders')(sequelize, DataTypes);
+const model = require('../database/connect').models;
+const { Op } = require("sequelize");
 
-// works with transaction
-const createOrder = async (req, res) => {
-  console.log("createOrder", req.body);
-  let input = req.body;
 
-  console.log("input", input);
+
+// works - user sends to own address
+const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) => {
+  console.log("createOrder", { newOrder, productsList, user_id });
+
   try {
-    await sequelize.transaction(async (t) => {
-      const order = await orderModel.create({
-        order_id: null,
-        created: input.created,
-        comment: input.comment,
-        shipped_date: input.shipped_date,
-        customers_customer_id_billing: input.customer_id_billing,
-        customers_customer_id_delivery: input.customer_id_delivery,
-        shippers_shipper_id: input.shipper_id,
-        employees_employee_id: input.employee_id,
-        po_boxes_id: input.po_boxes_id,
-        warehouses_warehouse_id: input.warehouse_id
-      }, { transaction: t });
+    let result = await sequelize.transaction(async (t) => {
 
-      console.log("order", order);
-      if (order) {
-        return res.status(201).json({ order });
-      }
+      const customer = await model.customers.findOne({ where: { users_user_id: user_id, is_user_profile: true } });
+      if (!customer) throw new Error("Error finding user");
+      let newCustomer = customer.dataValues;
 
+      // set the values for the new customer data for that specific order
+      newCustomer.customer_id = null;
+      newCustomer.is_user_profile = false;
+
+      const createdCustomer = await model.customers.create(newCustomer, { transaction: t });
+      if (!createdCustomer) throw new Error("Error creating customer");
+
+      // sets the newly created customer id to the orders customer billing id and delivery 
+      // also sets the date to todays date
+      newOrder.customers_customer_id_billing = createdCustomer.customer_id;
+      newOrder.customers_customer_id_delivery = createdCustomer.customer_id;
+      newOrder.created = new Date().toISOString();
+
+      const createdOrder = await model.orders.create(newOrder, { transaction: t });
+      if (!createdOrder) throw new Error("Error creating order");
+
+      // gets the product_id from productsList
+      let productIds = productsList.map(product => { return { product_id: product.product_id } });
+
+      // find price on product. gets id from productList
+      const productPrice = await model.products.findAll({
+        where: { [Op.or]: productIds },
+        attributes: ["price", "product_id"]
+      },
+        { transaction: t });
+
+      let prices = {};
+      productPrice.forEach(product => prices[product.product_id] = product.price);
+
+      let orderProducts = productsList.map(product => {
+        return {
+          quantity: product.quantity,
+          price: prices[product.product_id],
+          products_product_id: product.product_id,
+          orders_order_id: createdOrder.order_id
+        }
+      });
+
+      // adds a orderProduct object to the order_product table for each orderProducts added
+      const createdOrderProduct = await model.order_product.bulkCreate(orderProducts, { transaction: t });
+      if (!createdOrderProduct) throw new Error("Error creating order product");
+
+      return createdOrderProduct;
     })
+
+    //console.log("result", result);
+    const orderOverView = await model.orders.findAll({
+      where: { order_id: result[0].orders_order_id },
+      required: true,
+      include: [{
+        model: model.customers,
+        as: "customers_customer_id_billing_customer",
+        required: true
+      },
+      {
+        model: model.shippers,
+        as: "shippers_shipper",
+        required: true
+      },
+      {
+        model: model.order_product,
+        as: "order_products",
+        required: true,
+        include: [{
+          model: model.products,
+          as: "products_product",
+          required: true,
+        }]
+      }]
+    });
+
+    let total = 0;
+    orderOverView.order_products.forEach(product => total += product.price * product.quantity);
+    console.log("productsInOrder", total);
+
+return {order_overview: orderOverView, total_price: total};
+
+  /*  return {
+      order: {
+        order_id: orderOverView.order_id,
+        created: orderOverView.created,
+        comment: orderOverView.comment,
+        shipper: orderOverView.shippers_shipper.company_name,
+        shipper_price: orderOverView.shippers_shipper.price,
+      },
+      billing_customer: {
+        first_name: orderOverView.customers_customer_id_billing_customer.first_name,
+        last_name: orderOverView.customers_customer_id_billing_customer.last_name,
+        street: orderOverView.customers_customer_id_billing_customer.street,
+        email: orderOverView.customers_customer_id_billing_customer.email,
+        phone: orderOverView.customers_customer_id_billing_customer.phone,
+        cities_postal_code: orderOverView.customers_customer_id_billing_customer.cities_postal_code,
+        countries_iso: orderOverView.customers_customer_id_billing_customer.countries_iso,
+      },
+      delivery_customer: {
+        first_name: orderOverView.customers_customer_id_billing_customer.first_name,
+        last_name: orderOverView.customers_customer_id_billing_customer.last_name,
+        street: orderOverView.customers_customer_id_billing_customer.street,
+        cities_postal_code: orderOverView.customers_customer_id_billing_customer.cities_postal_code,
+        countries_iso: orderOverView.customers_customer_id_billing_customer.countries_iso,
+      },
+      productsInOrder,
+      total: ""
+
+
+    };
+*/
+    // who bought it (customer)
+    // how much total (order_product)
+    // different product info (product)
+
+
+
   } catch (error) {
-    return res.status(500).json({ error: error.message })
+    return { error: error.message };
   }
 }
 
-// works. should perhaps have a try/catch
-const getOneOrder = async (req, res) => {
-  console.log("getOneOrder", req.query);
-  let id = req.query.id;
-  orderModel.findOne({ where: { order_id: id } }).then((orderModel) => {
-    console.log(orderModel);
-    res.send(orderModel);
-  });
+
+
+
+// works. 
+const getOneOrder = async (id) => {
+  console.log("getOneOrder", id);
+  try {
+    const order = await model.orders.findOne({ where: { order_id: id } });
+    return order;
+  } catch (error) {
+    return { error: error.message };
+  }
 }
 
+
 // works with pagination
-const getAllOrders = async (req, res) => {
-  console.log("getAllOrders", req.query);
+const getAllOrders = async (page, size) => {
+  console.log("getAllOrders", { page, size });
 
   // taking input and parsing to int 
-  const pageAsNumber = Number.parseInt(req.query.page);
-  const sizeAsNumber = Number.parseInt(req.query.size);
+  const pageAsNumber = Number.parseInt(page);
+  const sizeAsNumber = Number.parseInt(size);
 
   // initially 0 from the start
-  let page = 0;
+  let defaultPage = 0;
   if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-    page = pageAsNumber;
+    defaultPage = pageAsNumber;
   }
 
   // default response size of rows
-  let size = 1000;
+  let defaultSize = 1000;
   if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 100000) {
-    size = sizeAsNumber;
+    defaultSize = sizeAsNumber;
   }
 
   try {
-    const orders = await orderModel.findAndCountAll({
-      limit: size,
-      offset: page * size
+    const orders = await model.orders.findAndCountAll({
+      limit: defaultSize,
+      offset: defaultPage * defaultSize
     });
 
-    return res.send({
+    return {
       total: orders.count,
-      content: orders.rows,
       // rounds off the total of pages 
-      totalPages: Math.ceil(orders.count / size)
-    });
+      totalPages: Math.ceil(orders.count / defaultSize),
+      content: orders.rows
+    };
 
   } catch (error) {
-    return res.status(500).json({ error: error.message })
+    return { error: error.message };
   }
 }
 
-// works. basically like orders but with search 
-const searchOrders = async (req, res) => {
-  console.log("searchOrders", req.query);
-  const search = req.query.search;
-  const id = req.query.id;
 
-  const pageAsNumber = Number.parseInt(req.query.page);
+// works. basically like orders but with search 
+const ordersSearch = async (id, page, search) => {
+  console.log("ordersSearch", { id, page, search });
+
+  // makes sure page is a number
+  const pageAsNumber = Number.parseInt(page);
 
   // default size 
-  const size = 1000;
+  let defaultSize = 1000;
 
   // initially 0 from the start
-  let page = 0;
+  let defaultPage = 0;
   if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-    page = pageAsNumber;
+    defaultPage = pageAsNumber;
   }
 
   try {
-    const orders = await orderModel.findAndCountAll({
-      where: {
-        [search]: {
-          [Op.like]: `%${id}%`
-        }
-      },
-      limit: size,
-      offset: page * size
-
+    const orders = await model.orders.findAndCountAll({
+      where: { [search]: { [Op.like]: `%${id}%` } },
+      limit: defaultSize,
+      offset: defaultPage * defaultSize
     });
 
-    return res.send({
+    return {
       total: orders.count,
-      content: orders.rows,
       // rounds off the total of pages 
-      totalPages: Math.ceil(orders.count / size)
-    });
+      totalPages: Math.ceil(orders.count / defaultSize),
+      content: orders.rows,
+    };
 
   } catch (error) {
-    return res.status(500).json({ error: error.message })
+    return { error: error.message };
   }
 }
 
 
 module.exports = {
-  createOrder,
+  createOrderForUserToOwnAddress,
   getOneOrder,
   getAllOrders,
-  searchOrders,
+  ordersSearch,
 }
