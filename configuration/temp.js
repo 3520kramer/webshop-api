@@ -28,35 +28,3 @@
   
       };
   */
-
-
-      /*
-    //console.log("result", result);
-    const orderOverView = await model.orders.findAll({
-      where: { order_id: result[0].orders_order_id },
-      required: true,
-      include: [{
-        model: model.customers,
-        as: "customers_customer_id_billing_customer",
-        required: true
-      },
-      {
-        model: model.shippers,
-        as: "shippers_shipper",
-        required: true
-      },
-      {
-        model: model.order_product,
-        as: "order_products",
-        required: true,
-        include: [{
-          model: model.products,
-          as: "products_product",
-          required: true,
-        }]
-      }]
-    });
-
-    let total = 0;
-    orderOverView.order_products.forEach(product => total += product.price * product.quantity);
-    console.log("productsInOrder", total);*/
