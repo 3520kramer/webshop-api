@@ -135,17 +135,17 @@ const getOrderOverView = async (orderId) => {
     return { orderOverView: orderOverView, total: total };
 
   } catch (error) {
-      return { error: error.message };
+    return { error: error.message };
   }
 }
 
 
 
 // works. 
-const getOneOrder = async (id) => {
-  console.log("getOneOrder", id);
+const getOneOrder = async (orderId) => {
+  console.log("getOneOrder", orderId);
   try {
-    const order = await model.orders.findOne({ where: { order_id: id } });
+    const order = await model.orders.findOne({ where: { order_id: orderId } });
     return order;
   } catch (error) {
     return { error: error.message };
