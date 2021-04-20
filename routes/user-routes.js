@@ -4,9 +4,9 @@ const userService = require('../services/user-service');
 router.get("/user", async (req, res) => {
     try {
         const id = req.query.id;
-        
+
         if (!id) throw new Error("No id");
-        
+
         const user = await userService.getUser(id);
 
         if (!user.error) {
@@ -26,7 +26,7 @@ router.post("/user", async (req, res) => {
         const created = await userService.createUser(newUser);
 
         if (!created.error) {
-           res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
         } else {
             res.status(500).send({ response: created.error });
         }
@@ -43,7 +43,7 @@ router.put("/user", async (req, res) => {
         const updated = await userService.updateUser(user);
 
         if (!updated.error) {
-           res.status(200).send(`User with user_id: ${updated.user.user_id} and customer_id: ${updated.customer.customer_id} was updated`);
+            res.status(200).send(`User with user_id: ${updated.user.user_id} and customer_id: ${updated.customer.customer_id} was updated`);
         } else {
             res.status(500).send({ response: updated.error });
         }
@@ -56,9 +56,9 @@ router.delete("/user", async (req, res) => {
     try {
         const id = req.query.id;
         if (!id) throw new Error("No id");
-        
+
         const user = await userService.deleteUser(id);
-        
+
         if (!user.error) {
             res.status(200).send(`The field 'is_archived' is set to '${user.is_archived}' for user with 'user_id': ${user.user_id}`
             );
@@ -74,7 +74,7 @@ router.delete("/user", async (req, res) => {
 router.get("/users", async (req, res) => {
     try {
         const user = await userService.getAllUsers();
-        
+
         if (!user.error) {
             res.status(200).send(user);
         } else {
@@ -86,14 +86,14 @@ router.get("/users", async (req, res) => {
 });
 
 router.get("/users/search", async (req, res) => {
-    try{
+    try {
         const property = req.query.property;
         const value = req.query.value;
 
         if (!property || !value) throw new Error("Mssing property or value as query parameters");
 
         const users = await userService.searchUsers(property, value);
-        
+
         if (!users.error) {
             res.status(200).send(users);
         } else {

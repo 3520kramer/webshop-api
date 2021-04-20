@@ -61,7 +61,7 @@ router.post("/order", async (req, res) => {
 router.get("/order", async (req, res) => {
     console.log("get/order");
     try {
-        let id = req.query.id;
+        let id = Number.parseInt(req.query.order_id);
         const order = await orderService.getOneOrder(id);
 
         if (!order.error) {
