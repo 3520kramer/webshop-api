@@ -29,6 +29,7 @@ const checkAuth = (req, res, next) => {
 
 // get routes. These have to be after the checkAuth function or else it can't find req.session.userId
 const userRoutes = require('./routes/user-routes');
+const customerRoutes = require('./routes/customer-routes')
 const productRoutes = require('./routes/product-routes');
 const orderRoutes = require('./routes/order-routes');
 const loginRoutes = require('./routes/login-routes');
@@ -36,6 +37,7 @@ const loginRoutes = require('./routes/login-routes');
 
 // use routes 
 app.use(userRoutes);
+app.use(customerRoutes);
 app.use(productRoutes);
 app.use(orderRoutes);
 app.use(loginRoutes);
