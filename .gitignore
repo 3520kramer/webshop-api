@@ -1,6 +1,7 @@
-# Ignore our personal appsettings
+# Ignore our personal app settings
 settings.js
 config.json
+temp.js
 
 # Logs
 logs
