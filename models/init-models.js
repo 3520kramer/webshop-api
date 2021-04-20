@@ -74,10 +74,10 @@ function initModels(sequelize) {
   countries.hasMany(customers, { as: "customers", foreignKey: "countries_iso"});
   po_boxes.belongsTo(countries, { as: "countries_iso_country", foreignKey: "countries_iso"});
   countries.hasMany(po_boxes, { as: "po_boxes", foreignKey: "countries_iso"});
-  orders.belongsTo(customers, { as: "customers_customer_id_billing_customer", foreignKey: "customers_customer_id_billing"});
-  customers.hasMany(orders, { as: "orders", foreignKey: "customers_customer_id_billing"});
   orders.belongsTo(customers, { as: "customers_customer_id_delivery_customer", foreignKey: "customers_customer_id_delivery"});
-  customers.hasMany(orders, { as: "customers_customer_id_delivery_orders", foreignKey: "customers_customer_id_delivery"});
+  customers.hasMany(orders, { as: "orders", foreignKey: "customers_customer_id_delivery"});
+  orders.belongsTo(customers, { as: "customers_customer_id_billing_customer", foreignKey: "customers_customer_id_billing"});
+  customers.hasMany(orders, { as: "customers_customer_id_billing_orders", foreignKey: "customers_customer_id_billing"});
   b2b_orders.belongsTo(employees, { as: "employees_employee", foreignKey: "employees_employee_id"});
   employees.hasMany(b2b_orders, { as: "b2b_orders", foreignKey: "employees_employee_id"});
   invoices.belongsTo(employees, { as: "employees_employee", foreignKey: "employees_employee_id"});
