@@ -228,10 +228,40 @@ const ordersSearch = async (id, page, search) => {
 }
 
 
+const getUsersOrders = async (user_id) => {
+  try {
+      const results = await model.customers.findAll({
+          where: { users_user_id: user_id, is_user_profile: false},
+          include: [{
+              model: model.orders,
+              as: "orders", // refers to the customer_id --> customers_customer_id_billing relation between customer and order table
+              required: true,
+          }]
+      });
+
+      if (!results) throw new Error("No results");
+
+      const promisesOfOrders = results.map(async result => {
+        let test = await getOrderOverView(result.orders[0].order_id);
+        return test;
+      });
+      
+      const orders = await Promise.all(promisesOfOrders);
+
+      if (!orders) throw new Error("No orders");
+
+      return orders;
+
+  } catch (error) {
+      return { error: error.message };
+  }
+}
+
 module.exports = {
   createOrderForUserToOwnAddress,
   createOrderForCustomerToPO,
   getOneOrder,
   getAllOrders,
   ordersSearch,
+  getUsersOrders,
 }

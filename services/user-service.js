@@ -1,5 +1,4 @@
 const models = require('../database/connect').models;
-const sequelize = require('../database/connect').database;
 const { Op } = require("sequelize");
 
 const getUser = async (id) => {
@@ -159,29 +158,6 @@ const searchUsers = async (property, value) => {
     }
 }
 
-const getUsersOrders = async (user_id) => {
-    try {
-        const result = await models.customers.findAll({
-            where: { users_user_id: user_id, is_user_profile: false},
-            subQuery: false,
-            include: [{
-                model: models.orders,
-                as: "orders",
-                required: true,
-            }]
-        });
-
-        console.log("getUsersOrders", result);
-
-        if (!result) throw new Error("No result");
-
-        return result;
-
-    } catch (error) {
-        return { error: error.message };
-    }
-}
-
 module.exports = {
     getUser,
     createUser,
@@ -189,5 +165,4 @@ module.exports = {
     deleteUser,
     getAllUsers,
     searchUsers,
-    getUsersOrders
 }
