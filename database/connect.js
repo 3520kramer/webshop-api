@@ -15,9 +15,6 @@ const sequelize = new Sequelize(config.DATABASE, config.USER, config.PASSWORD, {
     },
 });
 
-var initModels = require("../models/init-models");
-var models = initModels(sequelize); 
-
 const initModels = require("../models/init-models");
 const models = initModels(sequelize); 
 

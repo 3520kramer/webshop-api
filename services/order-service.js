@@ -59,10 +59,23 @@ const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) =
 
       return createdOrderProduct;
     })
+    console.log("result[0].orders_order_id", result[0].orders_order_id);
+    const orderOverView = await getOrderOverView(result[0].orders_order_id);
+    console.log("orderOverView", orderOverView);
 
-    //console.log("result", result);
+    return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
+
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+
+const getOrderOverView = async (orderId) => {
+  console.log("orderId", orderId);
+  try {
     const orderOverView = await model.orders.findAll({
-      where: { order_id: result[0].orders_order_id },
+      where: { order_id: orderId },
       required: true,
       include: [{
         model: model.customers,
@@ -87,52 +100,14 @@ const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) =
     });
 
     let total = 0;
-    orderOverView.order_products.forEach(product => total += product.price * product.quantity);
-    console.log("productsInOrder", total);
-
-return {order_overview: orderOverView, total_price: total};
-
-  /*  return {
-      order: {
-        order_id: orderOverView.order_id,
-        created: orderOverView.created,
-        comment: orderOverView.comment,
-        shipper: orderOverView.shippers_shipper.company_name,
-        shipper_price: orderOverView.shippers_shipper.price,
-      },
-      billing_customer: {
-        first_name: orderOverView.customers_customer_id_billing_customer.first_name,
-        last_name: orderOverView.customers_customer_id_billing_customer.last_name,
-        street: orderOverView.customers_customer_id_billing_customer.street,
-        email: orderOverView.customers_customer_id_billing_customer.email,
-        phone: orderOverView.customers_customer_id_billing_customer.phone,
-        cities_postal_code: orderOverView.customers_customer_id_billing_customer.cities_postal_code,
-        countries_iso: orderOverView.customers_customer_id_billing_customer.countries_iso,
-      },
-      delivery_customer: {
-        first_name: orderOverView.customers_customer_id_billing_customer.first_name,
-        last_name: orderOverView.customers_customer_id_billing_customer.last_name,
-        street: orderOverView.customers_customer_id_billing_customer.street,
-        cities_postal_code: orderOverView.customers_customer_id_billing_customer.cities_postal_code,
-        countries_iso: orderOverView.customers_customer_id_billing_customer.countries_iso,
-      },
-      productsInOrder,
-      total: ""
-
-
-    };
-*/
-    // who bought it (customer)
-    // how much total (order_product)
-    // different product info (product)
-
-
+    orderOverView[0].order_products.forEach(product => total += product.price * product.quantity);
+ 
+    return {orderOverView: orderOverView, total: total};
 
   } catch (error) {
-    return { error: error.message };
+      return { error: error.message };
   }
 }
-
 
 
 
