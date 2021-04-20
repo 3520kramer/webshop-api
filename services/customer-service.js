@@ -1,5 +1,4 @@
 const models = require('../database/connect').models;
-const sequelize = require('../database/connect').database;
 
 const getCustomer = async (id) => {
     try {

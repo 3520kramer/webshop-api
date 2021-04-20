@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const config = require('../configuration/settings');
 
-
 const sequelize = new Sequelize(config.DATABASE, config.USER, config.PASSWORD, {
     host: 'localhost',
     dialect: 'mysql',
@@ -15,12 +14,8 @@ const sequelize = new Sequelize(config.DATABASE, config.USER, config.PASSWORD, {
     },
 });
 
-var initModels = require("../models/init-models");
-var models = initModels(sequelize); 
-
 const initModels = require("../models/init-models");
 const models = initModels(sequelize); 
 
 module.exports.database = sequelize;
-module.exports.seq = Sequelize;
 module.exports.models = models;
