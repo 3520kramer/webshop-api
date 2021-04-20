@@ -84,7 +84,7 @@ module.exports = function(sequelize, DataTypes) {
         name: "fk_orders_customers1_idx",
         using: "BTREE",
         fields: [
-          { name: "customers_customer_id_billing" },
+          { name: "customers_customer_id_delivery" },
         ]
       },
       {
@@ -109,17 +109,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "fk_orders_customers2_idx",
-        using: "BTREE",
-        fields: [
-          { name: "customers_customer_id_delivery" },
-        ]
-      },
-      {
         name: "fk_orders_warehouses1_idx",
         using: "BTREE",
         fields: [
           { name: "warehouses_warehouse_id" },
+        ]
+      },
+      {
+        name: "fk_orders_customers2_idx",
+        using: "BTREE",
+        fields: [
+          { name: "customers_customer_id_billing" },
         ]
       },
     ]

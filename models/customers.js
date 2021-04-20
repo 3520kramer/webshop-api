@@ -21,11 +21,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     email: {
       type: DataTypes.STRING(100),
-      allowNull: false
+      allowNull: true
     },
     phone: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: true
     },
     cities_postal_code: {
       type: DataTypes.INTEGER,
