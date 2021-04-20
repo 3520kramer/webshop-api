@@ -4,9 +4,7 @@ const customerService = require('../services/customer-service');
 router.get("/customer", async (req, res) => {
     try {
         const id = req.query.id;
-
         if (!id) throw new Error("No id");
-
         const customer = await customerService.getCustomer(id);
 
         if (!customer.error) {
@@ -22,6 +20,7 @@ router.get("/customer", async (req, res) => {
 router.post("/customer", async (req, res) => {
     try {
         const customer = req.body;
+        if (!customer) throw new Error("No customer");
         const updatedCustomer = await customerService.createCustomer(customer);
 
         if (!updatedCustomer.error) {
