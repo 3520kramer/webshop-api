@@ -1,5 +1,4 @@
 const models = require('../database/connect').models;
-const sequelize = require('../database/connect').database;
 const { Op } = require("sequelize");
 
 const getUser = async (id) => {
