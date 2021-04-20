@@ -1,26 +1,34 @@
 const config = require("../configuration/config.json");
+const settings = require('../configuration/settings');
+
 
 const role = {
-    USER: "user",
-    EMPLOYEE: "employee",
-    ADMIN: "admin"
+    USER: "user", // read, create, update
+    EMPLOYEE: "employee", // read, create, update
+    ADMIN: "admin", // All
+    VISITOR: "visitor", // read, create user
 }
 
 // Function for checking session id on routes request
-const checkAuth = (types) => {
+const checkAuth = (roles) => {
     return (req, res, next) => {
         console.log("req.session.sessionSecret", req.session.sessionSecret);
 
-        let hasTypeMatch = false;
+        let hasRoleMatch = false;
 
-        types.forEach(type => {
-            if (req.session.sessionSecret === config.sessionSecret[type]){
-                console.log("logged in - secret:", config.sessionSecret[type]);
+        roles.forEach(role => {
+            if (req.session.sessionSecret === config.sessionSecret[role]){
+                console.log("logged in - secret:", config.sessionSecret[role]);
+                
+                settings.USER = config.databaseSecret[role].user;
+                settings.PASSWORD = config.databaseSecret[role].password;
+
+                hasRoleMatch = true;
+
                 next();
-                hasTypeMatch = true;
             }
         });
-    if(!hasTypeMatch) return res.status(401).send({ response: "not allowed" });
+    if(!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
     }
 };
 

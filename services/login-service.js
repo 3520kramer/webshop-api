@@ -1,10 +1,9 @@
-const DataTypes = require("sequelize").DataTypes;
-const sequelize = require('../database/connect').database;
-const User = require('../models/users')(sequelize, DataTypes);
-
+const models = require('../database/connect').models;
+const { role } = require('../routes/route-authorization');
+const userService = require('./user-service');
 
 // Connects to the session secret  
-const sessionId = require("../configuration/config.json");
+const { sessionSecret } = require("../configuration/config.json");
 
 // A library to help you hash passwords.
 const bcrypt = require('bcrypt');
@@ -16,7 +15,7 @@ const saltRounds = 12;
 // works
 const loginUser = async (username, password) => {
     try {
-        const user = await User.findOne({ where: { username: username } });
+        const user = await models.users.findOne({ where: { username: username } });
 
         if (!user) throw new Error("Something went wrong when getting information from database");
 
@@ -25,8 +24,8 @@ const loginUser = async (username, password) => {
         if (!result) throw new Error("username or password incorrect, try again");
 
         return {
-            sessionSecret: sessionId.sessionSecret.user,
-            userId: user.userId,
+            sessionSecret: sessionSecret.user,
+            userId: user.user_id,
             username: user.username
         }
     } catch (error) {
@@ -34,35 +33,42 @@ const loginUser = async (username, password) => {
     }
 };
 
-const loginEmployee = async (username, password) => {
+const loginEmployee = async (email, password) => {
     try {
-        const user = await User.findOne({ where: { username: username } });
+        const employee = await models.employees.findOne({ where: { email: email } });
 
-        if (!user) throw new Error("Something went wrong when getting information from database");
+        if (!employee) throw new Error("Something went wrong when getting information from database");
 
-        const result = await bcrypt.compare(password, user.password);
+        const result = await bcrypt.compare(password, employee.password);
 
-        if (!result) throw new Error("username or password incorrect, try again");
+        if (!result) throw new Error("email or password incorrect, try again");
+
+        let _sessionSecret = employee.job_title.toLowerCase() === role.ADMIN ? sessionSecret.admin : sessionSecret.employee
 
         return {
-            sessionSecret: sessionId.sessionSecret,
-            userId: user.userId,
-            username: user.username
+            sessionSecret: _sessionSecret,
+            employeeId: employee.employeeId,
+            email: employee.email,
         }
+
     } catch (error) {
         return { error: error.message };
     }
 };
 
+const registerUser = async (newUser) => {
+    try{
+        let hashedPassword = await bcrypt.hash(newUser.password, saltRounds);
 
+        newUser.password = hashedPassword
 
+        const createdUser = await userService.createUser(newUser);
+        
+        return createdUser;
 
-// works
-const logout = async (req, res) => {
-    console.log("logout");
-    req.session.destroy((err) => {
-        return res.status(200).send({ response: "logout" });
-    });
+    } catch (error) {
+        return { error: error.message };
+    }
 };
 
 // works
@@ -73,7 +79,6 @@ const hashTest = async (req, res) => {
 module.exports = {
     loginUser,
     loginEmployee,
-    //signup,
-    logout,
+    registerUser,
     hashTest,
 }

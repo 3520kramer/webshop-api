@@ -3,7 +3,7 @@ const userService = require('../services/user-service');
 const { checkAuth } = require("./route-authorization");
 const { role } = require("./route-authorization");
 
-router.get("/user", checkAuth([role.USER]), async (req, res) => {
+router.get("/user", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (req, res) => {
     try {
         const id = req.query.id;
         
