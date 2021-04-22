@@ -17,9 +17,9 @@ const checkAuth = (roles) => {
         let hasRoleMatch = false;
 
         roles.forEach(role => {
-            if (req.session.sessionSecret === config.sessionSecret[role]){
+            if (req.session.sessionSecret === config.sessionSecret[role]) {
                 console.log("logged in - secret:", config.sessionSecret[role]);
-                
+
                 settings.USER = config.databaseSecret[role].user;
                 settings.PASSWORD = config.databaseSecret[role].password;
 
@@ -28,7 +28,7 @@ const checkAuth = (roles) => {
                 next();
             }
         });
-    if(!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
+        if (!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
     }
 };
 

@@ -5,6 +5,7 @@ const productService = require('../services/product-service');
 
 // create new product
 router.post("/product", async (req, res) => {
+    // #swagger.tags = ['Product']
     console.log("post/product");
     try {
         let product = req.body.product;
@@ -23,6 +24,7 @@ router.post("/product", async (req, res) => {
 
 // get specific product by id
 router.get("/product", async (req, res) => {
+    // #swagger.tags = ['Product']
     console.log("get/product");
     try {
         let id = Number.parseInt(req.query.product_id);
@@ -40,6 +42,7 @@ router.get("/product", async (req, res) => {
 
 // get all products
 router.get("/products", async (req, res) => {
+    // #swagger.tags = ['Product']
     console.log("get/products");
     try {
         const products = await productService.getAllProducts();
@@ -58,6 +61,7 @@ router.get("/products", async (req, res) => {
 
 // update product 
 router.put("/product", async (req, res) => {
+    // #swagger.tags = ['Product']
     console.log("put/product");
 
     let product = req.body.product;
@@ -76,6 +80,7 @@ router.put("/product", async (req, res) => {
 
 // delete product
 router.delete("/product", async (req, res) => {
+    // #swagger.tags = ['Product']
     console.log("delete/product");
     try {
         let id = Number.parseInt(req.query.product_id);
