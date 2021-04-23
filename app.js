@@ -1,9 +1,14 @@
 const express = require("express");
 const app = express();
 
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// this is all for swagger-ui 
+const http = require('http');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
 // Used to be able to establish permission for the user to enter the site and also be able to track them
@@ -32,11 +37,11 @@ app.use(productRoutes);
 app.use(orderRoutes);
 app.use(loginRoutes);
 
-
-const port = process.env.PORT ? process.env.PORT : 6000;
+// for some stupid reason only works on port 3000 - https://github.com/lukeautry/tsoa/issues/518
+const port = process.env.PORT ? process.env.PORT : 3000;
 
 // Error handling on server upstart
-app.listen(port, (error) => {
+http.createServer(app).listen(port, (error) => {
     if (error) {
         console.log("Error starting the server");
     }

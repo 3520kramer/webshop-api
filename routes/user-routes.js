@@ -4,6 +4,7 @@ const { checkAuth } = require("./route-authorization");
 const { role } = require("./route-authorization");
 
 router.get("/user", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const id = req.query.id;
 
@@ -22,6 +23,7 @@ router.get("/user", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (re
 });
 
 router.post("/user", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const newUser = req.body;
 
@@ -38,6 +40,7 @@ router.post("/user", async (req, res) => {
 });
 
 router.put("/user", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const user = req.body;
         console.log("user", user);
@@ -55,6 +58,7 @@ router.put("/user", async (req, res) => {
 });
 
 router.delete("/user", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const id = req.query.id;
         if (!id) throw new Error("No id");
@@ -74,6 +78,7 @@ router.delete("/user", async (req, res) => {
 
 
 router.get("/users", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const user = await userService.getAllUsers();
 
@@ -88,6 +93,7 @@ router.get("/users", async (req, res) => {
 });
 
 router.get("/users/search", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const property = req.query.property;
         const value = req.query.value;
@@ -107,12 +113,13 @@ router.get("/users/search", async (req, res) => {
 });
 
 router.get("/users/orders", async (req, res) => {
+    // #swagger.tags = ['User']
     try {
         const user_id = req.query.user_id;
         if (!user_id) throw new Error("No user_id");
 
         const orders = await userService.getUsersOrders(user_id);
-        
+
         if (!orders.error) {
             res.status(200).send(orders);
         } else {

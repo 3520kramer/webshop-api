@@ -230,16 +230,16 @@ const ordersSearch = async (id, page, search) => {
 
 const getUsersOrders = async (user_id) => {
   try {
-      const results = await model.customers.findAll({
-          where: { users_user_id: user_id, is_user_profile: false},
-          include: [{
-              model: model.orders,
-              as: "orders", // refers to the customer_id --> customers_customer_id_billing relation between customer and order table
-              required: true,
-          }]
-      });
+    const results = await model.customers.findAll({
+      where: { users_user_id: user_id, is_user_profile: false },
+      include: [{
+        model: model.orders,
+        as: "orders", // refers to the customer_id --> customers_customer_id_billing relation between customer and order table
+        required: true,
+      }]
+    });
 
-      if (!results) throw new Error("No results");
+    if (!results) throw new Error("No results");
 
       // Because we are calling an async function in a forloop we will only return promiss which we will resolve below
       const promisesOfOrders = results.map(async result => {
@@ -252,10 +252,10 @@ const getUsersOrders = async (user_id) => {
 
       if (!orders) throw new Error("Error resolving promises");
 
-      return orders;
+    return orders;
 
   } catch (error) {
-      return { error: error.message };
+    return { error: error.message };
   }
 }
 

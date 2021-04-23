@@ -19,7 +19,7 @@ const checkAuth = (roles) => {
 
         // Iterating the roles to find a matching Role
         roles.forEach(role => {
-            if (req.session.sessionSecret === config.sessionSecret[role]){
+            if (req.session.sessionSecret === config.sessionSecret[role]) {
                 console.log("logged in - secret:", config.sessionSecret[role]);
                 
                 // Setting the database connection settings to the ones matching the role
@@ -32,7 +32,7 @@ const checkAuth = (roles) => {
                 next();
             }
         });
-    if(!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
+        if (!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
     }
 };
 

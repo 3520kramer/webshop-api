@@ -61,13 +61,13 @@ const loginEmployee = async (email, password) => {
 };
 
 const registerUser = async (newUser) => {
-    try{
+    try {
         let hashedPassword = await bcrypt.hash(newUser.password, saltRounds);
 
         newUser.password = hashedPassword
 
         const createdUser = await userService.createUser(newUser);
-        
+
         return createdUser;
 
     } catch (error) {
@@ -77,6 +77,7 @@ const registerUser = async (newUser) => {
 
 // works
 const hashTest = async (req, res) => {
+    // #swagger.tags = ['Login']
     bcrypt.hash(req.query.pw, saltRounds).then(result => res.send(result));
 };
 

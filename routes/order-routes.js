@@ -5,9 +5,10 @@ const orderService = require('../services/order-service');
 
 // create new order for our six scenarios
 router.post("/order", async (req, res) => {
+    // #swagger.tags = ['Order']
     console.log("post/order");
     try {
-        
+
         let customer = req.body.customer;
         let order = req.body.order;
         let product = req.body.product;
@@ -19,7 +20,7 @@ router.post("/order", async (req, res) => {
         switch (key) {
             case 1: // user sends to own address
 
-                if(!userId) throw new Error("user_id required");
+                if (!userId) throw new Error("user_id required");
 
                 const orderUser = await orderService.createOrderForUserToOwnAddress(order, product, userId);
                 if (!orderUser.error) {
@@ -38,19 +39,19 @@ router.post("/order", async (req, res) => {
                 break;
             case 3:
                 console.log(3);
-                res.status(501).send({response: "not implemented yet"});
+                res.status(501).send({ response: "not implemented yet" });
                 break;
             case 4:
                 console.log(4);
-                res.status(501).send({response: "not implemented yet"});
+                res.status(501).send({ response: "not implemented yet" });
                 break;
             case 5:
                 console.log(5);
-                res.status(501).send({response: "not implemented yet"});
+                res.status(501).send({ response: "not implemented yet" });
                 break;
             case 6:
                 console.log(6);
-                res.status(501).send({response: "not implemented yet"});
+                res.status(501).send({ response: "not implemented yet" });
                 break;
             default:
                 break;
@@ -64,6 +65,7 @@ router.post("/order", async (req, res) => {
 
 // get specific order by id
 router.get("/order", async (req, res) => {
+    // #swagger.tags = ['Order']
     console.log("get/order");
     try {
         let id = Number.parseInt(req.query.order_id);
@@ -83,6 +85,7 @@ router.get("/order", async (req, res) => {
 
 // get all orders
 router.get("/orders", async (req, res) => {
+    // #swagger.tags = ['Order']
     console.log("get/orders");
     try {
         let page = req.query.page;
@@ -103,6 +106,7 @@ router.get("/orders", async (req, res) => {
 
 // search by key and value
 router.get("/orderssearch", async (req, res) => {
+    // #swagger.tags = ['Order']
     console.log("get/orderssearch");
     try {
         let id = req.query.id;
@@ -123,12 +127,13 @@ router.get("/orderssearch", async (req, res) => {
 
 // finds orders related to a user
 router.get("/orders/users", async (req, res) => {
+    // #swagger.tags = ['Order']
     try {
         const user_id = req.query.user_id;
         if (!user_id) throw new Error("No user_id");
 
         const orders = await orderService.getUsersOrders(user_id);
-        
+
         if (!orders.error) {
             res.status(200).send(orders);
         } else {
