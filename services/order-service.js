@@ -241,14 +241,16 @@ const getUsersOrders = async (user_id) => {
 
       if (!results) throw new Error("No results");
 
+      // Because we are calling an async function in a forloop we will only return promiss which we will resolve below
       const promisesOfOrders = results.map(async result => {
-        let test = await getOrderOverView(result.orders[0].order_id);
-        return test;
+        let promise = await getOrderOverView(result.orders[0].order_id);
+        return promise;
       });
       
+      // Resolve all the promises from the for loop
       const orders = await Promise.all(promisesOfOrders);
 
-      if (!orders) throw new Error("No orders");
+      if (!orders) throw new Error("Error resolving promises");
 
       return orders;
 

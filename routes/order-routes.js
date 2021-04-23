@@ -121,6 +121,7 @@ router.get("/orderssearch", async (req, res) => {
     }
 });
 
+// finds orders related to a user
 router.get("/orders/users", async (req, res) => {
     try {
         const user_id = req.query.user_id;

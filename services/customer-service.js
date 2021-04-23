@@ -39,6 +39,7 @@ const createCustomer = async (newCustomer) => {
 
 // no delete service on customer as we will never delete a customer from the backend
 
+// Gets all customers
 const getAllCustomers = async () => {
     try {
         let customers = await models.customers.findAll();
