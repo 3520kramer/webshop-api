@@ -27,7 +27,7 @@ const createUser = async (newUser) => {
     try {
         if (!newUser.customers) throw new Error("The property 'customers' is required for creating a user");
         if (newUser.customers.is_user_profile === 0) throw new Error("The property 'is_user_profile' is required to be 1 when creating a user");
-        
+
         const createdUser = await models.users.create(newUser, {
             include: [{
                 model: models.customers,

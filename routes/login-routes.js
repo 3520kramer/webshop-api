@@ -5,6 +5,9 @@ const loginService = require('../services/login-service');
 
 
 router.post('/login/user', async (req, res) => {
+    // #swagger.tags = ['Login'] 
+    // #swagger.description = 'This is the route for the user login'
+
     try {
         const { username, password } = req.body;
 
@@ -28,6 +31,7 @@ router.post('/login/user', async (req, res) => {
 });
 
 router.post('/login/employee', async (req, res) => {
+    // #swagger.tags = ['Login']
     try {
         const { email, password } = req.body;
 
@@ -52,13 +56,14 @@ router.post('/login/employee', async (req, res) => {
 
 
 router.post('/register/user', async (req, res) => {
+    // #swagger.tags = ['Login']
     try {
         const newUser = req.body;
 
         const created = await loginService.registerUser(newUser);
 
         if (!created.error) {
-           res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
         } else {
             res.status(500).send({ response: created.error });
         }
@@ -68,10 +73,11 @@ router.post('/register/user', async (req, res) => {
 });
 
 
-router.get('/logout', async (req, res) => { 
-    try{
+router.get('/logout', async (req, res) => {
+    // #swagger.tags = ['Login']
+    try {
         req.session.destroy((error) => {
-            if(error) throw new Error(`Error destroying session: ${error}`);
+            if (error) throw new Error(`Error destroying session: ${error}`);
 
             res.status(200).send({ response: "logout" })
         });

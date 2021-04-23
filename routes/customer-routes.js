@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const customerService = require('../services/customer-service');
 
+
 router.get("/customer", async (req, res) => {
+    // #swagger.tags = ['Customer']
     try {
         const id = req.query.id;
         if (!id) throw new Error("No id");
@@ -18,6 +20,7 @@ router.get("/customer", async (req, res) => {
 });
 
 router.post("/customer", async (req, res) => {
+    // #swagger.tags = ['Customer']
     try {
         const customer = req.body;
         if (!customer) throw new Error("No customer");
@@ -34,6 +37,7 @@ router.post("/customer", async (req, res) => {
 });
 
 router.get("/customers", async (req, res) => {
+    // #swagger.tags = ['Customer']
     try {
         const customers = await customerService.getAllCustomers();
 
