@@ -28,7 +28,7 @@ const loginUser = async (username, password) => {
         //sessionSecret.user = test;
         
         return {
-            sessionSecret: test,
+            sessionSecret: sessionSecret.user,
             userId: user.user_id,
             username: user.username
         }
