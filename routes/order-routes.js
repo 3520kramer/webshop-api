@@ -125,7 +125,7 @@ router.get("/orderssearch", async (req, res) => {
     }
 });
 
-// gets all users
+// finds orders related to a user
 router.get("/orders/users", async (req, res) => {
     // #swagger.tags = ['Order']
     try {

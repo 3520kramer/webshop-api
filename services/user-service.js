@@ -1,6 +1,7 @@
 const models = require('../database/connect').models;
 const { Op } = require("sequelize");
 
+// gets a user (including the customer)
 const getUser = async (id) => {
     try {
         const user = await models.users.findOne({
@@ -21,6 +22,7 @@ const getUser = async (id) => {
     }
 }
 
+// creates a user (including customer)
 const createUser = async (newUser) => {
     console.log("createUser input user", newUser);
 

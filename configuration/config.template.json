@@ -4,5 +4,12 @@
         "user": "key here",
         "employee": "key here",
         "admin": "key here"
+    },
+
+    "databaseSecret": {
+        "visitor": {"user": "key here", "password": "key here"},
+        "user": {"user": "key here", "password": "key here"},
+        "employee": {"user": "key here", "password": "key here"},
+        "admin": {"user": "key here", "password": "key here"}
     }
 }

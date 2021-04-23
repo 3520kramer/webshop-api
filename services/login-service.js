@@ -11,7 +11,6 @@ const bcrypt = require('bcrypt');
 // When you are hashing your data the module will go through a series of rounds to give you a secure hash.
 const saltRounds = 12;
 
-
 // works
 const loginUser = async (username, password) => {
     try {
@@ -22,7 +21,12 @@ const loginUser = async (username, password) => {
         const result = await bcrypt.compare(password, user.password);
 
         if (!result) throw new Error("username or password incorrect, try again");
-
+        
+        // TODO: Generate random and hash that bitch
+        //const generateRandomString = (length=36) =>Math.random().toString(20).substr(2, length)
+        //let test = generateRandomString();
+        //sessionSecret.user = test;
+        
         return {
             sessionSecret: sessionSecret.user,
             userId: user.user_id,
