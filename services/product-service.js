@@ -4,6 +4,10 @@ const model = require('../database/connect').models;
 
 // works with transaction 
 const createProduct = async (newProduct) => {
+
+  // TODO: set product.valid_from to date.now
+  newProduct.valid_from = new Date().toISOString();
+
   console.log("createProduct", newProduct);
   try {
     const result = await sequelize.transaction(async (t) => {
@@ -54,6 +58,8 @@ const getAllProducts = async () => {
 const updateProduct = async (productToUpdate) => {
   console.log("updateProduct", productToUpdate);
 
+    // TODO: set product.valid_to to date.now
+    newProduct.valid_to = new Date().toISOString();
   try {
     const result = await sequelize.transaction(async (t) => {
 

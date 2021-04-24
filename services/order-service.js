@@ -3,7 +3,6 @@ const model = require('../database/connect').models;
 const { Op } = require("sequelize");
 
 
-
 // works - user sends to own address
 const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) => {
   console.log("createOrderForUserToOwnAddress", { newOrder, productsList, user_id });
@@ -65,11 +64,16 @@ const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) =
   }
 }
 
+
 // handels creating the order, product. Return order_product
 const createOrderAndProducts = async (productsList, newOrder, t) => {
 
+  // sets order_status to not processed
+  newOrder.order_status = "NOT PROCESSED";
+
   const createdOrder = await model.orders.create(newOrder, { transaction: t });
   if (!createdOrder) throw new Error("Error creating order");
+
   // gets the product_id from productsList
   let productIds = productsList.map(product => { return { product_id: product.product_id } });
 
@@ -99,6 +103,7 @@ const createOrderAndProducts = async (productsList, newOrder, t) => {
   return createdOrderProduct;
 
 }
+
 
 // works - gets the returned order with the product bought and a total 
 const getOrderOverView = async (orderId) => {
@@ -138,7 +143,6 @@ const getOrderOverView = async (orderId) => {
     return { error: error.message };
   }
 }
-
 
 
 // works. 
@@ -241,16 +245,16 @@ const getUsersOrders = async (user_id) => {
 
     if (!results) throw new Error("No results");
 
-      // Because we are calling an async function in a forloop we will only return promiss which we will resolve below
-      const promisesOfOrders = results.map(async result => {
-        let promise = await getOrderOverView(result.orders[0].order_id);
-        return promise;
-      });
-      
-      // Resolve all the promises from the for loop
-      const orders = await Promise.all(promisesOfOrders);
+    // Because we are calling an async function in a forloop we will only return promiss which we will resolve below
+    const promisesOfOrders = results.map(async result => {
+      let promise = await getOrderOverView(result.orders[0].order_id);
+      return promise;
+    });
 
-      if (!orders) throw new Error("Error resolving promises");
+    // Resolve all the promises from the for loop
+    const orders = await Promise.all(promisesOfOrders);
+
+    if (!orders) throw new Error("Error resolving promises");
 
     return orders;
 
@@ -258,6 +262,7 @@ const getUsersOrders = async (user_id) => {
     return { error: error.message };
   }
 }
+
 
 module.exports = {
   createOrderForUserToOwnAddress,
