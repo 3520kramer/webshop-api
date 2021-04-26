@@ -1,6 +1,7 @@
 const config = require("../configuration/config.json");
 const settings = require('../configuration/settings');
 
+// Roles as constants to make sure we dont misspell it
 const role = {
     USER: "user",
     EMPLOYEE: "employee",
