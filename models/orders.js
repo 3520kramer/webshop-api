@@ -19,6 +19,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
+    order_status: {
+      type: DataTypes.ENUM('NOT PROCESSED','PROCESSING','SHIPPED','CANCELLED'),
+      allowNull: false
+    },
     customers_customer_id_billing: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -120,6 +124,20 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "customers_customer_id_billing" },
+        ]
+      },
+      {
+        name: "idx_created",
+        using: "BTREE",
+        fields: [
+          { name: "created" },
+        ]
+      },
+      {
+        name: "idx_shipped",
+        using: "BTREE",
+        fields: [
+          { name: "shipped_date" },
         ]
       },
     ]

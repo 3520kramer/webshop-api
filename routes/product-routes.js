@@ -6,6 +6,15 @@ const productService = require('../services/product-service');
 // create new product
 router.post("/product", async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.description = 'This is the route for creating a new product'
+
+    /* #swagger.parameters['product'] = {
+        in: 'body',
+        required: true,
+        type: 'object',
+        schema: { $ref: "#/definitions/AddProduct" },
+    }   */
+
     console.log("post/product");
     try {
         let product = req.body.product;
@@ -23,11 +32,12 @@ router.post("/product", async (req, res) => {
 });
 
 // get specific product by id
-router.get("/product", async (req, res) => {
+router.get("/product/:product_id", async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.description = 'This is the route for getting a specific product'
     console.log("get/product");
     try {
-        let id = Number.parseInt(req.query.product_id);
+        let id = Number.parseInt(req.params.product_id);
         const product = await productService.getOneProduct(id);
 
         if (!product.error) {
@@ -43,6 +53,7 @@ router.get("/product", async (req, res) => {
 // get all products
 router.get("/products", async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.description = 'This is the route for getting all products'
     console.log("get/products");
     try {
         const products = await productService.getAllProducts();
@@ -62,6 +73,14 @@ router.get("/products", async (req, res) => {
 // update product 
 router.put("/product", async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.description = 'This is the route for updating a product'
+
+    /* #swagger.parameters['updatedProduct'] = {
+    in: 'body',
+    required: true,
+    type: 'object',
+    schema: { $ref: "#/definitions/EditProduct" },
+    }   */
     console.log("put/product");
 
     let product = req.body.product;
@@ -79,11 +98,12 @@ router.put("/product", async (req, res) => {
 });
 
 // delete product
-router.delete("/product", async (req, res) => {
+router.delete("/product/:product_id", async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.description = 'This is the route for deleting a product (if possible, else if in use archives it)'
     console.log("delete/product");
     try {
-        let id = Number.parseInt(req.query.product_id);
+        let id = Number.parseInt(req.params.product_id);
         const deletedProduct = await productService.deleteProduct(id);
 
         if (!deletedProduct.error) {
