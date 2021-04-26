@@ -56,10 +56,9 @@ const getAllProducts = async () => {
 
 // works
 const updateProduct = async (productToUpdate) => {
+  
   console.log("updateProduct", productToUpdate);
 
-    // TODO: set product.valid_to to date.now
-    productToUpdate.valid_to = new Date().toISOString();
   try {
     const result = await sequelize.transaction(async (t) => {
 
@@ -81,6 +80,7 @@ const updateProduct = async (productToUpdate) => {
   } catch (error) {
     return { error: error.message };
   }
+
 
 }
 

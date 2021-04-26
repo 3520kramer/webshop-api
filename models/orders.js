@@ -126,20 +126,6 @@ module.exports = function(sequelize, DataTypes) {
           { name: "customers_customer_id_billing" },
         ]
       },
-      {
-        name: "idx_created",
-        using: "BTREE",
-        fields: [
-          { name: "created" },
-        ]
-      },
-      {
-        name: "idx_shipped",
-        using: "BTREE",
-        fields: [
-          { name: "shipped_date" },
-        ]
-      },
     ]
   });
 };

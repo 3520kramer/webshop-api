@@ -349,7 +349,7 @@
         }
       }
     },
-    "/orders/users/{user_id}": {
+    "/orderoverview/user/{user_id}": {
       "get": {
         "tags": [
           "Order"
@@ -632,30 +632,6 @@
             "schema": {
               "$ref": "#/definitions/AddUser"
             }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/orders/{user_id}": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "description": "This is the route for getting a users orders overview.",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"

@@ -8,7 +8,7 @@ app.use(express.json());
 const http = require('http');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger_output.json');
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
 // Used to be able to establish permission for the user to enter the site and also be able to track them
