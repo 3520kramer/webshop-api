@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "swagger": "node swagger.js"
+    "swagger": "node swagger.js", 
+    "models": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql"
   },
   "author": "",
   "license": "ISC",

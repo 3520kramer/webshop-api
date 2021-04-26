@@ -49,6 +49,13 @@ module.exports = function(sequelize, DataTypes) {
           { name: "username" },
         ]
       },
+      {
+        name: "idx_created",
+        using: "BTREE",
+        fields: [
+          { name: "created_date" },
+        ]
+      },
     ]
   });
 };
