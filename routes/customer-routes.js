@@ -2,10 +2,12 @@ const router = require('express').Router();
 const customerService = require('../services/customer-service');
 
 
-router.get("/customer", async (req, res) => {
+router.get("/customer/:customer_id", async (req, res) => {
     // #swagger.tags = ['Customer']
+    // #swagger.description = 'This is the route for getting a customer'
     try {
-        const id = req.query.id;
+        const id = req.params.customer_id;
+        console.log(id);
         if (!id) throw new Error("No id");
         const customer = await customerService.getCustomer(id);
 
@@ -21,8 +23,17 @@ router.get("/customer", async (req, res) => {
 
 router.post("/customer", async (req, res) => {
     // #swagger.tags = ['Customer']
+    // #swagger.description = 'This is the route for getting creating a customer'
+    
+    /* #swagger.parameters['customer'] = {
+           in: 'body',
+           required: true,
+           type: 'object',
+           schema: { $ref: "#/definitions/AddCustomer" }
+    } */
+
     try {
-        const customer = req.body;
+        const customer = req.body.customer;
         if (!customer) throw new Error("No customer");
         const updatedCustomer = await customerService.createCustomer(customer);
 
@@ -38,6 +49,7 @@ router.post("/customer", async (req, res) => {
 
 router.get("/customers", async (req, res) => {
     // #swagger.tags = ['Customer']
+    // #swagger.description = 'This is the route for getting all customers'
     try {
         const customers = await customerService.getAllCustomers();
 

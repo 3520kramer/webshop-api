@@ -6,15 +6,32 @@ const orderService = require('../services/order-service');
 // create new order for our six scenarios
 router.post("/order", async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.description = 'This is the route for the creating a new order. a bit bugged since i dont know how to work with multiple schemas you have to copy/paste response 200 while being logged in to checkout user buying something. Other than that for some reason the product array only uses the last index'
+
+    /* #swagger.responses[200] = { 
+            schema: { $ref: "#/definitions/OrderTypeOne" },
+            description: 'This is for testing where user sends to own address you need to be logged in as a user for this' 
+    } */
+
+    /* #swagger.parameters['key'] = {
+            in: 'body',
+            required: true,
+            type: 'object',
+            schema: { $ref: "#/definitions/OrderTypeTwo" },
+            description: 'This is for testing where a non user sends to a PO box'
+    }   */
+
+
+
     console.log("post/order");
     try {
 
         let customer = req.body.customer;
         let order = req.body.order;
         let product = req.body.product;
+        let key = Number.parseInt(req.body.shipment_type);
         let userId = Number.parseInt(req.session.userId);
 
-        let key = Number.parseInt(req.query.shipment_type);
 
 
         switch (key) {
@@ -64,11 +81,12 @@ router.post("/order", async (req, res) => {
 
 
 // get specific order by id
-router.get("/order", async (req, res) => {
+router.get("/order/:order_id", async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.description = 'This is the route for getting a specific order.'
     console.log("get/order");
     try {
-        let id = Number.parseInt(req.query.order_id);
+        let id = Number.parseInt(req.params.order_id);
         const order = await orderService.getOneOrder(id);
 
         if (!order.error) {
@@ -84,12 +102,13 @@ router.get("/order", async (req, res) => {
 
 
 // get all orders
-router.get("/orders", async (req, res) => {
+router.get("/orders/:page/:size", async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.description = 'This is the route for getting all orders. can use pagination. use 0 value if wanna use default values of p1/s1000'
     console.log("get/orders");
     try {
-        let page = req.query.page;
-        let size = req.query.size;
+        let page = req.params.page;
+        let size = req.params.size;
         const orders = await orderService.getAllOrders(page, size);
 
         if (!orders.error) {
@@ -105,14 +124,16 @@ router.get("/orders", async (req, res) => {
 
 
 // search by key and value
-router.get("/orderssearch", async (req, res) => {
+router.get("/orders/search/:key/:value/:page", async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.description = 'This is the route for seaching in orders. with pagination. key, value EX. KEY: order_status VALUE: shipped '
     console.log("get/orderssearch");
     try {
-        let id = req.query.id;
-        let page = req.query.page;
-        let search = req.query.search;
-        const ordersSearch = await orderService.ordersSearch(id, page, search);
+        let key = req.params.key;
+        let value = req.params.value;
+        let page = req.params.page;
+
+        const ordersSearch = await orderService.ordersSearch(key, value, page);
 
         if (!ordersSearch.error) {
             res.status(201).send(ordersSearch);
@@ -126,13 +147,14 @@ router.get("/orderssearch", async (req, res) => {
 });
 
 // finds orders related to a user
-router.get("/orders/users", async (req, res) => {
+router.get("/orders/users/:user_id", async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.description = 'This is the route for getting a users order overview.'
     try {
-        const user_id = req.query.user_id;
-        if (!user_id) throw new Error("No user_id");
+        const id = req.params.user_id;
+        if (!id) throw new Error("No id");
 
-        const orders = await orderService.getUsersOrders(user_id);
+        const orders = await orderService.getUsersOrders(id);
 
         if (!orders.error) {
             res.status(200).send(orders);

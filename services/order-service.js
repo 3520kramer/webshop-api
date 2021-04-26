@@ -197,14 +197,14 @@ const getAllOrders = async (page, size) => {
 
 
 // works. basically like orders but with search 
-const ordersSearch = async (id, page, search) => {
-  console.log("ordersSearch", { id, page, search });
+const ordersSearch = async (key, value, page) => {
+  console.log("ordersSearch", { key, value, page });
 
   // makes sure page is a number
   const pageAsNumber = Number.parseInt(page);
 
   // default size 
-  let defaultSize = 1000;
+  let defaultSize = 100;
 
   // initially 0 from the start
   let defaultPage = 0;
@@ -214,7 +214,7 @@ const ordersSearch = async (id, page, search) => {
 
   try {
     const orders = await model.orders.findAndCountAll({
-      where: { [search]: { [Op.like]: `%${id}%` } },
+      where: { [key]: { [Op.like]: `%${value}%` } },
       limit: defaultSize,
       offset: defaultPage * defaultSize
     });
@@ -231,7 +231,7 @@ const ordersSearch = async (id, page, search) => {
   }
 }
 
-
+// gets a overview of a certain users orders 
 const getUsersOrders = async (user_id) => {
   try {
     const results = await model.customers.findAll({
