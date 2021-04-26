@@ -1,4 +1,5 @@
 var DataTypes = require("sequelize").DataTypes;
+var _audit_products = require("./audit_products");
 var _b2b_orders = require("./b2b_orders");
 var _brands = require("./brands");
 var _categories = require("./categories");
@@ -23,6 +24,7 @@ var _users = require("./users");
 var _warehouses = require("./warehouses");
 
 function initModels(sequelize) {
+  var audit_products = _audit_products(sequelize, DataTypes);
   var b2b_orders = _b2b_orders(sequelize, DataTypes);
   var brands = _brands(sequelize, DataTypes);
   var categories = _categories(sequelize, DataTypes);
@@ -120,6 +122,7 @@ function initModels(sequelize) {
   warehouses.hasMany(stocks, { as: "stocks", foreignKey: "warehouses_warehouse_id"});
 
   return {
+    audit_products,
     b2b_orders,
     brands,
     categories,

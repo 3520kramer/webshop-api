@@ -59,7 +59,7 @@ const updateProduct = async (productToUpdate) => {
   console.log("updateProduct", productToUpdate);
 
     // TODO: set product.valid_to to date.now
-    newProduct.valid_to = new Date().toISOString();
+    productToUpdate.valid_to = new Date().toISOString();
   try {
     const result = await sequelize.transaction(async (t) => {
 

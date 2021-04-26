@@ -40,16 +40,17 @@
     "application/json"
   ],
   "paths": {
-    "/customer": {
+    "/customer/{customer_id}": {
       "get": {
         "tags": [
           "Customer"
         ],
-        "description": "",
+        "description": "This is the route for getting a customer",
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -61,13 +62,25 @@
             "description": "Internal Server Error"
           }
         }
-      },
+      }
+    },
+    "/customer": {
       "post": {
         "tags": [
           "Customer"
         ],
-        "description": "",
-        "parameters": [],
+        "description": "This is the route for getting creating a customer",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/AddCustomer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -83,7 +96,7 @@
         "tags": [
           "Customer"
         ],
-        "description": "",
+        "description": "This is the route for getting all customers",
         "parameters": [],
         "responses": {
           "200": {
@@ -100,23 +113,15 @@
         "tags": [
           "Login"
         ],
-        "description": "This is the route for the user login",
+        "description": "This is the route for the user login. this is needed for getting access to certain routes",
         "parameters": [
           {
-            "name": "obj",
+            "name": "login",
             "in": "body",
+            "required": true,
+            "type": "object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "type": "string",
-                  "example": "any"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/LoginUser"
             }
           }
         ],
@@ -135,23 +140,15 @@
         "tags": [
           "Login"
         ],
-        "description": "",
+        "description": "This is the route for the employee login. this is needed for getting access to certain routes",
         "parameters": [
           {
-            "name": "obj",
+            "name": "login",
             "in": "body",
+            "required": true,
+            "type": "object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "example": "any"
-                },
-                "password": {
-                  "type": "string",
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/LoginEmployee"
             }
           }
         ],
@@ -170,8 +167,18 @@
         "tags": [
           "Login"
         ],
-        "description": "",
-        "parameters": [],
+        "description": "This is the route for the creating a new user",
+        "parameters": [
+          {
+            "name": "newUser",
+            "in": "body",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/RegisterUser"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -187,7 +194,7 @@
         "tags": [
           "Login"
         ],
-        "description": "",
+        "description": "This is the route for the user/employee to logout",
         "parameters": [],
         "responses": {
           "200": {
@@ -220,36 +227,26 @@
         "tags": [
           "Order"
         ],
-        "description": "",
+        "description": "This is the route for the creating a new order. a bit bugged since i dont know how to work with multiple schemas you have to copy/paste response 200 while being logged in to checkout user buying something. Other than that for some reason the product array only uses the last index",
         "parameters": [
           {
-            "name": "shipment_type",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "obj",
+            "name": "key",
             "in": "body",
+            "required": true,
+            "type": "object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "customer": {
-                  "type": "string",
-                  "example": "any"
-                },
-                "order": {
-                  "type": "string",
-                  "example": "any"
-                },
-                "product": {
-                  "type": "string",
-                  "example": "any"
-                }
-              }
-            }
+              "$ref": "#/definitions/OrderTypeTwo"
+            },
+            "description": "This is for testing where a non user sends to a PO box"
           }
         ],
         "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/OrderTypeOne"
+            },
+            "description": "This is for testing where user sends to own address you need to be logged in as a user for this"
+          },
           "201": {
             "description": "Created"
           },
@@ -260,16 +257,19 @@
             "description": "Not Implemented"
           }
         }
-      },
+      }
+    },
+    "/order/{order_id}": {
       "get": {
         "tags": [
           "Order"
         ],
-        "description": "",
+        "description": "This is the route for getting a specific order.",
         "parameters": [
           {
             "name": "order_id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -283,21 +283,23 @@
         }
       }
     },
-    "/orders": {
+    "/orders/{page}/{size}": {
       "get": {
         "tags": [
           "Order"
         ],
-        "description": "",
+        "description": "This is the route for getting all orders. can use pagination. use 0 value if wanna use default values of p1/s1000",
         "parameters": [
           {
             "name": "page",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
             "name": "size",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -311,26 +313,29 @@
         }
       }
     },
-    "/orderssearch": {
+    "/orders/search/{key}/{value}/{page}": {
       "get": {
         "tags": [
           "Order"
         ],
-        "description": "",
+        "description": "This is the route for seaching in orders. with pagination. key, value EX. KEY: order_status VALUE: shipped ",
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
             "name": "page",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -344,16 +349,17 @@
         }
       }
     },
-    "/orders/users": {
+    "/orders/users/{user_id}": {
       "get": {
         "tags": [
           "Order"
         ],
-        "description": "",
+        "description": "This is the route for getting a users order overview.",
         "parameters": [
           {
             "name": "user_id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -372,41 +378,16 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "description": "This is the route for creating a new product",
         "parameters": [
           {
-            "name": "obj",
+            "name": "product",
             "in": "body",
+            "required": true,
+            "type": "object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "product": {
-                  "type": "string",
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/AddProduct"
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "Product"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "product_id",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
@@ -422,20 +403,40 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "description": "This is the route for updating a product",
         "parameters": [
           {
-            "name": "obj",
+            "name": "updatedProduct",
             "in": "body",
+            "required": true,
+            "type": "object",
             "schema": {
-              "type": "object",
-              "properties": {
-                "product": {
-                  "type": "string",
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/EditProduct"
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/product/{product_id}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "description": "This is the route for getting a specific product",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
@@ -451,11 +452,12 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "description": "This is the route for deleting a product (if possible, else if in use archives it)",
         "parameters": [
           {
             "name": "product_id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -474,7 +476,7 @@
         "tags": [
           "Product"
         ],
-        "description": "",
+        "description": "This is the route for getting all products",
         "parameters": [],
         "responses": {
           "201": {
@@ -487,15 +489,68 @@
       }
     },
     "/user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "This is the route for getting a crating a user",
+        "parameters": [
+          {
+            "name": "newUser",
+            "in": "body",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/AddUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "This is the route for updating a users infomation",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "type": "object",
+            "schema": {
+              "$ref": "#/definitions/EditUser"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
       "get": {
         "tags": [
           "User"
         ],
-        "description": "",
+        "description": "This is the route for getting a single users information. (has to be logged in as x)",
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
+            "name": "user_id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -511,45 +566,16 @@
           }
         }
       },
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "User"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
       "delete": {
         "tags": [
           "User"
         ],
-        "description": "",
+        "description": "This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product",
         "parameters": [
           {
-            "name": "id",
-            "in": "query",
+            "name": "user_id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -568,7 +594,7 @@
         "tags": [
           "User"
         ],
-        "description": "",
+        "description": "This is the route for getting all users",
         "parameters": [],
         "responses": {
           "200": {
@@ -580,27 +606,32 @@
         }
       }
     },
-    "/users/search": {
+    "/users/search/{property}/{value}": {
       "get": {
         "tags": [
           "User"
         ],
-        "description": "",
+        "description": "This is the route for seaching users",
         "parameters": [
           {
             "name": "property",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           },
           {
             "name": "value",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/AddUser"
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -608,16 +639,17 @@
         }
       }
     },
-    "/users/orders": {
+    "/users/orders/{user_id}": {
       "get": {
         "tags": [
           "User"
         ],
-        "description": "",
+        "description": "This is the route for getting a users orders overview.",
         "parameters": [
           {
             "name": "user_id",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -632,5 +664,526 @@
       }
     }
   },
-  "definitions": {}
+  "definitions": {
+    "AddCustomer": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "type": "string",
+              "example": "David"
+            },
+            "last_name": {
+              "type": "string",
+              "example": "Clements"
+            },
+            "street": {
+              "type": "string",
+              "example": "59161 Chandler Rapids"
+            },
+            "email": {
+              "type": "string",
+              "example": "nguyenpatrick@gmail.com"
+            },
+            "phone": {
+              "type": "string",
+              "example": "84081093"
+            },
+            "cities_postal_code": {
+              "type": "number",
+              "example": 9000
+            },
+            "countries_iso": {
+              "type": "string",
+              "example": "SE"
+            },
+            "users_user_id": {
+              "type": "number",
+              "example": 15
+            },
+            "is_user_profile": {
+              "type": "number",
+              "example": 0
+            }
+          }
+        }
+      }
+    },
+    "AddUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "oliver1"
+            },
+            "password": {
+              "type": "string",
+              "example": "c7230e5e7786d6d996a586b5a3616eec"
+            },
+            "created_date": {
+              "type": "string",
+              "example": "2011-07-29"
+            },
+            "is_archived": {
+              "type": "number",
+              "example": 0
+            },
+            "last_logged_in": {
+              "type": "string",
+              "example": "2006-05-29"
+            },
+            "customers": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "example": "Jennifer"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Chandler"
+                },
+                "street": {
+                  "type": "string",
+                  "example": "8650 Michael Grove"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "gjoseph@gmail.com"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "40949002"
+                },
+                "cities_postal_code": {
+                  "type": "number",
+                  "example": 1000
+                },
+                "countries_iso": {
+                  "type": "string",
+                  "example": "DK"
+                },
+                "users_user_id": {
+                  "type": "number",
+                  "example": 123
+                },
+                "is_user_profile": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "LoginUser": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "oliv3f342"
+            },
+            "password": {
+              "type": "string",
+              "example": "madoli123"
+            }
+          }
+        }
+      }
+    },
+    "LoginEmployee": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "example": "hanne@gmail.com"
+            },
+            "password": {
+              "type": "string",
+              "example": "Hanne"
+            }
+          }
+        }
+      }
+    },
+    "RegisterUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string",
+              "example": "oliv3f342"
+            },
+            "password": {
+              "type": "string",
+              "example": "madoli123"
+            },
+            "created_date": {
+              "type": "string",
+              "example": "2011-07-29"
+            },
+            "is_archived": {
+              "type": "number",
+              "example": 0
+            },
+            "last_logged_in": {
+              "type": "string",
+              "example": "2006-05-29"
+            },
+            "customers": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "example": "Jennifer"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Chandler"
+                },
+                "street": {
+                  "type": "string",
+                  "example": "8650 Michael Grove"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "gjoseph@gmail.com"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "40949002"
+                },
+                "cities_postal_code": {
+                  "type": "number",
+                  "example": 1000
+                },
+                "countries_iso": {
+                  "type": "string",
+                  "example": "DK"
+                },
+                "users_user_id": {
+                  "type": "number",
+                  "example": 123
+                },
+                "is_user_profile": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "EditUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "number",
+              "example": 16
+            },
+            "username": {
+              "type": "string",
+              "example": "sørfeneftfffffaf2ffffftfsffd32s"
+            },
+            "password": {
+              "type": "string",
+              "example": "fjksdjfkljsdaf"
+            },
+            "created_date": {
+              "type": "string",
+              "example": "2021-03-14"
+            },
+            "is_archived": {
+              "type": "number",
+              "example": 0
+            },
+            "last_logged_in": {
+              "type": "string",
+              "example": "2018-11-27"
+            },
+            "customers": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "example": "Alexander"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Jensen"
+                },
+                "street": {
+                  "type": "string",
+                  "example": "6113 Frederick Trail Suite 882"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "patricifa73@ho2fff3ffdtmfffsdfsdilfff.comes2"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "46437375"
+                },
+                "cities_postal_code": {
+                  "type": "number",
+                  "example": 2000
+                },
+                "countries_iso": {
+                  "type": "string",
+                  "example": "DK"
+                },
+                "is_user_profile": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "OrderTypeOne": {
+      "type": "object",
+      "properties": {
+        "shipment_type": {
+          "type": "number",
+          "example": 1
+        },
+        "order": {
+          "type": "object",
+          "properties": {
+            "comment": {
+              "type": "string",
+              "example": "blablabla"
+            },
+            "shippers_shipper_id": {
+              "type": "number",
+              "example": 3
+            },
+            "warehouses_warehouse_id": {
+              "type": "number",
+              "example": 1
+            }
+          }
+        },
+        "product": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "number",
+                "example": 4
+              },
+              "quantity": {
+                "type": "number",
+                "example": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "OrderTypeTwo": {
+      "type": "object",
+      "properties": {
+        "shipment_type": {
+          "type": "number",
+          "example": 2
+        },
+        "customer": {
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "type": "string",
+              "example": "David"
+            },
+            "last_name": {
+              "type": "string",
+              "example": "Clements"
+            },
+            "street": {
+              "type": "string",
+              "example": "59161 Chandler Rapids"
+            },
+            "email": {
+              "type": "string",
+              "example": "nguyenpatrick@gmail.com"
+            },
+            "phone": {
+              "type": "string",
+              "example": "84081093"
+            },
+            "cities_postal_code": {
+              "type": "number",
+              "example": 9000
+            },
+            "countries_iso": {
+              "type": "string",
+              "example": "SE"
+            },
+            "users_user_id": {
+              "type": "number",
+              "example": 15
+            },
+            "is_user_profile": {
+              "type": "number",
+              "example": 0
+            }
+          }
+        },
+        "order": {
+          "type": "object",
+          "properties": {
+            "comment": {
+              "type": "string",
+              "example": "heyheyhey"
+            },
+            "shippers_shipper_id": {
+              "type": "number",
+              "example": 2
+            },
+            "po_boxes_id": {
+              "type": "number",
+              "example": 3
+            },
+            "warehouses_warehouse_id": {
+              "type": "number",
+              "example": 2
+            }
+          }
+        },
+        "product": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "number",
+                "example": 15
+              },
+              "quantity": {
+                "type": "number",
+                "example": 8
+              }
+            }
+          }
+        }
+      }
+    },
+    "AddProduct": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "cool cape"
+            },
+            "price": {
+              "type": "number",
+              "example": 1800
+            },
+            "size": {
+              "type": "string",
+              "example": "l"
+            },
+            "description": {
+              "type": "string",
+              "example": "totally awesome cape"
+            },
+            "is_archived": {
+              "type": "boolean",
+              "example": false
+            },
+            "brands_brand_id": {
+              "type": "number",
+              "example": 2
+            },
+            "colors_color_id": {
+              "type": "number",
+              "example": 2
+            },
+            "manufacturers_manufacturer_id": {
+              "type": "number",
+              "example": 2
+            },
+            "categories_category_id": {
+              "type": "number",
+              "example": 2
+            }
+          }
+        }
+      }
+    },
+    "EditProduct": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "object",
+          "properties": {
+            "product_id": {
+              "type": "number",
+              "example": 26
+            },
+            "name": {
+              "type": "string",
+              "example": "extra cool cape"
+            },
+            "price": {
+              "type": "number",
+              "example": 1111
+            },
+            "size": {
+              "type": "string",
+              "example": "l"
+            },
+            "description": {
+              "type": "string",
+              "example": "todtally mega awesome cape"
+            },
+            "is_archived": {
+              "type": "boolean",
+              "example": false
+            },
+            "brands_brand_id": {
+              "type": "number",
+              "example": 2
+            },
+            "colors_color_id": {
+              "type": "number",
+              "example": 2
+            },
+            "manufacturers_manufacturer_id": {
+              "type": "number",
+              "example": 2
+            },
+            "categories_category_id": {
+              "type": "number",
+              "example": 2
+            }
+          }
+        }
+      }
+    }
+  }
 }

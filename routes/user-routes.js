@@ -3,10 +3,38 @@ const userService = require('../services/user-service');
 const { checkAuth } = require("./route-authorization");
 const { role } = require("./route-authorization");
 
-router.get("/user", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (req, res) => {
+
+router.post("/user", async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for getting a crating a user'
+
+    /* #swagger.parameters['newUser'] = {
+               in: 'body',
+               required: true,
+               type: 'object',
+               schema: { $ref: "#/definitions/AddUser" }
+    } */
+
     try {
-        const id = req.query.id;
+        const newUser = req.body.user;
+
+        const created = await userService.createUser(newUser);
+
+        if (!created.error) {
+            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+        } else {
+            res.status(500).send({ response: created.error });
+        }
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (req, res) => {
+    // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for getting a single users information. (has to be logged in as x)'
+    try {
+        const id = req.params.user_id;
 
         if (!id) throw new Error("No id");
 
@@ -22,63 +50,10 @@ router.get("/user", checkAuth([role.USER, role.EMPLOYEE, role.ADMIN]), async (re
     }
 });
 
-router.post("/user", async (req, res) => {
-    // #swagger.tags = ['User']
-    try {
-        const newUser = req.body;
-
-        const created = await userService.createUser(newUser);
-
-        if (!created.error) {
-            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
-        } else {
-            res.status(500).send({ response: created.error });
-        }
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
-router.put("/user", async (req, res) => {
-    // #swagger.tags = ['User']
-    try {
-        const user = req.body;
-        console.log("user", user);
-
-        const updated = await userService.updateUser(user);
-
-        if (!updated.error) {
-            res.status(200).send(`User with user_id: ${updated.user.user_id} and customer_id: ${updated.customer.customer_id} was updated`);
-        } else {
-            res.status(500).send({ response: updated.error });
-        }
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
-router.delete("/user", async (req, res) => {
-    // #swagger.tags = ['User']
-    try {
-        const id = req.query.id;
-        if (!id) throw new Error("No id");
-
-        const user = await userService.deleteUser(id);
-
-        if (!user.error) {
-            res.status(200).send(`The field 'is_archived' is set to '${user.is_archived}' for user with 'user_id': ${user.user_id}`
-            );
-        } else {
-            res.status(500).send(user.error);
-        }
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
-});
-
-
 router.get("/users", async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for getting all users'
+
     try {
         const user = await userService.getAllUsers();
 
@@ -92,11 +67,17 @@ router.get("/users", async (req, res) => {
     }
 });
 
-router.get("/users/search", async (req, res) => {
+router.get("/users/search/:property/:value", async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for seaching users'
+
+    /* #swagger.responses[200] = {
+        schema: { $ref: "#/definitions/AddUser" }
+    } */
+
     try {
-        const property = req.query.property;
-        const value = req.query.value;
+        const property = req.params.property;
+        const value = req.params.value;
 
         if (!property || !value) throw new Error("Mssing property or value as query parameters");
 
@@ -112,13 +93,14 @@ router.get("/users/search", async (req, res) => {
     }
 });
 
-router.get("/users/orders", async (req, res) => {
+router.get("/users/orders/:user_id", async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for getting a users orders overview.'
     try {
-        const user_id = req.query.user_id;
-        if (!user_id) throw new Error("No user_id");
+        const id = req.params.user_id;
+        if (!id) throw new Error("No user_id");
 
-        const orders = await userService.getUsersOrders(user_id);
+        const orders = await userService.getUsersOrders(id);
 
         if (!orders.error) {
             res.status(200).send(orders);
@@ -127,6 +109,53 @@ router.get("/users/orders", async (req, res) => {
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
+    }
+});
+
+router.put("/user", async (req, res) => {
+    // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for updating a users infomation'
+
+    /* #swagger.parameters['user'] = {
+           in: 'body',
+           required: true,
+           type: 'object',
+           schema: { $ref: "#/definitions/EditUser" }
+    } */
+
+    try {
+        const user = req.body.user;
+        console.log("user", user);
+
+        const updated = await userService.updateUser(user);
+
+        if (!updated.error) {
+            res.status(200).send(`User with user_id: ${updated.user.user_id} and customer_id: ${updated.customer.customer_id} was updated`);
+        } else {
+            res.status(500).send({ response: updated.error });
+        }
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+router.delete("/user/:user_id", async (req, res) => {
+    // #swagger.tags = ['User']
+    // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product'
+    try {
+        const id = req.params.user_id;
+        if (!id) throw new Error("No id");
+
+        const user = await userService.deleteUser(id);
+
+        if (!user.error) {
+            res.status(200).send(`The field 'is_archived' is set to '${user.is_archived}' for user with 'user_id': ${user.user_id}`
+            );
+        } else {
+            res.status(500).send(user.error);
+        }
+    } catch (error) {
+        res.status(500).send(error.message);
     }
 });
 

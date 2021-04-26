@@ -6,10 +6,17 @@ const loginService = require('../services/login-service');
 
 router.post('/login/user', async (req, res) => {
     // #swagger.tags = ['Login'] 
-    // #swagger.description = 'This is the route for the user login'
+    // #swagger.description = 'This is the route for the user login. this is needed for getting access to certain routes'
+
+    /* #swagger.parameters['login'] = {
+        in: 'body',
+        required: true,
+        type: 'object',
+        schema: { $ref: "#/definitions/LoginUser" }
+    } */
 
     try {
-        const { username, password } = req.body;
+        const { username, password } = req.body.login;
 
         if (!username) throw new Error("No username in body");
         if (!password) throw new Error("No password in body");
@@ -32,8 +39,17 @@ router.post('/login/user', async (req, res) => {
 
 router.post('/login/employee', async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes'
+
+    /* #swagger.parameters['login'] = {
+       in: 'body',
+       required: true,
+       type: 'object',
+       schema: { $ref: "#/definitions/LoginEmployee" }
+    } */
+
     try {
-        const { email, password } = req.body;
+        const { email, password } = req.body.login;
 
         if (!email) throw new Error("No email in body");
         if (!password) throw new Error("No password in body");
@@ -57,8 +73,18 @@ router.post('/login/employee', async (req, res) => {
 
 router.post('/register/user', async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.description = 'This is the route for the creating a new user'
+
+    /* #swagger.parameters['newUser'] = {
+        in: 'body',
+        required: true,
+        type: 'object',
+        schema: { $ref: "#/definitions/RegisterUser" }
+    } */
+
+
     try {
-        const newUser = req.body;
+        const newUser = req.body.user;
 
         const created = await loginService.registerUser(newUser);
 
@@ -75,6 +101,7 @@ router.post('/register/user', async (req, res) => {
 
 router.get('/logout', async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.description = 'This is the route for the user/employee to logout'
     try {
         req.session.destroy((error) => {
             if (error) throw new Error(`Error destroying session: ${error}`);
