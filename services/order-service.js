@@ -232,7 +232,7 @@ const ordersSearch = async (key, value, page) => {
 }
 
 // gets a overview of a certain users orders 
-const getUsersOrders = async (user_id) => {
+const getUsersOrders = async (user_id) => {  
   try {
     const results = await model.customers.findAll({
       where: { users_user_id: user_id, is_user_profile: false },

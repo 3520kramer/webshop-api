@@ -105,7 +105,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     categories_category_id_after: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     }
   }, {
     sequelize,

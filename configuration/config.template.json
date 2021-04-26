@@ -3,13 +3,14 @@
         "app": "key here",
         "user": "key here",
         "employee": "key here",
+        "developer": "key here",
         "admin": "key here"
     },
-
     "databaseSecret": {
         "visitor": {"user": "key here", "password": "key here"},
         "user": {"user": "key here", "password": "key here"},
         "employee": {"user": "key here", "password": "key here"},
+        "developer": {"user": "key here", "password": "key here"},
         "admin": {"user": "key here", "password": "key here"}
     }
 }

@@ -1,12 +1,12 @@
 const config = require("../configuration/config.json");
 const settings = require('../configuration/settings');
 
-
 const role = {
-    USER: "user", // read, create, update
-    EMPLOYEE: "employee", // read, create, update
-    ADMIN: "admin", // All
-    VISITOR: "visitor", // read, create user
+    USER: "user",
+    EMPLOYEE: "employee",
+    DEVELOPER: "developer",
+    ADMIN: "admin",
+    VISITOR: "visitor", 
 }
 
 // Function for checking session id on routes request

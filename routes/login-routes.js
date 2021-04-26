@@ -1,5 +1,8 @@
 const router = require('express').Router();
 
+const settings = require('../configuration/settings');
+const config = require('../configuration/config.json').databaseSecret;
+
 // gets calls from service/controller layer
 const loginService = require('../services/login-service');
 
@@ -105,7 +108,10 @@ router.get('/logout', async (req, res) => {
     try {
         req.session.destroy((error) => {
             if (error) throw new Error(`Error destroying session: ${error}`);
-
+            
+            settings.USER = config.visitor.user;
+            settings.PASSWORD = config.visitor.password;
+            
             res.status(200).send({ response: "logout" })
         });
     } catch (error) {

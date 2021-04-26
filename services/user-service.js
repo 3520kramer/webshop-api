@@ -114,7 +114,7 @@ const deleteUser = async (id) => {
 
 const getAllUsers = async () => {
     try {
-        let users = await models.users.findAll();
+        let users = await models.users.findAll({limit: 1000});
 
         console.log("getAllUsers", users);
 

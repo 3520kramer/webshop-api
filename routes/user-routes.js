@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const userService = require('../services/user-service');
-const { checkAuth } = require("./route-authorization");
-const { role } = require("./route-authorization");
-
+const { checkAuth, role } = require("./route-authorization");
 
 router.post("/user", async (req, res) => {
     // #swagger.tags = ['User']
@@ -87,25 +85,6 @@ router.get("/users/search/:property/:value", async (req, res) => {
             res.status(200).send(users);
         } else {
             res.status(500).send({ response: created.error });
-        }
-    } catch (error) {
-        res.status(500).send({ error: error.message });
-    }
-});
-
-router.get("/users/orders/:user_id", async (req, res) => {
-    // #swagger.tags = ['User']
-    // #swagger.description = 'This is the route for getting a users orders overview.'
-    try {
-        const id = req.params.user_id;
-        if (!id) throw new Error("No user_id");
-
-        const orders = await userService.getUsersOrders(id);
-
-        if (!orders.error) {
-            res.status(200).send(orders);
-        } else {
-            res.status(500).send({ response: orders.error });
         }
     } catch (error) {
         res.status(500).send({ error: error.message });

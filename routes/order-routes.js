@@ -147,7 +147,7 @@ router.get("/orders/search/:key/:value/:page", async (req, res) => {
 });
 
 // finds orders related to a user
-router.get("/orders/users/:user_id", async (req, res) => {
+router.get("/orderoverview/user/:user_id", async (req, res) => {
     // #swagger.tags = ['Order']
     // #swagger.description = 'This is the route for getting a users order overview.'
     try {
