@@ -9,7 +9,7 @@ const { checkAuth, role } = require("../database/authorization");
 // create new order for our six scenarios
 router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => {
     // #swagger.tags = ['Order']
-    // #swagger.summary = 'Roles required: Visitor, User'
+    // #swagger.summary = 'Roles required: Visitor or User'
     // #swagger.description = 'This is the route for the creating a new order. a bit bugged since i dont know how to work with multiple schemas you have to copy/paste response 200 while being logged in to checkout user buying something. Other than that for some reason the product array only uses the last index'
 
     /* #swagger.responses[200] = { 
