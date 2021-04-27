@@ -23,7 +23,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(45),
       allowNull: true
     },
+    name_after: {
+      type: DataTypes.STRING(45),
+      allowNull: true
+    },
     price_before: {
+      type: DataTypes.FLOAT(6,2),
+      allowNull: true
+    },
+    price_after: {
       type: DataTypes.FLOAT(6,2),
       allowNull: true
     },
@@ -31,7 +39,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.ENUM('XS','S','M','L','XL'),
       allowNull: true
     },
+    size_after: {
+      type: DataTypes.ENUM('XS','S','M','L','XL'),
+      allowNull: true
+    },
     description_before: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    description_after: {
       type: DataTypes.STRING(500),
       allowNull: true
     },
@@ -39,11 +55,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TINYINT,
       allowNull: true
     },
-    valid_from_before: {
+    is_archived_after: {
+      type: DataTypes.TINYINT,
+      allowNull: true
+    },
+    timestamp_before: {
       type: DataTypes.DATE,
       allowNull: true
     },
-    valid_to_before: {
+    timestamp_after: {
       type: DataTypes.DATE,
       allowNull: true
     },
@@ -51,47 +71,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    colors_color_id_before: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    manufacturers_manufacturer_id_before: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    categories_category_id_before: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    name_after: {
-      type: DataTypes.STRING(45),
-      allowNull: true
-    },
-    price_after: {
-      type: DataTypes.FLOAT(6,2),
-      allowNull: true
-    },
-    size_after: {
-      type: DataTypes.ENUM('XS','S','M','L','XL'),
-      allowNull: true
-    },
-    description_after: {
-      type: DataTypes.STRING(500),
-      allowNull: true
-    },
-    is_archived_after: {
-      type: DataTypes.TINYINT,
-      allowNull: true
-    },
-    valid_from_after: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    valid_to_after: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
     brands_brand_id_after: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    colors_color_id_before: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
@@ -99,13 +83,21 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true
     },
+    manufacturers_manufacturer_id_before: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     manufacturers_manufacturer_id_after: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    categories_category_id_before: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
     categories_category_id_after: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,

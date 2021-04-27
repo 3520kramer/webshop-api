@@ -2,7 +2,7 @@ const router = require('express').Router();
 const customerService = require('../services/customer-service');
 const { checkAuth, role } = require("../database/authorization");
 
-router.get("/customer/:customer_id", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
     // #swagger.description = 'This is the route for getting a customer \n hej hej'
     try {

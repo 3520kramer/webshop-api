@@ -21,7 +21,7 @@ const loginUser = async (username, password) => {
         const result = await bcrypt.compare(password, user.password);
 
         if (!result) throw new Error("username or password incorrect, try again");
-        
+
         // TODO: Generate random and hash that bitch
         //const generateRandomString = (length=36) =>Math.random().toString(20).substr(2, length)
         //let test = generateRandomString();
@@ -72,13 +72,13 @@ const loginEmployee = async (email, password) => {
 };
 
 const registerUser = async (newUser) => {
+    console.log("registerUser", newUser);
     try {
         let hashedPassword = await bcrypt.hash(newUser.password, saltRounds);
 
         newUser.password = hashedPassword
 
         const createdUser = await userService.createUser(newUser);
-
         return createdUser;
 
     } catch (error) {

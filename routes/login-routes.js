@@ -100,12 +100,11 @@ router.post('/register/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE,
         schema: { $ref: "#/definitions/RegisterUser" }
     } */
 
-
+    console.log("register/user");
     try {
         const newUser = req.body.user;
 
         const created = await loginService.registerUser(newUser);
-
         if (!created.error) {
             res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
         } else {

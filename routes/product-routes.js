@@ -6,8 +6,6 @@ const productService = require('../services/product-service');
 // for auth
 const { checkAuth, role } = require("../database/authorization");
 
-
-
 // create new product
 router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
