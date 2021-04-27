@@ -24,7 +24,7 @@ const getUser = async (id) => {
 
 // creates a user (including customer)
 const createUser = async (newUser) => {
-    console.log("createUser input user", newUser);
+    console.log("createUser", newUser);
 
     try {
         if (!newUser.customers) throw new Error("The property 'customers' is required for creating a user");
@@ -38,7 +38,6 @@ const createUser = async (newUser) => {
         });
 
         if (!createdUser) throw new Error("Error creating user");
-
         return { user: createdUser.dataValues, customer: createdUser.customers[0].dataValues };
 
     } catch (error) {
@@ -114,7 +113,7 @@ const deleteUser = async (id) => {
 
 const getAllUsers = async () => {
     try {
-        let users = await models.users.findAll({limit: 1000});
+        let users = await models.users.findAll({ limit: 1000 });
 
         console.log("getAllUsers", users);
 
