@@ -87,14 +87,14 @@ const doc = {
 
         LoginUser: {
             login: {
-                "username": "oliv3f342",
-                "password": "madoli123"
+                "username": "user1",
+                "password": "user1kode"
             }
         },
         LoginEmployee: {
             login: {
-                "email": "hanne@gmail.com",
-                "password": "Hanne"
+                "email": "admin@gmail.com",
+                "password": "adminkode"
             }
         },
         RegisterUser: {

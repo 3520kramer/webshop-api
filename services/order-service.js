@@ -1,5 +1,5 @@
 const sequelize = require('../database/connect').database;
-const model = require('../database/connect').models;
+const getModels = require('../database/connect').getModels;
 const { Op } = require("sequelize");
 
 
@@ -10,7 +10,7 @@ const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) =
   try {
     const result = await sequelize.transaction(async (t) => {
 
-      const customer = await model.customers.findOne({ where: { users_user_id: user_id, is_user_profile: true } });
+      const customer = await getModels().customers.findOne({ where: { users_user_id: user_id, is_user_profile: true } });
       if (!customer) throw new Error("Error finding user");
       let newCustomer = customer.dataValues;
 
@@ -18,7 +18,7 @@ const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) =
       newCustomer.customer_id = null;
       newCustomer.is_user_profile = false;
 
-      const createdCustomer = await model.customers.create(newCustomer, { transaction: t });
+      const createdCustomer = await getModels().customers.create(newCustomer, { transaction: t });
       if (!createdCustomer) throw new Error("Error creating customer");
 
       // sets the newly created customer id to the orders customer billing id and delivery 
@@ -46,7 +46,7 @@ const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) =
 
   try {
     const result = await sequelize.transaction(async (t) => {
-      const createdCustomer = await model.customers.create(newCustomer, { transaction: t });
+      const createdCustomer = await getModels().customers.create(newCustomer, { transaction: t });
       if (!createdCustomer) throw new Error("Error creating customer");
 
       newOrder.customers_customer_id_billing = createdCustomer.customer_id;
@@ -71,14 +71,14 @@ const createOrderAndProducts = async (productsList, newOrder, t) => {
   // sets order_status to not processed
   newOrder.order_status = "NOT PROCESSED";
 
-  const createdOrder = await model.orders.create(newOrder, { transaction: t });
+  const createdOrder = await getModels().orders.create(newOrder, { transaction: t });
   if (!createdOrder) throw new Error("Error creating order");
 
   // gets the product_id from productsList
   let productIds = productsList.map(product => { return { product_id: product.product_id } });
 
   // find price on product. gets id from productList
-  const productPrice = await model.products.findAll({
+  const productPrice = await getModels().products.findAll({
     where: { [Op.or]: productIds },
     attributes: ["price", "product_id"]
   },
@@ -97,7 +97,7 @@ const createOrderAndProducts = async (productsList, newOrder, t) => {
   });
 
   // adds a orderProduct object to the order_product table for each orderProducts added
-  const createdOrderProduct = await model.order_product.bulkCreate(orderProducts, { transaction: t });
+  const createdOrderProduct = await getModels().order_product.bulkCreate(orderProducts, { transaction: t });
   if (!createdOrderProduct) throw new Error("Error creating order product");
 
   return createdOrderProduct;
@@ -109,25 +109,25 @@ const createOrderAndProducts = async (productsList, newOrder, t) => {
 const getOrderOverView = async (orderId) => {
   console.log("orderId", orderId);
   try {
-    const orderOverView = await model.orders.findAll({
+    const orderOverView = await getModels().orders.findAll({
       where: { order_id: orderId },
       required: true,
       include: [{
-        model: model.customers,
+        model: getModels().customers,
         as: "customers_customer_id_billing_customer",
         required: true
       },
       {
-        model: model.shippers,
+        model: getModels().shippers,
         as: "shippers_shipper",
         required: true
       },
       {
-        model: model.order_product,
+        model: getModels().order_product,
         as: "order_products",
         required: true,
         include: [{
-          model: model.products,
+          model: getModels().products,
           as: "products_product",
           required: true,
         }]
@@ -150,7 +150,7 @@ const getOrderOverView = async (orderId) => {
 const getOneOrder = async (orderId) => {
   console.log("getOneOrder", orderId);
   try {
-    const order = await model.orders.findOne({ where: { order_id: orderId } });
+    const order = await getModels().orders.findOne({ where: { order_id: orderId } });
     return order;
   } catch (error) {
     return { error: error.message };
@@ -179,7 +179,7 @@ const getAllOrders = async (page, size) => {
   }
 
   try {
-    const orders = await model.orders.findAndCountAll({
+    const orders = await getModels().orders.findAndCountAll({
       limit: defaultSize,
       offset: defaultPage * defaultSize
     });
@@ -214,7 +214,7 @@ const ordersSearch = async (key, value, page) => {
   }
 
   try {
-    const orders = await model.orders.findAndCountAll({
+    const orders = await getModels().orders.findAndCountAll({
       where: { [key]: { [Op.like]: `%${value}%` } },
       limit: defaultSize,
       offset: defaultPage * defaultSize
@@ -235,10 +235,10 @@ const ordersSearch = async (key, value, page) => {
 // gets a overview of a certain users orders 
 const getUsersOrders = async (user_id) => {  
   try {
-    const results = await model.customers.findAll({
+    const results = await getModels().customers.findAll({
       where: { users_user_id: user_id, is_user_profile: false },
       include: [{
-        model: model.orders,
+        model: getModels().orders,
         as: "orders", // refers to the customer_id --> customers_customer_id_billing relation between customer and order table
         required: true,
       }]

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const userService = require('../services/user-service');
 
 // for auth
-const { checkAuth, role } = require("./route-authorization");
+const { checkAuth, role } = require("../database/authorization");
 
 // used for creating a user. also used in login service for creating a user/customer
 router.post("/user", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {

@@ -6,6 +6,7 @@
         "developer": "key here",
         "admin": "key here"
     },
+    "databaseName": "name",
     "databaseSecret": {
         "visitor": {"user": "key here", "password": "key here"},
         "user": {"user": "key here", "password": "key here"},

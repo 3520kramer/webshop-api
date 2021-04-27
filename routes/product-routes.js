@@ -4,7 +4,7 @@ const router = require('express').Router();
 const productService = require('../services/product-service');
 
 // for auth
-const { checkAuth, role } = require("./route-authorization");
+const { checkAuth, role } = require("../database/authorization");
 
 
 

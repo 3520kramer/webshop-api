@@ -1,5 +1,5 @@
-const models = require('../database/connect').models;
-const { role } = require('../routes/route-authorization');
+const getModels = require('../database/connect').getModels;
+const { role } = require('../database/authorization');
 const userService = require('./user-service');
 
 // Connects to the session secret  
@@ -14,7 +14,7 @@ const saltRounds = 12;
 // works
 const loginUser = async (username, password) => {
     try {
-        const user = await models.users.findOne({ where: { username: username } });
+        const user = await getModels().users.findOne({ where: { username: username } });
 
         if (!user) throw new Error("Something went wrong when getting information from database");
 
@@ -26,7 +26,7 @@ const loginUser = async (username, password) => {
         //const generateRandomString = (length=36) =>Math.random().toString(20).substr(2, length)
         //let test = generateRandomString();
         //sessionSecret.user = test;
-        
+
         return {
             sessionSecret: sessionSecret.user,
             userId: user.user_id,
@@ -39,7 +39,8 @@ const loginUser = async (username, password) => {
 
 const loginEmployee = async (email, password) => {
     try {
-        const employee = await models.employees.findOne({ where: { email: email } });
+
+        const employee = await getModels().employees.findOne({ where: { email: email } });
 
         if (!employee) throw new Error("Something went wrong when getting information from database");
 
@@ -48,7 +49,7 @@ const loginEmployee = async (email, password) => {
         if (!result) throw new Error("email or password incorrect, try again");
 
         let _sessionSecret;
-        
+
         if (employee.job_title.toLowerCase() === role.ADMIN) {
             _sessionSecret = sessionSecret.admin;
         } 
