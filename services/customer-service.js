@@ -1,19 +1,7 @@
 const getModels = require('../database/connect').getModels;
 
-const getCustomer = async (id) => {
-    try {
-        const customer = await getModels().customers.findOne({ where: { customer_id: id } })
 
-        console.log("getCustomer", customer);
 
-        if (!customer) throw new Error("No customer");
-
-        return customer;
-
-    } catch (error) {
-        return { error: error.message };
-    }
-}
 
 const createCustomer = async (newCustomer) => {
     console.log("createCustomer input", newCustomer);
@@ -35,14 +23,28 @@ const createCustomer = async (newCustomer) => {
     }
 }
 
-// no update service on customer as it will get updated through user service
 
-// no delete service on customer as we will never delete a customer from the backend
+// get one specific customer
+const getCustomer = async (id) => {
+    try {
+        const customer = await getModels().customers.findOne({ where: { customer_id: id } })
+
+        console.log("getCustomer", customer);
+
+        if (!customer) throw new Error("No customer");
+
+        return customer;
+
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
 
 // Gets all customers
 const getAllCustomers = async () => {
     try {
-        let customers = await getModels().customers.findAll();
+        let customers = await getModels().customers.findAll({ limit: 1000 });
 
         console.log("getCustomers", customers);
 
@@ -53,6 +55,9 @@ const getAllCustomers = async () => {
         return { error: error.message };
     }
 }
+
+// no update service on customer as it will get updated through user service
+// no delete service on customer as we will never delete a customer from the backend
 
 module.exports = {
     getCustomer,
