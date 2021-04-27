@@ -32,7 +32,7 @@ const checkAuth = (roles) => {
       if (req.session.sessionSecret === config.sessionSecret[role]) {
         console.log("active role secret:", config.sessionSecret[role]);
 
-        // Setting the database connection settings to the ones matching the role
+        // Update the db connection
         updateSequelizeConnection(role);
         
         hasRoleMatch = true;
