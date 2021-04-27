@@ -1,7 +1,6 @@
 const router = require('express').Router();
 
 // used for setting the session values as priviliges and user id 
-const settings = require('../configuration/settings');
 const config = require('../configuration/config.json').databaseSecret;
 
 // gets calls from service/controller layer
@@ -118,15 +117,12 @@ router.post('/register/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE,
 });
 
 
-router.get('/logout', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.get('/logout', checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
     // #swagger.description = 'This is the route for the user/employee to logout'
     try {
         req.session.destroy((error) => {
             if (error) throw new Error(`Error destroying session: ${error}`);
-
-            settings.USER = config.visitor.user;
-            settings.PASSWORD = config.visitor.password;
 
             res.status(200).send({ response: "logout" })
         });

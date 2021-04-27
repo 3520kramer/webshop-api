@@ -45,7 +45,7 @@
         "tags": [
           "Customer"
         ],
-        "description": "This is the route for getting a customer",
+        "description": "This is the route for getting a customer \\n hej hej",
         "parameters": [
           {
             "name": "customer_id",
