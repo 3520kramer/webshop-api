@@ -1,4 +1,4 @@
-const sequelize = require('../database/connect').database;
+const getDatabase = require('../database/connect').getDatabase;
 const getModels = require('../database/connect').getModels;
 const { Op } = require("sequelize");
 
@@ -8,7 +8,7 @@ const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) =
   console.log("createOrderForUserToOwnAddress", { newOrder, productsList, user_id });
 
   try {
-    const result = await sequelize.transaction(async (t) => {
+    const result = await getDatabase().transaction(async (t) => {
 
       const customer = await getModels().customers.findOne({ where: { users_user_id: user_id, is_user_profile: true } });
       if (!customer) throw new Error("Error finding user");
@@ -45,7 +45,7 @@ const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) =
   console.log("createOrderForCustomerToPO", { newOrder, productsList, newCustomer });
 
   try {
-    const result = await sequelize.transaction(async (t) => {
+    const result = await getDatabase().transaction(async (t) => {
       const createdCustomer = await getModels().customers.create(newCustomer, { transaction: t });
       if (!createdCustomer) throw new Error("Error creating customer");
 
@@ -57,6 +57,7 @@ const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) =
     });
 
     const orderOverView = await getOrderOverView(result[0].orders_order_id);
+    console.log("orderOverView", orderOverView);
     return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
 
   } catch (error) {
@@ -185,9 +186,10 @@ const getAllOrders = async (page, size) => {
     });
 
     return {
-      total: orders.count,
+      onPage: defaultPage,
       // rounds off the total of pages 
       totalPages: Math.ceil(orders.count / defaultSize),
+      totalEntries: orders.count,
       content: orders.rows
     };
 
@@ -219,12 +221,13 @@ const ordersSearch = async (key, value, page) => {
       limit: defaultSize,
       offset: defaultPage * defaultSize
     });
-
+    console.log("orders", orders);
     return {
-      total: orders.count,
+      onPage: defaultPage,
       // rounds off the total of pages 
       totalPages: Math.ceil(orders.count / defaultSize),
-      content: orders.rows,
+      totalEntries: orders.count,
+      content: orders.rows
     };
 
   } catch (error) {

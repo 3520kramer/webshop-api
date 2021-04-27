@@ -48,6 +48,7 @@ router.post("/order", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DE
                 break;
             case 2:
                 const orderCustomer = await orderService.createOrderForCustomerToPO(order, product, customer);
+                console.log("orderCustomer", orderCustomer);
                 if (!orderCustomer.error) {
                     res.status(201).send(orderCustomer);
                 } else {
@@ -126,10 +127,10 @@ router.get("/orders/:page/:size", checkAuth([role.EMPLOYEE, role.DEVELOPER, role
 // search by key and value
 router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
-    // #swagger.description = 'This is the route for seaching in orders. with pagination. key, value EX. KEY: order_status VALUE: shipped '
+    // #swagger.description = 'This is the route for seaching in orders. with pagination. key, value EX. KEY: "order_status" VALUE: "shipped" '
     console.log("get/orderssearch");
     try {
-        let key = req.params.key;
+        let key = req.params.key.trim();
         let value = req.params.value;
         let page = req.params.page;
 
@@ -146,8 +147,8 @@ router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DE
     }
 });
 
-// finds orders related to a user. Right now only a user should work with this route. if time, make it 
-router.get("/orderoverview/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+// finds orders related to a user. Right now only a user login works with this route. 
+router.get("/orderoverview/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
     // #swagger.description = 'This is the route for getting a users order overview.'
     try {

@@ -21,7 +21,7 @@ router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.D
     }
 });
 
-router.post("/customer", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post("/customer", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
     // #swagger.description = 'This is the route for getting creating a customer'
 

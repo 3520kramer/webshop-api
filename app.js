@@ -16,7 +16,7 @@ const session = require("express-session");
 const config = require("./configuration/config.json");
 
 app.use(session({
-    secret: config.sessionSecret.visitor,
+    secret: config.secretID,
     resave: false,
     saveUninitialized: true,
 }));

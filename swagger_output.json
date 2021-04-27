@@ -348,7 +348,7 @@
         "tags": [
           "Order"
         ],
-        "description": "This is the route for seaching in orders. with pagination. key, value EX. KEY: order_status VALUE: shipped ",
+        "description": "This is the route for seaching in orders. with pagination. key, value EX. KEY: \"order_status\" VALUE: \"shipped\" ",
         "parameters": [
           {
             "name": "key",
@@ -382,20 +382,13 @@
         }
       }
     },
-    "/orderoverview/user/{user_id}": {
+    "/orderoverview/user": {
       "get": {
         "tags": [
           "Order"
         ],
         "description": "This is the route for getting a users order overview.",
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
