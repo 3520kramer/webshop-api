@@ -105,7 +105,7 @@
           "Customer"
         ],
         "summary": "Roles required: Employee, Developer or Admin",
-        "description": "This is the route for getting all customers",
+        "description": "This is the route for getting all customers. Limited to 1000 results for performance reasons",
         "parameters": [],
         "responses": {
           "200": {
@@ -126,7 +126,7 @@
           "Login"
         ],
         "summary": "Roles required: Visitor, Employee, Developer or Admin",
-        "description": "This is the route for the user login. this is needed for getting access to certain routes",
+        "description": "This is the route for the user login. This is needed for getting access to certain routes. <br><br> <b>Example login:</b> <br>username: user1<br>password: user1kode",
         "parameters": [
           {
             "name": "login",
@@ -157,7 +157,7 @@
           "Login"
         ],
         "summary": "Roles required: Visitor, Employee, Developer or Admin",
-        "description": "This is the route for the employee login. this is needed for getting access to certain routes",
+        "description": "This is the route for the employee login. this is needed for getting access to certain routes.<br><br><b>Example admin login:</b> <br>username: admin@gmail.com<br>password: adminkode<br><br> <b>Example developer login:</b> <br>username: mads@gmail.com<br>password: madskode <br><br> <b>Example employee login:</b> <br>username: employee@gmail.com<br>password: employeekode",
         "parameters": [
           {
             "name": "login",
@@ -255,7 +255,7 @@
         "tags": [
           "Order"
         ],
-        "summary": "Roles required: Visitor, User",
+        "summary": "Roles required: Visitor or User",
         "description": "This is the route for the creating a new order. a bit bugged since i dont know how to work with multiple schemas you have to copy/paste response 200 while being logged in to checkout user buying something. Other than that for some reason the product array only uses the last index",
         "parameters": [
           {
@@ -562,7 +562,7 @@
           "User"
         ],
         "summary": "Roles required: Employee, Developer or Admin",
-        "description": "This is the route for getting a crating a user",
+        "description": "This is the route for getting a creating a user",
         "parameters": [
           {
             "name": "newUser",
@@ -676,7 +676,7 @@
           "User"
         ],
         "summary": "Roles required: Employee, Developer or Admin",
-        "description": "This is the route for getting all users",
+        "description": "This is the route for getting all users. Limited to 1000 results for performance reasons",
         "parameters": [],
         "responses": {
           "200": {
