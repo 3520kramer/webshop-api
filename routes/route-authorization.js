@@ -3,10 +3,10 @@ const settings = require('../configuration/settings');
 
 // Roles as constants to make sure we dont misspell it
 const role = {
-    USER: "user",
-    EMPLOYEE: "employee",
-    DEVELOPER: "developer",
     ADMIN: "admin",
+    DEVELOPER: "developer",
+    EMPLOYEE: "employee",
+    USER: "user",
     VISITOR: "visitor", 
 }
 

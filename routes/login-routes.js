@@ -1,13 +1,17 @@
 const router = require('express').Router();
 
+// used for setting the session values as priviliges and user id 
 const settings = require('../configuration/settings');
 const config = require('../configuration/config.json').databaseSecret;
 
 // gets calls from service/controller layer
 const loginService = require('../services/login-service');
 
+// for auth
+const { checkAuth, role } = require("./route-authorization");
 
-router.post('/login/user', async (req, res) => {
+
+router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
     // #swagger.description = 'This is the route for the user login. this is needed for getting access to certain routes'
 
@@ -40,7 +44,7 @@ router.post('/login/user', async (req, res) => {
     }
 });
 
-router.post('/login/employee', async (req, res) => {
+router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
     // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes'
 
@@ -74,7 +78,7 @@ router.post('/login/employee', async (req, res) => {
 });
 
 
-router.post('/register/user', async (req, res) => {
+router.post('/register/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
     // #swagger.description = 'This is the route for the creating a new user'
 
@@ -102,16 +106,16 @@ router.post('/register/user', async (req, res) => {
 });
 
 
-router.get('/logout', async (req, res) => {
+router.get('/logout', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
     // #swagger.description = 'This is the route for the user/employee to logout'
     try {
         req.session.destroy((error) => {
             if (error) throw new Error(`Error destroying session: ${error}`);
-            
+
             settings.USER = config.visitor.user;
             settings.PASSWORD = config.visitor.password;
-            
+
             res.status(200).send({ response: "logout" })
         });
     } catch (error) {

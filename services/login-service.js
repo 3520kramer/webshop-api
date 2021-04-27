@@ -47,8 +47,18 @@ const loginEmployee = async (email, password) => {
 
         if (!result) throw new Error("email or password incorrect, try again");
 
-        let _sessionSecret = employee.job_title.toLowerCase() === role.ADMIN ? sessionSecret.admin : sessionSecret.employee
-
+        let _sessionSecret;
+        
+        if (employee.job_title.toLowerCase() === role.ADMIN) {
+            _sessionSecret = sessionSecret.admin;
+        } 
+        else if (employee.job_title.toLowerCase() === role.DEVELOPER) {
+            _sessionSecret = sessionSecret.developer;
+        }
+        else {
+            _sessionSecret = sessionSecret.employee;
+        }
+        
         return {
             sessionSecret: _sessionSecret,
             employeeId: employee.employeeId,

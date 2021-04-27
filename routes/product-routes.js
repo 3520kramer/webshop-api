@@ -3,8 +3,13 @@ const router = require('express').Router();
 // gets calls from service/controller layer
 const productService = require('../services/product-service');
 
+// for auth
+const { checkAuth, role } = require("./route-authorization");
+
+
+
 // create new product
-router.post("/product", async (req, res) => {
+router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.description = 'This is the route for creating a new product'
 
@@ -32,7 +37,7 @@ router.post("/product", async (req, res) => {
 });
 
 // get specific product by id
-router.get("/product/:product_id", async (req, res) => {
+router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.description = 'This is the route for getting a specific product'
     console.log("get/product");
@@ -51,7 +56,7 @@ router.get("/product/:product_id", async (req, res) => {
 });
 
 // get all products
-router.get("/products", async (req, res) => {
+router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.description = 'This is the route for getting all products'
     console.log("get/products");
@@ -71,7 +76,7 @@ router.get("/products", async (req, res) => {
 });
 
 // update product 
-router.put("/product", async (req, res) => {
+router.put("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.description = 'This is the route for updating a product'
 
@@ -98,7 +103,7 @@ router.put("/product", async (req, res) => {
 });
 
 // delete product
-router.delete("/product/:product_id", async (req, res) => {
+router.delete("/product/:product_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.description = 'This is the route for deleting a product (if possible, else if in use archives it)'
     console.log("delete/product");

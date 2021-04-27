@@ -2,7 +2,7 @@ const router = require('express').Router();
 const customerService = require('../services/customer-service');
 const { checkAuth, role } = require("./route-authorization");
 
-router.get("/customer/:customer_id", checkAuth([role.USER, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
     // #swagger.description = 'This is the route for getting a customer'
     try {
@@ -21,10 +21,10 @@ router.get("/customer/:customer_id", checkAuth([role.USER, role.DEVELOPER, role.
     }
 });
 
-router.post("/customer", async (req, res) => {
+router.post("/customer", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
     // #swagger.description = 'This is the route for getting creating a customer'
-    
+
     /* #swagger.parameters['customer'] = {
            in: 'body',
            required: true,
@@ -47,7 +47,7 @@ router.post("/customer", async (req, res) => {
     }
 });
 
-router.get("/customers", async (req, res) => {
+router.get("/customers", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
     // #swagger.description = 'This is the route for getting all customers'
     try {
