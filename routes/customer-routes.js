@@ -4,7 +4,7 @@ const { checkAuth, role } = require("../database/authorization");
 
 router.get("/customer/:customer_id", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
-    // #swagger.description = 'This is the route for getting a customer'
+    // #swagger.description = 'This is the route for getting a customer \n hej hej'
     try {
         const id = req.params.customer_id;
         console.log(id);

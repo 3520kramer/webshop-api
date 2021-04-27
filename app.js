@@ -30,7 +30,6 @@ const orderRoutes = require('./routes/order-routes');
 const loginRoutes = require('./routes/login-routes');
 const settings = require("./configuration/settings");
 
-
 // use routes 
 app.use(userRoutes);
 app.use(customerRoutes);
