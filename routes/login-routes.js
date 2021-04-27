@@ -8,8 +8,7 @@ const config = require('../configuration/config.json').databaseSecret;
 const loginService = require('../services/login-service');
 
 // for auth
-const { checkAuth, role } = require("./route-authorization");
-
+const { checkAuth, role } = require("../database/authorization");
 
 router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
@@ -21,7 +20,6 @@ router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, ro
         type: 'object',
         schema: { $ref: "#/definitions/LoginUser" }
     } */
-
     try {
         const { username, password } = req.body.login;
 
@@ -29,11 +27,17 @@ router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, ro
         if (!password) throw new Error("No password in body");
 
         const result = await loginService.loginUser(username, password);
-
+        
         if (!result.error) {
+            console.log("result.sessionSecret", result.sessionSecret);
+            console.log("req.session.sessionSecret", req.session.sessionSecret);
+
             req.session.sessionSecret = result.sessionSecret;
             req.session.userId = result.userId;
             req.session.username = result.username;
+
+            console.log("req.session.sessionSecret", req.session.sessionSecret);
+
 
             res.status(200).send({ response: req.session.username + " - logged in" });
         } else {
@@ -54,6 +58,8 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
        type: 'object',
        schema: { $ref: "#/definitions/LoginEmployee" }
     } */
+    console.log("/employeelogin");
+
 
     try {
         const { email, password } = req.body.login;
@@ -64,9 +70,15 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
         const result = await loginService.loginEmployee(email, password);
 
         if (!result.error) {
+            console.log("result.sessionSecret", result.sessionSecret);
+            console.log("req.session.sessionSecret1", req.session.sessionSecret);
+            
             req.session.sessionSecret = result.sessionSecret;
             req.session.userId = result.employeeId;
             req.session.username = result.email;
+            
+            console.log("req.session.sessionSecret2", req.session.sessionSecret);
+
 
             res.status(200).send({ response: req.session.username + " - logged in" });
         } else {

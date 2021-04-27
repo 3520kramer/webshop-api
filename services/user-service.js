@@ -1,13 +1,13 @@
-const models = require('../database/connect').models;
+const getModels = require('../database/connect').getModels;
 const { Op } = require("sequelize");
 
 // gets a user (including the customer)
 const getUser = async (id) => {
     try {
-        const user = await models.users.findOne({
+        const user = await getModels().users.findOne({
             where: { user_id: id },
             include: [{
-                model: models.customers,
+                model: getModels().customers,
                 as: "customers",
                 required: true
             }]
@@ -30,9 +30,9 @@ const createUser = async (newUser) => {
         if (!newUser.customers) throw new Error("The property 'customers' is required for creating a user");
         if (newUser.customers.is_user_profile === 0) throw new Error("The property 'is_user_profile' is required to be 1 when creating a user");
 
-        const createdUser = await models.users.create(newUser, {
+        const createdUser = await getModels().users.create(newUser, {
             include: [{
-                model: models.customers,
+                model: getModels().customers,
                 as: "customers"
             }]
         });
@@ -50,10 +50,10 @@ const updateUser = async (user) => {
     console.log("updateUser input user", user);
 
     try {
-        const userToUpdate = await models.users.findOne({
+        const userToUpdate = await getModels().users.findOne({
             where: { user_id: user.user_id },
             include: [{
-                model: models.customers,
+                model: getModels().customers,
                 as: "customers",
                 where: { "is_user_profile": true },
                 required: true
@@ -94,9 +94,8 @@ const updateUser = async (user) => {
 // we don't delete, but we are setting is_archived to true
 const deleteUser = async (id) => {
     try {
-        const userToUpdate = await models.users.findOne({
+        const userToUpdate = await getModels().users.findOne({
             where: { user_id: id },
-
         });
 
         if (!userToUpdate) throw new Error("No user");
@@ -114,7 +113,7 @@ const deleteUser = async (id) => {
 
 const getAllUsers = async () => {
     try {
-        let users = await models.users.findAll({limit: 1000});
+        let users = await getModels().users.findAll({limit: 1000});
 
         console.log("getAllUsers", users);
 
@@ -137,12 +136,12 @@ const searchUsers = async (property, value) => {
 
         console.log("searchUsers searchParams", searchParams);
 
-        let isUserProp = models.users.rawAttributes.hasOwnProperty(property) ? true : false;
+        let isUserProp = getModels().users.rawAttributes.hasOwnProperty(property) ? true : false;
 
-        let user = await models.users.findAll({
+        let user = await getModels().users.findAll({
             where: isUserProp ? searchParams : null,
             include: [{
-                model: models.customers,
+                model: getModels().customers,
                 as: "customers",
                 where: !isUserProp ? searchParams : null,
                 required: true
