@@ -9,8 +9,9 @@ const loginService = require('../services/login-service');
 // for auth
 const { checkAuth, role } = require("../database/authorization");
 
-router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
+    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
     // #swagger.description = 'This is the route for the user login. this is needed for getting access to certain routes'
 
     /* #swagger.parameters['login'] = {
@@ -49,6 +50,7 @@ router.post('/login/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, ro
 
 router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
     // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes'
 
     /* #swagger.parameters['login'] = {
@@ -89,8 +91,9 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
 });
 
 
-router.post('/register/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post('/register/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for the creating a new user'
 
     /* #swagger.parameters['newUser'] = {
@@ -118,6 +121,7 @@ router.post('/register/user', checkAuth([role.VISITOR, role.USER, role.EMPLOYEE,
 
 router.get('/logout', checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for the user/employee to logout'
     try {
         req.session.destroy((error) => {

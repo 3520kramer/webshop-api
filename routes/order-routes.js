@@ -7,8 +7,9 @@ const orderService = require('../services/order-service');
 const { checkAuth, role } = require("../database/authorization");
 
 // create new order for our six scenarios
-router.post("/order", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.summary = 'Roles required: Visitor or User'
     // #swagger.description = 'This is the route for the creating a new order. a bit bugged since i dont know how to work with multiple schemas you have to copy/paste response 200 while being logged in to checkout user buying something. Other than that for some reason the product array only uses the last index'
 
     /* #swagger.responses[200] = { 
@@ -83,6 +84,7 @@ router.post("/order", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DE
 // get specific order by id
 router.get("/order/:order_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting a specific order.'
     console.log("get/order");
     try {
@@ -104,7 +106,8 @@ router.get("/order/:order_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.AD
 // get all orders
 router.get("/orders/:page/:size", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
-    // #swagger.description = 'This is the route for getting all orders. can use pagination. use 0 value if wanna use default values of p1/s1000'
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
+    // #swagger.description = 'This is the route for getting all orders. Can use pagination. Use 0 value if wanna use default values of p1/s1000'
     console.log("get/orders");
     try {
         let page = req.params.page;
@@ -126,7 +129,8 @@ router.get("/orders/:page/:size", checkAuth([role.EMPLOYEE, role.DEVELOPER, role
 // search by key and value
 router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
-    // #swagger.description = 'This is the route for seaching in orders. with pagination. key, value EX. KEY: order_status VALUE: shipped '
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
+    // #swagger.description = 'This is the route for seaching in orders with pagination. Key-value based. EX. KEY: order_status VALUE: shipped '
     console.log("get/orderssearch");
     try {
         let key = req.params.key;
@@ -149,6 +153,7 @@ router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DE
 // finds orders related to a user. Right now only a user should work with this route. if time, make it 
 router.get("/orderoverview/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Order']
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting a users order overview.'
     try {
 
