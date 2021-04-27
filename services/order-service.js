@@ -135,6 +135,7 @@ const getOrderOverView = async (orderId) => {
     });
 
     let total = 0;
+    // this calulates the total price of all the products bought
     orderOverView[0].order_products.forEach(product => total += product.price * product.quantity);
 
     return { orderOverView: orderOverView, total: total };
