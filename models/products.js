@@ -27,13 +27,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TINYINT,
       allowNull: false
     },
-    valid_from: {
+    timestamp: {
       type: DataTypes.DATE,
       allowNull: false
-    },
-    valid_to: {
-      type: DataTypes.DATE,
-      allowNull: true
     },
     brands_brand_id: {
       type: DataTypes.INTEGER,
@@ -70,7 +66,6 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'products',
-    hasTrigger: true,
     timestamps: false,
     indexes: [
       {
