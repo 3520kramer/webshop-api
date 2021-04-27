@@ -4,7 +4,9 @@ const { checkAuth, role } = require("../database/authorization");
 
 router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
-    // #swagger.description = 'This is the route for getting a customer \n hej hej'
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin' 
+    // #swagger.description = 'This is the route for getting a customer'
+
     try {
         const id = req.params.customer_id;
         console.log(id);
@@ -23,6 +25,7 @@ router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.D
 
 router.post("/customer", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin' 
     // #swagger.description = 'This is the route for getting creating a customer'
 
     /* #swagger.parameters['customer'] = {
@@ -47,9 +50,10 @@ router.post("/customer", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]),
     }
 });
 
-router.get("/customers", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.get("/customers", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
-    // #swagger.description = 'This is the route for getting all customers'
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin' 
+    // #swagger.description = 'This is the route for getting all customers. Limited to 1000 results for performance reasons'
     try {
         const customers = await customerService.getAllCustomers();
 
