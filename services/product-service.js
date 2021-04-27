@@ -1,5 +1,5 @@
 const sequelize = require('../database/connect').database;
-const model = require('../database/connect').models;
+const getModels = require('../database/connect').getModels;
 
 
 // works with transaction 
@@ -11,7 +11,7 @@ const createProduct = async (newProduct) => {
   console.log("createProduct", newProduct);
   try {
     const result = await sequelize.transaction(async (t) => {
-      const product = await model.products.create(newProduct, { transaction: t });
+      const product = await getModels().products.create(newProduct, { transaction: t });
       if (!product) throw new Error("Error finding product");
       return product;
     })
@@ -29,7 +29,7 @@ const getOneProduct = async (productId) => {
   console.log("getOneProduct", productId);
   try {
 
-    const product = await model.products.findOne({ where: { product_id: productId } });
+    const product = await getModels().products.findOne({ where: { product_id: productId } });
     if (!product) throw new Error("Error finding product");
     return product;
 
@@ -44,7 +44,7 @@ const getAllProducts = async () => {
   console.log("getAllProducts");
   try {
 
-    const products = await model.products.findAll();
+    const products = await getModels().products.findAll();
     if (!products) throw new Error("Error finding products");
     return products;
 
@@ -62,7 +62,7 @@ const updateProduct = async (productToUpdate) => {
   try {
     const result = await sequelize.transaction(async (t) => {
 
-      const updatedProduct = await model.products.update(productToUpdate,
+      const updatedProduct = await getModels().products.update(productToUpdate,
         { where: { product_id: productToUpdate.product_id } },
         { transaction: t });
 
@@ -70,7 +70,7 @@ const updateProduct = async (productToUpdate) => {
       if (!updatedProduct) throw new Error("Error updating product");
 
       // finds updated product and returns it
-      const product = await model.products.findOne({ where: { product_id: productToUpdate.product_id } });
+      const product = await getModels().products.findOne({ where: { product_id: productToUpdate.product_id } });
       return product;
 
     })
@@ -92,7 +92,7 @@ const deleteProduct = async (productId) => {
   try {
     const result = await sequelize.transaction(async (t) => {
 
-      const deletedProduct = await model.products.destroy({ where: { product_id: productId } }, { transaction: t })
+      const deletedProduct = await getModels().products.destroy({ where: { product_id: productId } }, { transaction: t })
       console.log("deletedProduct", deletedProduct);
       if (deletedProduct) {
         return deletedProduct;
@@ -113,10 +113,10 @@ const deleteProduct = async (productId) => {
           let archived = {
             is_archived: true
           }
-          const archivedProduct = await model.products.update(archived, { where: { product_id: productId } }, { transaction: t });
+          const archivedProduct = await getModels().products.update(archived, { where: { product_id: productId } }, { transaction: t });
           if (!archivedProduct) throw new Error("Error updating and archiving product");
 
-          const product = await model.products.findOne({ where: { product_id: productId } });
+          const product = await getModels().products.findOne({ where: { product_id: productId } });
 
           return product;
         })

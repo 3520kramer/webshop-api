@@ -4,7 +4,7 @@ const router = require('express').Router();
 const orderService = require('../services/order-service');
 
 // for auth
-const { checkAuth, role } = require("./route-authorization");
+const { checkAuth, role } = require("../database/authorization");
 
 // create new order for our six scenarios
 router.post("/order", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {

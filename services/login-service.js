@@ -1,5 +1,5 @@
-const models = require('../database/connect').models;
-const { role } = require('../routes/route-authorization');
+const getModels = require('../database/connect').getModels;
+const { role } = require('../database/authorization');
 const userService = require('./user-service');
 
 // Connects to the session secret  
@@ -14,7 +14,7 @@ const saltRounds = 12;
 // works
 const loginUser = async (username, password) => {
     try {
-        const user = await models.users.findOne({ where: { username: username } });
+        const user = await getModels().users.findOne({ where: { username: username } });
 
         if (!user) throw new Error("Something went wrong when getting information from database");
 
@@ -39,7 +39,8 @@ const loginUser = async (username, password) => {
 
 const loginEmployee = async (email, password) => {
     try {
-        const employee = await models.employees.findOne({ where: { email: email } });
+
+        const employee = await getModels().employees.findOne({ where: { email: email } });
 
         if (!employee) throw new Error("Something went wrong when getting information from database");
 
@@ -51,14 +52,14 @@ const loginEmployee = async (email, password) => {
 
         if (employee.job_title.toLowerCase() === role.ADMIN) {
             _sessionSecret = sessionSecret.admin;
-        }
+        } 
         else if (employee.job_title.toLowerCase() === role.DEVELOPER) {
             _sessionSecret = sessionSecret.developer;
         }
         else {
             _sessionSecret = sessionSecret.employee;
         }
-
+        
         return {
             sessionSecret: _sessionSecret,
             employeeId: employee.employeeId,

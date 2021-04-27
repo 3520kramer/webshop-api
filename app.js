@@ -16,9 +16,9 @@ const session = require("express-session");
 const config = require("./configuration/config.json");
 
 app.use(session({
-    secret: config.sessionSecret.app,
+    secret: config.sessionSecret.visitor,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
 }));
 
 
@@ -28,6 +28,7 @@ const customerRoutes = require('./routes/customer-routes')
 const productRoutes = require('./routes/product-routes');
 const orderRoutes = require('./routes/order-routes');
 const loginRoutes = require('./routes/login-routes');
+const settings = require("./configuration/settings");
 
 
 // use routes 
