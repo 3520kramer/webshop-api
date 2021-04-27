@@ -7,7 +7,8 @@ const { checkAuth, role } = require("../database/authorization");
 // used for creating a user. also used in login service for creating a user/customer
 router.post("/user", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
-    // #swagger.description = 'This is the route for getting a crating a user'
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
+    // #swagger.description = 'This is the route for getting a creating a user'
 
     /* #swagger.parameters['newUser'] = {
                in: 'body',
@@ -34,9 +35,10 @@ router.post("/user", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), asy
 // gets one specific user 
 router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting a single users information. (has to be logged in as x)'
     try {
-
+        const id = req.params.user_id;
         if (!id) throw new Error("No id");
 
         const user = await userService.getUser(id);
@@ -53,7 +55,8 @@ router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER
 
 router.get("/users", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
-    // #swagger.description = 'This is the route for getting all users'
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
+    // #swagger.description = 'This is the route for getting all users. Limited to 1000 results for performance reasons'
 
     try {
         const user = await userService.getAllUsers();
@@ -71,6 +74,7 @@ router.get("/users", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), asy
 // search in users 
 router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
     // #swagger.description = 'This is the route for seaching users'
 
     /* #swagger.responses[200] = {
@@ -81,7 +85,7 @@ router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVE
         const property = req.params.property;
         const value = req.params.value;
 
-        if (!property || !value) throw new Error("Mssing property or value as query parameters");
+        if (!property || !value) throw new Error("Missing property or value as query parameters");
 
         const users = await userService.searchUsers(property, value);
 
@@ -97,6 +101,7 @@ router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVE
 
 router.put("/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for updating a users infomation'
 
     /* #swagger.parameters['user'] = {
@@ -125,6 +130,7 @@ router.put("/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.AD
 
 router.delete("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
+    // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product'
     try {
         const id = req.params.user_id;

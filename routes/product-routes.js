@@ -9,6 +9,7 @@ const { checkAuth, role } = require("../database/authorization");
 // create new product
 router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
     // #swagger.description = 'This is the route for creating a new product'
 
     /* #swagger.parameters['product'] = {
@@ -37,6 +38,7 @@ router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), 
 // get specific product by id
 router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.summary = 'Roles required: Visitor, User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting a specific product'
     console.log("get/product");
     try {
@@ -56,6 +58,7 @@ router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPL
 // get all products
 router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.summary = 'Roles required: Visitor, User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting all products'
     console.log("get/products");
     try {
@@ -76,6 +79,7 @@ router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.
 // update product 
 router.put("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
     // #swagger.description = 'This is the route for updating a product'
 
     /* #swagger.parameters['updatedProduct'] = {
@@ -103,6 +107,7 @@ router.put("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), a
 // delete product
 router.delete("/product/:product_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
+    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
     // #swagger.description = 'This is the route for deleting a product (if possible, else if in use archives it)'
     console.log("delete/product");
     try {
