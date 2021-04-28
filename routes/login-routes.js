@@ -12,7 +12,7 @@ const { checkAuth, role } = require("../database/authorization");
 router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
     // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
-    // #swagger.description = 'This is the route for the user login. this is needed for getting access to certain routes'
+    // #swagger.description = 'This is the route for the user login. This is needed for getting access to certain routes. <br><br> <b>Example login:</b> <br>username: user1<br>password: user1kode'
 
     /* #swagger.parameters['login'] = {
         in: 'body',
@@ -51,7 +51,7 @@ router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPE
 router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login']
     // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
-    // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes'
+    // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes.<br><br><b>Example admin login:</b> <br>username: admin@gmail.com<br>password: adminkode<br><br> <b>Example developer login:</b> <br>username: mads@gmail.com<br>password: madskode <br><br> <b>Example employee login:</b> <br>username: employee@gmail.com<br>password: employeekode'
 
     /* #swagger.parameters['login'] = {
        in: 'body',
@@ -60,7 +60,6 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
        schema: { $ref: "#/definitions/LoginEmployee" }
     } */
     console.log("/employeelogin");
-
 
     try {
         const { email, password } = req.body.login;
