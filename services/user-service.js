@@ -62,7 +62,7 @@ const updateUser = async (user) => {
         if (!userToUpdate) throw new Error("No user found");
 
         Object.entries(user).forEach(([key, value]) => {
-            console.log(`${key}: ${value}`);
+            //console.log(`${key}: ${value}`);
 
             if (key === 'customers') return;
 
@@ -80,8 +80,12 @@ const updateUser = async (user) => {
             }
             userToUpdate.customers[key] = value;
         })
-
+        
+        // updating the user
         const updatedUser = await userToUpdate.save();
+        
+        // updating the related customer
+        await getModels().customers.update(user.customers, {where: {"users_user_id": user.user_id, "is_user_profile": true}})
 
         return { user: updatedUser, customer: updatedUser.customers[0] };
 
