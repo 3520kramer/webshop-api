@@ -1,16 +1,16 @@
-const sequelize = require('../database/connect').database;
+const getDatabase = require('../database/connect').getDatabase;
 const getModels = require('../database/connect').getModels;
 
 
 // works with transaction 
 const createProduct = async (newProduct) => {
 
-  // TODO: set product.valid_from to date.now
-  newProduct.valid_from = new Date().toISOString();
+  // take the current date/time and sets timestamp
+  newProduct.timestamp = new Date().toISOString();
 
   console.log("createProduct", newProduct);
   try {
-    const result = await sequelize.transaction(async (t) => {
+    const result = await getDatabase().transaction(async (t) => {
       const product = await getModels().products.create(newProduct, { transaction: t });
       if (!product) throw new Error("Error finding product");
       return product;
@@ -56,11 +56,14 @@ const getAllProducts = async () => {
 
 // works
 const updateProduct = async (productToUpdate) => {
-  
   console.log("updateProduct", productToUpdate);
 
   try {
-    const result = await sequelize.transaction(async (t) => {
+
+    // take the current date/time and sets timestamp
+    productToUpdate.timestamp = new Date().toISOString();
+
+    const result = await getDatabase().transaction(async (t) => {
 
       const updatedProduct = await getModels().products.update(productToUpdate,
         { where: { product_id: productToUpdate.product_id } },
@@ -90,7 +93,7 @@ const deleteProduct = async (productId) => {
   console.log('deleteProduct', productId);
 
   try {
-    const result = await sequelize.transaction(async (t) => {
+    const result = await getDatabase().transaction(async (t) => {
 
       const deletedProduct = await getModels().products.destroy({ where: { product_id: productId } }, { transaction: t })
       console.log("deletedProduct", deletedProduct);
@@ -108,7 +111,7 @@ const deleteProduct = async (productId) => {
 
     if (error.parent.code === "ER_ROW_IS_REFERENCED_2") {
       try {
-        const result = await sequelize.transaction(async (t) => {
+        const result = await getDatabase().transaction(async (t) => {
 
           let archived = {
             is_archived: true

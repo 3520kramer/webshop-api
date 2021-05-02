@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const initModels = require("../models/init-models");
 const config = require("../configuration/config.json");
+const { Model } = require("sequelize");
 
 const createSequelizeConnection = (user, password) => {
   return new Sequelize(config.databaseName, user, password, {
@@ -42,6 +43,8 @@ const updateSequelizeConnection = (role) => {
 
 // Instantiates the models depending with the current connection
 const getModels = () => initModels(sequelizeConnection);
+const getDatabase = () => sequelizeConnection;
 
 module.exports.updateSequelizeConnection = updateSequelizeConnection;
 module.exports.getModels = getModels;
+module.exports.getDatabase = getDatabase;

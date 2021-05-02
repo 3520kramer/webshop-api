@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "swagger": "node swagger.js",
+    "dev": "nodemon app.js",
+    "prod": "node app.js",
+    "swag": "node swagger.js",
     "modelsMads": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql",
     "modelsOliver": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x 1234 -e mysql"
   },
