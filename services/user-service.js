@@ -62,8 +62,6 @@ const updateUser = async (user) => {
         if (!userToUpdate) throw new Error("No user found");
 
         Object.entries(user).forEach(([key, value]) => {
-            //console.log(`${key}: ${value}`);
-
             if (key === 'customers') return;
 
             if (!userToUpdate.dataValues.hasOwnProperty(key)) {
@@ -73,8 +71,6 @@ const updateUser = async (user) => {
         })
 
         Object.entries(user.customers).forEach(([key, value]) => {
-            console.log(`${key}: ${value}`);
-
             if (!userToUpdate.customers[0].dataValues.hasOwnProperty(key)) {
                 throw new Error(`Database object does not contain property "${key}"`);
             }
@@ -85,7 +81,7 @@ const updateUser = async (user) => {
         const updatedUser = await userToUpdate.save();
         
         // updating the related customer
-        await getModels().customers.update(user.customers, {where: {"users_user_id": user.user_id, "is_user_profile": true}})
+        await getModels().customers.update(user.customers, {where: {"users_user_id": user.user_id, "is_user_profile": true}});
 
         return { user: updatedUser, customer: updatedUser.customers[0] };
 
