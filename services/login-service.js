@@ -22,6 +22,10 @@ const loginUser = async (username, password) => {
 
         if (!result) throw new Error("username or password incorrect, try again");
 
+        user.last_logged_in = new Date().toISOString();
+
+        await user.save();
+        
         // TODO: Generate random and hash that bitch
         //const generateRandomString = (length=36) =>Math.random().toString(20).substr(2, length)
         //let test = generateRandomString();
