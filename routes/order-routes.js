@@ -163,7 +163,7 @@ router.get("/orderoverview/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVE
         
         // this is for manual finding orderoverview for a user
         //const id = req.params.user_id;
-        if (!id) throw new Error("No id");
+        if (!id) throw new Error("No id, remember to be logged in as a user");
 
         const orders = await orderService.getUsersOrders(id);
 

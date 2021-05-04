@@ -553,8 +553,8 @@
         "tags": [
           "User"
         ],
-        "summary": "Roles required: Employee, Developer or Admin",
-        "description": "This is the route for getting a creating a user",
+        "summary": "Roles required: Visitor, Employee, Developer or Admin",
+        "description": "This is the route for creating a user",
         "parameters": [
           {
             "name": "newUser",
