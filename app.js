@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require('dotenv').config();
-const createMongoConnection = require('./connection-mongodb').createMongoConnection;
+const createMongoConnection = require('./database/connection-mongodb').createMongoConnection;
 
 
 app.use(express.urlencoded({ extended: false }));
