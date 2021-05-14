@@ -5,10 +5,10 @@ const userService = require('../services/user-service');
 const { checkAuth, role } = require("../database/authorization");
 
 // used for creating a user. also used in login service for creating a user/customer
-router.post("/user", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post("/user", checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
-    // #swagger.summary = 'Roles required: Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for getting a creating a user'
+    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin'
+    // #swagger.description = 'This is the route for creating a user'
 
     /* #swagger.parameters['newUser'] = {
                in: 'body',
