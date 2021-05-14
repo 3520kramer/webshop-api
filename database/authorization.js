@@ -41,7 +41,7 @@ const checkAuth = (roles) => {
         console.log("active role secret:", config.sessionSecret[role]);
 
         // Update the db connection
-        updateSequelizeConnection(role);
+        config.isSql ? updateSequelizeConnection(role) : null;
         
         hasRoleMatch = true;
 
