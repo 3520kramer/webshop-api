@@ -1,4 +1,4 @@
-const getModels = require('../database/connect').getModels;
+const getModels = require('../database/connection-mysql').getModels;
 const { role } = require('../database/authorization');
 const userService = require('./user-service');
 

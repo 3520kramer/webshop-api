@@ -1,4 +1,4 @@
-const getModels = require('../database/connect').getModels;
+const getModels = require('../database/connection-mysql').getModels;
 const { Op } = require("sequelize");
 
 // gets a user (including the customer)

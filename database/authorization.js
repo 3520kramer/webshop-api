@@ -1,5 +1,6 @@
 const config = require("../configuration/config.json");
-const updateSequelizeConnection = require("./connect").updateSequelizeConnection;
+const updateSequelizeConnection = require("./connection-mysql").updateSequelizeConnection;
+const createMongoConnection = require('./connection-mongodb').createMongoConnection;
 
 // Roles as constants to make sure we dont misspell it
 const role = {
@@ -33,7 +34,7 @@ const checkAuth = (roles) => {
         console.log("active role secret:", config.sessionSecret[role]);
 
         // Update the db connection
-        updateSequelizeConnection(role);
+        config.isSql ? updateSequelizeConnection(role) : null;
         
         hasRoleMatch = true;
 
