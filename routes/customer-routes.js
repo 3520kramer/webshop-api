@@ -55,6 +55,7 @@ router.get("/customers", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]),
     // #swagger.summary = 'Roles required: Employee, Developer or Admin' 
     // #swagger.description = 'This is the route for getting all customers. Limited to 1000 results for performance reasons'
     try {
+        
         const customers = await customerService.getAllCustomers();
 
         if (!customers.error) {
