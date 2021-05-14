@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 require('dotenv').config();
-const createMongoConnection = require('./connection-mongodb').createMongoConnection;
+const createMongoConnection = require('./database/connection-mongodb').createMongoConnection;
 
 
 app.use(express.urlencoded({ extended: false }));
@@ -49,7 +49,7 @@ const port = process.env.PORT ? process.env.PORT : 3000;
 config.isSql = process.env.USE_MONGO_DB === 'true' ? false : true;
 
 // Connects to mongo on startup
-if(!config.isSql) createMongoConnection();
+//if(!config.isSql) createMongoConnection();
 
 // Error handling on server upstart
 http.createServer(app).listen(port, (error) => {

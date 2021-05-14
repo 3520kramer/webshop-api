@@ -15,6 +15,13 @@ const role = {
 // Takes a list of the roles we wan't to allow on the route as argument
 const checkAuth = (roles) => {
   return async (req, res, next) => {
+    
+    // If we are using mongo connection then we will not use roles for now.
+    if(!config.isSql){
+      next();
+      return;
+    }
+
     console.log("req.session.sessionSecret", req.session.sessionSecret);
     
     // if the session secret is undefined, then this is the first page we are visiting
@@ -34,7 +41,7 @@ const checkAuth = (roles) => {
         console.log("active role secret:", config.sessionSecret[role]);
 
         // Update the db connection
-        config.isSql ? updateSequelizeConnection(role) : null;
+        updateSequelizeConnection(role);
         
         hasRoleMatch = true;
 
