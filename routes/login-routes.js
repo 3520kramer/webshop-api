@@ -1,10 +1,7 @@
 const router = require('express').Router();
 
-// used for setting the session values as priviliges and user id 
-const config = require('../configuration/config.json').databaseSecret;
-
 // gets calls from service/controller layer
-const loginService = require('../services/login-service');
+const loginService = require('../services/mysql/login-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
@@ -60,6 +57,7 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
        schema: { $ref: "#/definitions/LoginEmployee" }
     } */
     console.log("/employeelogin");
+
 
     try {
         const { email, password } = req.body.login;

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const userService = require('../services/user-service');
+const userService = require('../services/mysql/user-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
@@ -32,16 +32,20 @@ router.post("/user", checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, rol
     }
 });
 
+const config = require('../configuration/config');
+
 // gets one specific user 
 router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
     // #swagger.description = 'This is the route for getting a single users information. (has to be logged in as x)'
     try {
+        
         const id = req.params.user_id;
         if (!id) throw new Error("No id");
 
-        const user = await userService.getUser(id);
+        //config.isSql ? "USE SQL" : "USE MONGO";
+        const user = config.isSql ? await userService.getUser(id) : null;
 
         if (!user.error) {
             res.status(200).send(user);

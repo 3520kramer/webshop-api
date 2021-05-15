@@ -1,9 +1,9 @@
-const getModels = require('../database/connect').getModels;
-const { role } = require('../database/authorization');
+const getModels = require('../../database/connection-mysql').getModels;
+const { role } = require('../../database/authorization');
 const userService = require('./user-service');
 
 // Connects to the session secret  
-const { sessionSecret } = require("../configuration/config.json");
+const { sessionSecret } = require("../../configuration/config");
 
 // A library to help you hash passwords.
 const bcrypt = require('bcrypt');

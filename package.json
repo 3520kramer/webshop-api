@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "prod": "node app.js",
+    "start": "npm run swag && node app.js",
     "swag": "node swagger.js",
     "modelsMads": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql",
     "modelsOliver": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x 1234 -e mysql"
@@ -14,8 +14,10 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "mongoose": "^5.12.9",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
     "sequelize": "^6.5.1",
