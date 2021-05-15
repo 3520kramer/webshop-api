@@ -1,5 +1,5 @@
-const getDatabase = require('../database/connection-mysql').getDatabase;
-const getModels = require('../database/connection-mysql').getModels;
+const getDatabase = require('../../database/connection-mysql').getDatabase;
+const getModels = require('../../database/connection-mysql').getModels;
 
 
 // works with transaction 

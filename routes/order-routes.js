@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 // gets calls from service/controller layer
-const orderService = require('../services/order-service');
+const orderService = require('../services/mysql/order-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");

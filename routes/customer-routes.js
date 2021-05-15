@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const customerService = require('../services/customer-service');
+const customerService = require('../services/mysql/customer-service');
 const { checkAuth, role } = require("../database/authorization");
+const config = require('../configuration/config');
 
 router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Customer']
@@ -11,7 +12,8 @@ router.get("/customer/:customer_id", checkAuth([role.USER, role.EMPLOYEE, role.D
         const id = req.params.customer_id;
         console.log(id);
         if (!id) throw new Error("No id");
-        const customer = await customerService.getCustomer(id);
+
+        const customer = config.isMongoUsed ? null : await customerService.getCustomer(id);
 
         if (!customer.error) {
             res.status(200).send(customer);

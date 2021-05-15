@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const userService = require('../services/user-service');
+const userService = require('../services/mysql/user-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
@@ -32,7 +32,7 @@ router.post("/user", checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, rol
     }
 });
 
-const config = require('../configuration/config.json');
+const config = require('../configuration/config');
 
 // gets one specific user 
 router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
