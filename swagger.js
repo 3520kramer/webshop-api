@@ -9,6 +9,8 @@ const endpointsFiles = [
     './routes/user-routes.js'
 ]
 
+const scheme = process.env.SWAGGER_SCHEME || 'http';
+
 const doc = {
     // info: General information about the API, such as: version, title and description.
     info: {
@@ -21,7 +23,7 @@ const doc = {
     // basePath: This is the root of your project.
     basePath: "/",
     // schemes: These are the protocols used.
-    schemes: ['http'],
+    schemes: [scheme],
     consumes: ['application/json'],
     produces: ['application/json'],
     tags: [
