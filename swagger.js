@@ -17,7 +17,7 @@ const doc = {
         description: "Documentation for webshop API"
     },
     // host: Path and port where your API will start.
-    host: "localhost:3000",
+    host: process.env.ROOT_URL,
     // basePath: This is the root of your project.
     basePath: "/",
     // schemes: These are the protocols used.
@@ -216,5 +216,5 @@ const doc = {
 
 // rewrites the swagger_output file each time we run it with "node swagger.js"
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
-    require('./app.js')
+    //require('./app.js')
 });
