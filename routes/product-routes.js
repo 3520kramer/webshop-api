@@ -2,7 +2,8 @@ const router = require('express').Router();
 const config = require('../configuration/config');
 
 // gets calls from service/controller layer
-const productService = config.isMongoUsed ? require('../services/mongodb/product-service') : require('../services/mysql/product-service');
+const productService = require('../services/mysql/product-service');
+const productServiceMongo = require('../services/mongodb/product-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
@@ -63,7 +64,8 @@ router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.
     // #swagger.description = 'This is the route for getting all products'
     console.log("get/products");
     try {
-        const products = await productService.getAllProducts();
+        //const products = await productService.getAllProducts();
+        const products = await productServiceMongo.getAllProducts();
 
         if (!products.error) {
             res.status(201).send(products);
