@@ -1,7 +1,8 @@
 const router = require('express').Router();
+const config = require('../configuration/config');
 
 // gets calls from service/controller layer
-const productService = require('../services/product-service');
+const productService = config.isMongoUsed ? require('../services/mongodb/product-service') : require('../services/mysql/product-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");

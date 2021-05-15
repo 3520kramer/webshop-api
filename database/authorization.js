@@ -1,4 +1,4 @@
-const config = require("../configuration/config.json");
+const config = require("../configuration/config");
 const updateSequelizeConnection = require("./connection-mysql").updateSequelizeConnection;
 const createMongoConnection = require('./connection-mongodb').createMongoConnection;
 
@@ -17,40 +17,43 @@ const checkAuth = (roles) => {
   return async (req, res, next) => {
     
     // If we are using mongo connection then we will not use roles for now.
-    if(!config.isSql){
-      next();
-      return;
-    }
-
-    console.log("req.session.sessionSecret", req.session.sessionSecret);
-    
-    // if the session secret is undefined, then this is the first page we are visiting
-    if (req.session.sessionSecret === undefined) {
-      req.session.sessionSecret = config.sessionSecret[role.VISITOR];
-    }
-
-    console.log("sessionSecret", req.session.sessionSecret);
-
-    let hasRoleMatch = false;
-
-    // Iterating the roles to find a matching Role
-    for (let index = 0; index < roles.length; index++) {
-      const role = roles[index];
+    if(config.isMongoUsed){
+      console.log("HEY FROM MONGOAUTH")
       
-      if (req.session.sessionSecret === config.sessionSecret[role]) {
-        console.log("active role secret:", config.sessionSecret[role]);
-
-        // Update the db connection
-        config.isSql ? updateSequelizeConnection(role) : null;
-        
-        hasRoleMatch = true;
-
-        // We allow it to continue on the route if there is a match, and then break out of the loop
-        next();
-        break;
+      next();
+      
+    } else {
+      console.log("IF MONGO IS USED - THIS MUST NOT BE PRINTED")
+      console.log("req.session.sessionSecret", req.session.sessionSecret);
+      
+      // if the session secret is undefined, then this is the first page we are visiting
+      if (req.session.sessionSecret === undefined) {
+        req.session.sessionSecret = config.sessionSecret[role.VISITOR];
       }
+
+      console.log("sessionSecret", req.session.sessionSecret);
+
+      let hasRoleMatch = false;
+
+      // Iterating the roles to find a matching Role
+      for (let index = 0; index < roles.length; index++) {
+        const role = roles[index];
+        
+        if (req.session.sessionSecret === config.sessionSecret[role]) {
+          console.log("active role secret:", config.sessionSecret[role]);
+
+          // Update the db connection
+          updateSequelizeConnection(role);
+          
+          hasRoleMatch = true;
+
+          // We allow it to continue on the route if there is a match, and then break out of the loop
+          next();
+          break;
+        }
+      }
+      if (!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
     }
-    if (!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
   };
 };
 

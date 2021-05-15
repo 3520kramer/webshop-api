@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 // Used to be able to establish permission for the user to enter the site and also be able to track them
 const session = require("express-session");
-const config = require("./configuration/config.json");
+const config = require("./configuration/config");
 
 app.use(session({
     secret: config.secretID,
@@ -46,10 +46,12 @@ app.use(loginRoutes);
 const port = process.env.PORT ? process.env.PORT : 3000;
 
 // If we are not using mongo db then sql connection stays true. If using mongodb then isSql is false
-config.isSql = process.env.USE_MONGO_DB === 'true' ? false : true;
+config.isMongoUsed = process.env.USE_MONGO_DB === 'true' ? true : false;
+
+console.log(config.isMongoUsed)
 
 // Connects to mongo on startup
-if(!config.isSql) createMongoConnection();
+if(config.isMongoUsed) createMongoConnection();
 
 // Error handling on server upstart
 http.createServer(app).listen(port, (error) => {

@@ -1,6 +1,6 @@
 const Sequelize = require("sequelize");
-const initModels = require("../models/init-models");
-const config = require("../configuration/config.json");
+const initModels = require("../models/mysql/init-models");
+const config = require("../configuration/config");
 const { Model } = require("sequelize");
 
 const createSequelizeConnection = (user, password) => {
