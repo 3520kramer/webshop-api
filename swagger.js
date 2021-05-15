@@ -9,7 +9,8 @@ const endpointsFiles = [
     './routes/user-routes.js'
 ]
 
-const scheme = process.env.SWAGGER_SCHEME || 'http';
+// Heroku sets env as production
+const scheme = process.env.NODE_ENV === 'production' ? 'https' : 'http';
 
 const doc = {
     // info: General information about the API, such as: version, title and description.
