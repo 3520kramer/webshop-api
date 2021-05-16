@@ -64,8 +64,7 @@ router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.
     // #swagger.description = 'This is the route for getting all products'
     console.log("get/products");
     try {
-        //const products = await productService.getAllProducts();
-        const products = await productServiceMongo.getAllProducts();
+        const products = config.isMongoUsed ? await productServiceMongo.getAllProducts() : await productService.getAllProducts();
 
         if (!products.error) {
             res.status(201).send(products);
