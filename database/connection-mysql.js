@@ -5,9 +5,9 @@ const { Model } = require("sequelize");
 
 const createSequelizeConnection = (user, password) => {
   return new Sequelize(config.databaseName, user, password, {
-    host: "localhost",
+    host: config.sqlConnectionHost,
+    port: config.sqlConnectionPort,
     dialect: "mysql",
-
     pool: {
       max: 10, // Maximum number of connection in pool
       min: 0, // Minimum number of connection in pool
