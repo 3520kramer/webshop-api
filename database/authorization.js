@@ -19,7 +19,7 @@ const checkAuth = (roles) => {
     // If we are using mongo connection then we will not use roles for now.
     if(config.isMongoUsed){
       console.log("HEY FROM MONGOAUTH")
-      
+      console.log("config.isMongoUsed", config.isMongoUsed);
       next();
       
     } else {

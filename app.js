@@ -6,10 +6,6 @@ const config = require('./configuration/config');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-// This is all for swagger-ui 
-const http = require('http');
-
-
 // Redirects to swagger sql url from base url
 app.get('/', (req, res) => {
     res.redirect('/swagger');
@@ -40,19 +36,11 @@ app.use(orderRoutes);
 app.use(loginRoutes);
 app.use(swaggerConfig);
 
-// for some stupid reason only works on port 3000 - https://github.com/lukeautry/tsoa/issues/518
+// takes the PORT from env. if nothing specified then pick port 3000
 const port = process.env.PORT ? process.env.PORT : 3000;
 
-// If we are not using mongo db then sql connection stays true. If using mongodb then isSql is false
-//config.isMongoUsed = process.env.USE_MONGO_DB === 'true' ? true : false;
-
-//console.log(config.isMongoUsed)
-
-// Connects to mongo on startup
-//if(config.isMongoUsed) createMongoConnection();
-
 // Error handling on server upstart
-http.createServer(app).listen(port, (error) => {
+app.listen(port, (error) => {
     if (error) {
         console.log("Error starting the server");
     }

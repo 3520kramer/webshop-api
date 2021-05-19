@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const material = new Schema({ material: String});
 
 const productSchema = new Schema({
-    id: Schema.Types.ObjectId,
+    sqlId: Number,
     name: String,
     size: String,
     brand: String,
@@ -14,7 +14,7 @@ const productSchema = new Schema({
     materials: [material],
     timestamp: Date,
     description: String,
-    is_archived: Boolean,
+    isArchived: Boolean,
 })
 
 const Model = mongoose.model('Product', productSchema);

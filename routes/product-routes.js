@@ -25,7 +25,7 @@ router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), 
     try {
         let product = req.body.product;
 
-        const createdProduct = await productService.createProduct(product);
+        const createdProduct = config.isMongoUsed ? await productServiceMongo.createProduct(product) : await productService.createProduct(product);
 
         if (!createdProduct.error) {
             res.status(201).send(createdProduct);
@@ -45,7 +45,7 @@ router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPL
     console.log("get/product");
     try {
         let id = Number.parseInt(req.params.product_id);
-        const product = await productService.getOneProduct(id);
+        const product = config.isMongoUsed ? await productServiceMongo.getOneProduct(id) : productService.getOneProduct(id);
 
         if (!product.error) {
             res.status(201).send(product);
