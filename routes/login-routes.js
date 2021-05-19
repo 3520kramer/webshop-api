@@ -4,7 +4,7 @@ const router = require('express').Router();
 const loginService = require('../services/mysql/login-service');
 
 // for auth
-const { checkAuth, role } = require("../database/authorization");
+const { checkAuth, role } = require('../database/authorization');
 
 router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
