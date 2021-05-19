@@ -5,6 +5,8 @@ const config = require('../configuration/config');
 const MongoDb = require('../database/connection-mongodb');
 
 const httpType = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+console.log("environment", process.env.NODE_ENV);
+console.log("httpType", httpType);
 
 // Swagger definition
 const swaggerDefinitionMongo = {

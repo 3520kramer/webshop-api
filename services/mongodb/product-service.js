@@ -7,7 +7,7 @@ const createProduct = async (newProduct) => {
     try {
         // take the current date/time and sets timestamp
         newProduct.timestamp = new Date().toISOString();
-        
+
         const product = await new Product(newProduct).save();
         console.log("product", product);
 
@@ -25,8 +25,8 @@ const getOneProduct = async (productId) => {
     console.log("getOneProduct", productId);
     try {
 
-        const product = await Product.findOne({ productId })
-        if (!product) throw new Error("Error finding product");
+        const product = await Product.findById(productId);
+        if (product === null) throw new Error("Error finding product");
         return product;
 
     } catch (error) {
