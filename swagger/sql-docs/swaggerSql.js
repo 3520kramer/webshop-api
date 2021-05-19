@@ -1,6 +1,7 @@
 const swaggerAutogen = require('swagger-autogen')();
+const config = require('../../configuration/config');
 
-const outputFile = './swagger_output.json'
+const outputFile = './swagger_output_sql.json'
 const endpointsFiles = [
     './routes/customer-routes.js',
     './routes/login-routes.js',
@@ -9,19 +10,22 @@ const endpointsFiles = [
     './routes/user-routes.js'
 ]
 
+// Heroku sets env as production
+const scheme = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+
 const doc = {
     // info: General information about the API, such as: version, title and description.
     info: {
         version: "1.0.0",
-        title: "Webshop API",
+        title: "Webshop API SQL",
         description: "Documentation for webshop API"
     },
     // host: Path and port where your API will start.
-    host: process.env.ROOT_URL,
+    host: config.rootURL,
     // basePath: This is the root of your project.
     basePath: "/",
     // schemes: These are the protocols used.
-    schemes: ['http'],
+    schemes: [scheme],
     consumes: ['application/json'],
     produces: ['application/json'],
     tags: [

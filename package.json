@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon app.js",
     "start": "npm run swag && node app.js",
-    "swag": "node swagger.js",
+    "swag": "node ./swagger/sql-docs/swaggerSql.js",
     "modelsMads": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x mads1234 -e mysql",
     "modelsOliver": "sequelize-auto -o './models' -d webshop -h localhost -u root -p 3306 -x 1234 -e mysql"
   },
@@ -23,6 +23,7 @@
     "sequelize": "^6.5.1",
     "sequelize-auto": "^0.8.1",
     "swagger-autogen": "^2.6.3",
+    "swagger-jsdoc": "6.1.0",
     "swagger-ui-express": "^4.1.4"
   }
 }

@@ -10,7 +10,7 @@ const createMongoConnection = () => {
         
         db.once('open', () => {
           // we're connected!
-          console.log('MONGO: connected');
+          console.log('MONGO: Connection opened');
         });
 
     }catch(error){
@@ -18,5 +18,15 @@ const createMongoConnection = () => {
     }
 }
 
+const closeMongoConnection = () => {
+    try{
+        mongoose.disconnect().then(() => console.log('MONGO: Connection closed'));
+    }catch(error){
+        console.log(error);
+    }
+}
 // used in app.js to initialize connection
-module.exports.createMongoConnection = createMongoConnection;
+module.exports = {
+    createMongoConnection,
+    closeMongoConnection
+}
