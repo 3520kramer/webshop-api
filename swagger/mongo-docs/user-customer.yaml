@@ -1,0 +1,165 @@
+paths:
+  # Create UserCustomer
+  /user/:
+    post:
+      tags:
+        - UserCustomers
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for creating a new product'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: create product     # name of request, can be any name
+        description: It enables a user to create an account
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/CreateUserCustomer' 
+      responses:          # server responses
+        201:
+          description: ''
+        500:
+          description: ''
+    # Update UserCustomer
+    put:
+      tags:
+        - UserCustomers
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for creating a new product'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: Update UserCustomer     # name of request, can be any name
+        description: It enables a user to create an account
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/UpdateUserCustomer' 
+      responses:          # server responses
+        201:
+          description: ''
+        500:
+          description: ''
+  
+  # Get UserCustomer by user_id
+  /user/{user_id}:
+    get:
+      tags:
+        - UserCustomers
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for creating a new product'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: path          # request body
+        name: user_id     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+    delete:
+      tags:
+        - UserCustomers
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for creating a new product'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: path          # request body
+        name: user_id     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+  
+  # Get all users
+  /users/:                # path of the user from your endpoint
+    get:                 # endpoint request type (post request)
+      tags:               # Tag property
+        - UserCustomers            # Value of the tag
+      summary: 'Roles required: Visitor, User, Employee, Developer or Admin'
+      description: 'This is the route for getting all products'
+      produces:
+      - application/json
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+
+definitions:        # Schema defination for request body
+  CreateUserCustomer:
+    type: object
+    properties:
+      userCustomer:
+        type: object
+        properties:
+          sqlUserId:
+            type: number
+            example: 80001
+          username:
+            type: string
+            example: "coolguy1"
+          password:
+            type: string
+            example: "c7230e5e7786d6d996a586b5a3616eec"
+          createdDate:
+            type: date
+            example: "2006-05-29"
+          isArchived:
+            type: boolean
+            example: false
+          lastLoggedIn:
+            type: string
+            example: "2011-07-29"
+          firstName:
+            type: string
+            example: "Jennifer"
+          lastName:
+            type: string
+            example: "Chandler"
+          street:
+            type: string
+            example: "8650 Michael Grove"
+          email:
+            type: string
+            example: "gjoseph@gmail.com"
+          phone:
+            type: string
+            example: "40949002"
+          citiesPostalCode:
+            type: number
+            example: 1000
+          countriesISO:
+            type: string
+            example: "DK"
+          country:
+            type: string
+            example: "Denmark"
+          orders:
+            type: array
+            example: [{"sqlOrderId": 1}]
+
+  UpdateUserCustomer:
+    type: object
+    properties:
+      userCustomer:
+        type: object
+        properties:
+          _id: 
+            type: string
+            example: "60a56e2e0f95a649d9761eb9"
+          firstName:
+            type: string
+            example: "Jonas"
+          lastName:
+            type: string
+            example: "Jensen"
+          orders:
+            type: array
+            example: [{"sqlOrderId": 1}]
+
