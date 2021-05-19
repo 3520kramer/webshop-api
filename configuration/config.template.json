@@ -1,18 +1,21 @@
-{
+{    
+    "secretID": "KEY",
     "sessionSecret": {
-        "app": "key here",
-        "user": "key here",
-        "employee": "key here",
-        "developer": "key here",
-        "admin": "key here"
+        "app": "KEY",
+        "user": "KEY",
+        "employee": "KEY",
+        "developer": "KEY",
+        "admin": "KEY"
     },
-    "databaseName": "name",
-    "secretID": "key",
+    "databaseName": "NAME",
+    "sqlConnectionHost": "HOSTNAME",
+    "sqlConnectionPort": "PORT",
     "databaseSecret": {
-        "visitor": {"user": "key here", "password": "key here"},
-        "user": {"user": "key here", "password": "key here"},
-        "employee": {"user": "key here", "password": "key here"},
-        "developer": {"user": "key here", "password": "key here"},
-        "admin": {"user": "key here", "password": "key here"}
-    }
+        "visitor": {"user": "USERNAME", "password": "PASSWORD"},
+        "user": {"user": "USERNAME", "password": "PASSWORD"},
+        "employee": {"user": "USERNAME", "password": "PASSWORD"},
+        "developer": {"user": "USERNAME", "password": "PASSWORD"},
+        "admin": {"user": "USERNAME", "password": "PASSWORD"}
+    },
+    "mongoConnectionString": "KEY"
 }

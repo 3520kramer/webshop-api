@@ -25,7 +25,7 @@ router.post("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), 
     try {
         let product = req.body.product;
 
-        const createdProduct = await productService.createProduct(product);
+        const createdProduct = config.isMongoUsed ? await productServiceMongo.createProduct(product) : await productService.createProduct(product);
 
         if (!createdProduct.error) {
             res.status(201).send(createdProduct);
