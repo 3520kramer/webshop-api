@@ -45,8 +45,8 @@ router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPL
     console.log("get/product");
     try {
         let id = config.isMongoUsed ? req.params.product_id : Number.parseInt(req.params.product_id);
-        const product = config.isMongoUsed ? await productServiceMongo.getOneProduct(id) : productService.getOneProduct(id);
-
+        const product = config.isMongoUsed ? await productServiceMongo.getOneProduct(id) : await productService.getOneProduct(id);
+        console.log("product out", product);
         if (!product.error) {
             res.status(201).send(product);
         } else {

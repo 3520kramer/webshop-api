@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const order = new Schema({ sqlOrderId: Number });
+const orderSchema = new Schema({ sqlOrderId: Number }, { _id : false });
 
 const userCustomerSchema = new Schema({
-    _id: Schema.Types.ObjectId,
-    sqlUserId: String,
+    sqlUserId: Number,
     username: String,
     password: String,
     createdDate: Date,
@@ -20,9 +19,10 @@ const userCustomerSchema = new Schema({
     city: String,
     countriesISO: String,
     country: String,
-    orders: [order]
+    orders: [orderSchema]
 })
 
-const UserCustomerModel = mongoose.model('userCustomer', userCustomerSchema);
+const UserCustomerModel = mongoose.model('userCustomers', userCustomerSchema);
 
-module.exports = UserCustomerModel;
+module.exports.UserCustomerModel = UserCustomerModel;
+module.exports.UserCustomerOrderSchema = orderSchema;
