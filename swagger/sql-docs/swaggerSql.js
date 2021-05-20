@@ -1,7 +1,7 @@
 const swaggerAutogen = require('swagger-autogen')();
 const config = require('../../configuration/config');
 
-const outputFile = './swagger_output_sql.json'
+const outputFile = './swagger/sql-docs/swagger_output_sql.json'
 const endpointsFiles = [
     './routes/customer-routes.js',
     './routes/login-routes.js',

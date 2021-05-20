@@ -1,5 +1,8 @@
 const router = require('express').Router();
 const userService = require('../services/mysql/user-service');
+const userCustomerServiceMongo = require('../services/mongodb/userCustomer-service');
+
+const config = require('../configuration/config');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
@@ -18,34 +21,34 @@ router.post("/user", checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, rol
     } */
 
     try {
-        const newUser = req.body.user;
+        const newUser = config.isMongoUsed ? req.body.userCustomer : req.body.user;
 
-        const created = await userService.createUser(newUser);
+        const created = config.isMongoUsed ? await userCustomerServiceMongo.createUserCustomer(newUser) : await userService.createUser(newUser);
 
         if (!created.error) {
-            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+            config.isMongoUsed ?
+                res.status(200).send(created)
+                :
+                res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
         } else {
             res.status(500).send({ response: created.error });
         }
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ errorOut: error.message });
     }
 });
-
-const config = require('../configuration/config');
 
 // gets one specific user 
 router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for getting a single users information. (has to be logged in as x)'
+    // #swagger.description = 'This is the route for getting a single users information'
     try {
         
         const id = req.params.user_id;
         if (!id) throw new Error("No id");
 
-        //config.isSql ? "USE SQL" : "USE MONGO";
-        const user = config.isSql ? await userService.getUser(id) : null;
+        const user = config.isMongoUsed ? await userCustomerServiceMongo.getUser(id) : await userService.getUser(id);
 
         if (!user.error) {
             res.status(200).send(user);
@@ -63,7 +66,7 @@ router.get("/users", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), asy
     // #swagger.description = 'This is the route for getting all users. Limited to 1000 results for performance reasons'
 
     try {
-        const user = await userService.getAllUsers();
+        const user = config.isMongoUsed ? await userCustomerServiceMongo.getAllUsers() : await userService.getAllUsers();
 
         if (!user.error) {
             res.status(200).send(user);
@@ -79,7 +82,7 @@ router.get("/users", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), asy
 router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for seaching users'
+    // #swagger.description = 'This is the route for searching users'
 
     /* #swagger.responses[200] = {
         schema: { $ref: "#/definitions/AddUser" }
@@ -91,12 +94,12 @@ router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVE
 
         if (!property || !value) throw new Error("Missing property or value as query parameters");
 
-        const users = await userService.searchUsers(property, value);
+        const users = config.isMongoUsed ? await userCustomerServiceMongo.searchUsers(property, value) : await userService.searchUsers(property, value);
 
         if (!users.error) {
             res.status(200).send(users);
         } else {
-            res.status(500).send({ response: created.error });
+            res.status(500).send({ response: users.error });
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -116,13 +119,16 @@ router.put("/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.AD
     } */
 
     try {
-        
-        const user = req.body.user;
+        const user = config.isMongoUsed ? req.body.userCustomer : req.body.user;
+
         console.log("user", user);
 
-        const updated = await userService.updateUser(user);
+        const updated = config.isMongoUsed ? await userCustomerServiceMongo.updateUser(user) : await userService.updateUser(user);
 
         if (!updated.error) {
+            config.isMongoUsed ?
+            res.status(200).send(updated)
+            :
             res.status(200).send(`User with user_id: ${updated.user.user_id} and customer_id: ${updated.customer.customer_id} was updated`);
         } else {
             res.status(500).send({ response: updated.error });
@@ -135,15 +141,18 @@ router.put("/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.AD
 router.delete("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product'
+    // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored procedure that is triggered by an event that deletes user/customer/orders/order_product'
     try {
         const id = req.params.user_id;
         if (!id) throw new Error("No id");
 
-        const user = await userService.deleteUser(id);
+        const user = config.isMongoUsed ? await userCustomerServiceMongo.deleteUser(id) : await userService.deleteUser(id);
 
         if (!user.error) {
-            res.status(200).send(`The field 'is_archived' is set to '${user.is_archived}' for user with 'user_id': ${user.user_id}`
+            console.log('user', user)
+            const isArchived = config.isMongoUsed ? user.isArchived : user.is_archived;
+            const userId = config.isMongoUsed ? user._id : user.user_id;
+            res.status(200).send(`The field 'is_archived' is set to '${isArchived}' for user with 'user_id': ${userId}`
             );
         } else {
             res.status(500).send(user.error);

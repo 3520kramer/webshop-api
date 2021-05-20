@@ -2,9 +2,12 @@ const router = require('express').Router();
 
 // gets calls from service/controller layer
 const orderService = require('../services/mysql/order-service');
+const orderServiceMongo = require('../services/mongodb/order-service');
 
 // for auth
 const { checkAuth, role } = require("../database/authorization");
+
+const config = require('../configuration/config');
 
 // create new order for our six scenarios
 router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => {
@@ -89,8 +92,8 @@ router.get("/order/:order_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.AD
     // #swagger.description = 'This is the route for getting a specific order.'
     console.log("get/order");
     try {
-        let id = Number.parseInt(req.params.order_id);
-        const order = await orderService.getOneOrder(id);
+        let id = config.isMongoUsed ? req.params.order_id : Number.parseInt(req.params.order_id);
+        const order = config.isMongoUsed ? await orderServiceMongo.getOneOrder(id) : await orderService.getOneOrder(id);
 
         if (!order.error) {
             res.status(201).send(order);

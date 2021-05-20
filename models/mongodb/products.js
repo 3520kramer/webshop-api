@@ -1,22 +1,23 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const material = new Schema({ material: String});
+const material = new Schema({ material: String }, { _id: false });
 
 const productSchema = new Schema({
-    id: Schema.Types.ObjectId,
+    sqlProductId: Number,
     name: String,
     size: String,
     brand: String,
     color: String,
-    price: String,
+    price: Number,
     category: String,
     materials: [material],
     timestamp: Date,
     description: String,
-    is_archived: Boolean,
+    isArchived: Boolean,
 })
 
-const Model = mongoose.model('Product', productSchema);
+const ProductModel = mongoose.model('Product', productSchema);
 
-module.exports = Model;
+module.exports.ProductModel = ProductModel;
+module.exports.ProductSchema = productSchema;
