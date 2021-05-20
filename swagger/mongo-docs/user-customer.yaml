@@ -4,14 +4,13 @@ paths:
     post:
       tags:
         - UserCustomers
-      summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for creating a new product'
+      summary: 'Roles required: Visitor, Employee, Developer or Admin'
+      description: 'This is the route for creating a user'
       produces:
       - application/json
       parameters:         # request parameters
       - in: body          # request body
-        name: create product     # name of request, can be any name
-        description: It enables a user to create an account
+        name: create userCustomer     # name of request, can be any name
         required: true   # can also be true depending on user preference
         schema:           # Schema definition
           $ref: '#/definitions/CreateUserCustomer' 
@@ -24,14 +23,14 @@ paths:
     put:
       tags:
         - UserCustomers
-      summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for creating a new product'
+      summary: 'Roles required: User, Employee, Developer or Admin'
+      description: 'This is the route for updating a users infomation''
       produces:
       - application/json
       parameters:         # request parameters
       - in: body          # request body
         name: Update UserCustomer     # name of request, can be any name
-        description: It enables a user to create an account
+        description: It enables a user to update their account
         required: true   # can also be true depending on user preference
         schema:           # Schema definition
           $ref: '#/definitions/UpdateUserCustomer' 
@@ -46,8 +45,8 @@ paths:
     get:
       tags:
         - UserCustomers
-      summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for creating a new product'
+      summary: 'Roles required: User, Employee, Developer or Admin'
+      description: 'This is the route for getting a single users information'
       produces:
       - application/json
       parameters:         # request parameters
@@ -63,7 +62,7 @@ paths:
       tags:
         - UserCustomers
       summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for creating a new product'
+      description: 'This is the route for deleting a user (archives it)'
       produces:
       - application/json
       parameters:         # request parameters
@@ -76,13 +75,35 @@ paths:
         500:
           description: ''
   
+  # search users
+  /users/search/{property}/{value}:
+    get:
+      tags:
+        - UserCustomers
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for searching users. Limited to 1000 results for performance reasons'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: path          # request body
+        name: property    # name of request, can be any name
+        required: true   # can also be true depending on user preference
+      - in: path          # request body
+        name: value     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+
   # Get all users
   /users/:                # path of the user from your endpoint
     get:                 # endpoint request type (post request)
       tags:               # Tag property
         - UserCustomers            # Value of the tag
-      summary: 'Roles required: Visitor, User, Employee, Developer or Admin'
-      description: 'This is the route for getting all products'
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for getting all users. Limited to 1000 results for performance reasons'
       produces:
       - application/json
       responses:          # server responses

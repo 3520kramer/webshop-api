@@ -43,7 +43,7 @@ const config = require('../configuration/config');
 router.get("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for getting a single users information. (has to be logged in as x)'
+    // #swagger.description = 'This is the route for getting a single users information'
     try {
         
         const id = req.params.user_id;
@@ -83,7 +83,7 @@ router.get("/users", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), asy
 router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for seaching users'
+    // #swagger.description = 'This is the route for searching users'
 
     /* #swagger.responses[200] = {
         schema: { $ref: "#/definitions/AddUser" }
@@ -95,12 +95,12 @@ router.get("/users/search/:property/:value", checkAuth([role.EMPLOYEE, role.DEVE
 
         if (!property || !value) throw new Error("Missing property or value as query parameters");
 
-        const users = await userService.searchUsers(property, value);
+        const users = config.isMongoUsed ? await userCustomerServiceMongo.searchUsers(property, value) : await userService.searchUsers(property, value);
 
         if (!users.error) {
             res.status(200).send(users);
         } else {
-            res.status(500).send({ response: created.error });
+            res.status(500).send({ response: users.error });
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -142,7 +142,7 @@ router.put("/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.AD
 router.delete("/user/:user_id", checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.summary = 'Roles required: User, Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product'
+    // #swagger.description = 'This is the route for deleting a user (archives it and uses a stored procedure that is triggered by an event that deletes user/customer/orders/order_product'
     try {
         const id = req.params.user_id;
         if (!id) throw new Error("No id");

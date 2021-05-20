@@ -36,6 +36,7 @@ const updateUser = async (user) => {
 
         console.log("userToUpdate", userToUpdate);
         
+        // Creates a POJO from the found doc in db
         const userToUpdatePOJO = userToUpdate.toObject();
 
         Object.entries(user).forEach(([key, value]) => {
@@ -46,6 +47,7 @@ const updateUser = async (user) => {
                 return;
 
             }else if(key === 'orders'){
+                // creates POJO from order schema
                 const OrderPOJO = UserCustomerOrderSchema.obj;
 
                 user.orders.forEach((order, index) => {
@@ -70,9 +72,48 @@ const updateUser = async (user) => {
     }
 }
 
+const searchUsers = async (property, value) => {
+    try {
+        // Mongo doesn't allow searching with 'like' as sql. To search strings we can use regex, 
+        // but with other datatypes we must search with operators such as $lt (less than), $gt (greater than) etc.
+        // Therefore we need to now the type of the property which is used to search (both in document and subdocuments)
+        let propertyType;
+
+        if(UserCustomer.schema.path(property) !== undefined){
+            console.log("user");
+            propertyType = UserCustomer.schema.path(property).instance;
+
+        }else if (UserCustomerOrderSchema.path(property) !== undefined){
+            console.log("order");
+            propertyType = UserCustomerOrderSchema.path(property).instance;
+
+        }else{
+            throw new Error(`Database object does not contain property "${property}"`);
+        }                 
+        
+        // Here we handle searching strings with regex and all other data types with the exact value
+        // We use the $or operator to search both documents and subdocuments 
+        let userCustomer;
+
+        if(propertyType === 'String'){
+            userCustomer = await UserCustomer.find({ $or: [ {[property]: { $regex: value }}, {[`orders.${property}`]: { $regex: value }} ]}).limit(1000);
+        }else{
+            userCustomer = await UserCustomer.find({ $or: [ {[property]: value }, { [[`orders.${property}`]]: value }] }).limit(1000);
+        }
+
+        if (!userCustomer) throw new Error("No userCustomer");
+
+        return userCustomer;
+
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
+
 const getAllUsers = async () => {
     try {
-        const users = await UserCustomer.find({});
+        const users = await UserCustomer.find({}).limit(1000);
 
         if (!users) throw new Error("No users");
 
@@ -138,5 +179,6 @@ module.exports = {
     updateUser,
     deleteUser,
     getAllUsers,
+    searchUsers,
     createUserCustomerTransaction  
 }
