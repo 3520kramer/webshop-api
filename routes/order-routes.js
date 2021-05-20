@@ -43,7 +43,9 @@ router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => 
 
                 if (!userId) throw new Error("user_id required");
 
-                const orderUser = await orderService.createOrderForUserToOwnAddress(order, product, userId);
+                const orderUser = config.isMongoUsed ? 
+                    await orderServiceMongo.getOneProduct(order) : 
+                    await orderService.createOrderForUserToOwnAddress(order, product, userId);
                 if (!orderUser.error) {
                     res.status(201).send(orderUser);
                 } else {

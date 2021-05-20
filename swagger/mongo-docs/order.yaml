@@ -1,4 +1,33 @@
 paths:
+  # Create product - works
+  /order/{userId}:
+    post:
+      tags:
+        - Orders
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for creating a new order'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: path        # request header
+        name: userId
+        schema:
+        type: string
+        required: true
+
+      - in: body          # request body
+        name: create order     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/CreateOrder' 
+
+      responses:          # server responses
+        201:
+          description: ''
+        500:
+          description: ''
+
+
   # find one product - works
   /order/{orderId}:  
     get:
@@ -21,77 +50,134 @@ paths:
 
 # Schema defination for request body
 definitions:        
-  CreateProduct:
+  CreateOrder:
     type: object
     properties:
-      product:
+      order:
         type: object
         properties:
-          name:
+          comment:
             type: string
-            example: "wizard hat"
-          size:
-            type: "string"
-            example: "large"
-          brand:
-            type: "string"
-            example: "Maiar"
-          color: 
-            type: "string"
-            example: "gray"
-          price: 
-            type: "integer"
-            example: "125"
-          category: 
-            type: "string"
-            example: "hats"
-          
-          materials: 
+            example: "could you slip it over the fence"
+          created:
+            type: date
+            example: 
+
+          products:
             type: array
-            example: [{"material": "wool"}, {"material": "magic"}]
-          timestamp: 
+            items:
+              type: object  
+              properties:
+                name:
+                  type: string
+                  example: "wizard hat"
+                size:
+                  type: "string"
+                  example: "l"
+                brand:
+                  type: "string"
+                  example: "Maiar"
+                color: 
+                  type: "string"
+                  example: "gray"
+                price: 
+                  type: "integer"
+                  example: "125"
+                category: 
+                  type: "string"
+                  example: "hats"      
+                materials: 
+                  type: array
+                  example: [{"material": "wool"}, {"material": "magic"}]
+                description: 
+                  type: "string"
+                  example: "A wizard hat is never late"
+              example:
+                - type:
+
+          shipment:
+            type: object
+            properties:
+              shipper: 
+                type: "string"
+                example: "Post Nord"
+              deliveryType: 
+                type: "string"
+                example: "home delivery"
+              shipmentPrice: 
+                type: "number"
+                example: "123"    
+              
+          orderStatus:
+            type: "string"
+            example: "NOT PROCESSED"      
+          shippedDate:
             type: "date"
-            example: "3000/05/05"
-          description: 
-            type: "string"
-            example: "A wizard hat is never late"
-  
-  UpdateProduct:
-    type: object
-    properties:
-      product:
-        type: object
-        properties:
-          _id:
-            type: string
-            example: "60a60da2abcc1f36c4405faa"
-          name:
-            type: string
-            example: "extra cool wizard hat"
-          size:
-            type: "string"
-            example: "extra large"
-          brand:
-            type: "string"
-            example: "the bedst Maiar"
-          color: 
-            type: "string"
-            example: "white"
-          price: 
-            type: "integer"
-            example: "225"
-          category: 
-            type: "string"
-            example: "pointy hats"
-          materials: 
-            type: array
-            example: [{"material": "wool"}, {"material": "magic"}, {"material": "silk"}]
-          timestamp: 
-            type: "date"
-            example: "3020/05/05"
-          description: 
-            type: "string"
-            example: "A wizard hat is never late nor to early"    
-          isArchived:
-            type: "number"
-            example: "0"    
+            example:      
+          poBoxDelivery:
+            type: integer
+            nullable: true
+              
+          customerBilling:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: "Jennifer"
+              lastName:
+                type: string
+                example: "Chandler"
+              street:
+                type: string
+                example: "8650 Michael Grove"
+              email:
+                type: string
+                example: "gjoseph@gmail.com"
+              phone:
+                type: string
+                example: "40949002"
+              city:
+                type: string
+                example: "Roskilde"
+              citiesPostalCode:
+                type: number
+                example: 1000
+              countriesISO:
+                type: string
+                example: "DK"
+              country:
+                type: string
+                example: "Denmark"
+
+          customerDelivery:
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: "Jennifer"
+              lastName:
+                type: string
+                example: "Chandler"
+              street:
+                type: string
+                example: "8650 Michael Grove"
+              email:
+                type: string
+                example: "gjoseph@gmail.com"
+              phone:
+                type: string
+                example: "40949002"
+              city:
+                type: string
+                example: "Roskilde"
+              citiesPostalCode:
+                type: number
+                example: 1000
+              countriesISO:
+                type: string
+                example: "DK"
+              country:
+                type: string
+                example: "Denmark"
+
+                        
