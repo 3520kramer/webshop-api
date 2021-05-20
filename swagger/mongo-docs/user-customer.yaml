@@ -24,7 +24,7 @@ paths:
       tags:
         - UserCustomers
       summary: 'Roles required: User, Employee, Developer or Admin'
-      description: 'This is the route for updating a users infomation''
+      description: 'This is the route for updating a users infomation'
       produces:
       - application/json
       parameters:         # request parameters
