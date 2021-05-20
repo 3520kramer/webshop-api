@@ -55,7 +55,7 @@ const getAllOrders = async (page, size) => {
   }
 
   // default response size of rows
-  let defaultSize = 1000;
+  let defaultSize = 100;
   if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 100000) {
     defaultSize = sizeAsNumber;
   }
