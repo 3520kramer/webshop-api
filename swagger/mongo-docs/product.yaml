@@ -1,5 +1,5 @@
 paths:
-  # Create product
+  # Create product - works
   /product:
     post:
       tags:
@@ -20,27 +20,69 @@ paths:
           description: ''
         500:
           description: ''
-  /product/:
-    get:
+    
+    # update product
+    put:
       tags:
         - Products
       summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for creating a new product'
+      description: 'This is the route for updating a product'
       produces:
       - application/json
       parameters:         # request parameters
       - in: body          # request body
-        name: create product     # name of request, can be any name
-        description: It enables a user to create an account
+        name: update product     # name of request, can be any name
+        description: It enables a user to update a product
         required: true   # can also be true depending on user preference
         schema:           # Schema definition
-          $ref: '#/definitions/CreateProduct' 
+          $ref: '#/definitions/UpdateProduct' 
       responses:          # server responses
         201:
           description: ''
         500:
           description: ''
-  /products/:                # path of the user from your endpoint
+    
+
+  # find one product - works
+  /product/{productId}:  
+    get:
+      tags:
+      - Products
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'Numeric ID of the user to get'
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+  
+    # delete product
+    delete:
+      tags:
+        - Products
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'This is the route for deleting a product'
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+      responses:          # server responses
+        202:
+          description: 'deleted product from database'
+        500:
+          description: ''  
+
+
+  # find all products - works
+  /products:                # path of the user from your endpoint
     get:                 # endpoint request type (post request)
       tags:               # Tag property
         - Products            # Value of the tag
@@ -54,17 +96,80 @@ paths:
         500:
           description: ''
 
-definitions:        # Schema defination for request body
+
+# Schema defination for request body
+definitions:        
   CreateProduct:
     type: object
     properties:
       product:
         type: object
         properties:
-          username:
+          name:
             type: string
-            example: "Hanne"
-          email:
+            example: "wizard hat"
+          size:
+            type: "string"
+            example: "large"
+          brand:
+            type: "string"
+            example: "Maiar"
+          color: 
+            type: "string"
+            example: "gray"
+          price: 
+            type: "integer"
+            example: "125"
+          category: 
+            type: "string"
+            example: "hats"
+          
+          materials: 
+            type: array
+            example: [{"material": "wool"}, {"material": "magic"}]
+          timestamp: 
+            type: "date"
+            example: "3000/05/05"
+          description: 
+            type: "string"
+            example: "A wizard hat is never late"
+  
+  UpdateProduct:
+    type: object
+    properties:
+      product:
+        type: object
+        properties:
+          _id:
             type: string
-          password:
+            example: "60a60da2abcc1f36c4405faa"
+          name:
             type: string
+            example: "extra cool wizard hat"
+          size:
+            type: "string"
+            example: "extra large"
+          brand:
+            type: "string"
+            example: "the bedst Maiar"
+          color: 
+            type: "string"
+            example: "white"
+          price: 
+            type: "integer"
+            example: "225"
+          category: 
+            type: "string"
+            example: "pointy hats"
+          materials: 
+            type: array
+            example: [{"material": "wool"}, {"material": "magic"}, {"material": "silk"}]
+          timestamp: 
+            type: "date"
+            example: "3020/05/05"
+          description: 
+            type: "string"
+            example: "A wizard hat is never late nor to early"    
+          isArchived:
+            type: "number"
+            example: "0"    
