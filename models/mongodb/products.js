@@ -9,7 +9,7 @@ const productSchema = new Schema({
     size: String,
     brand: String,
     color: String,
-    price: String,
+    price: Number,
     category: String,
     materials: [material],
     timestamp: Date,
