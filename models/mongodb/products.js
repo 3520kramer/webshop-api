@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const material = new Schema({ material: String }, { _id: false });
 
 const productSchema = new Schema({
-    sqlId: Number,
+    sqlProductId: Number,
     name: String,
     size: String,
     brand: String,
@@ -17,6 +17,7 @@ const productSchema = new Schema({
     isArchived: Boolean,
 })
 
-const Model = mongoose.model('Product', productSchema);
+const ProductModel = mongoose.model('Product', productSchema);
 
-module.exports = Model;
+module.exports.ProductModel = ProductModel;
+module.exports.ProductSchema = productSchema;
