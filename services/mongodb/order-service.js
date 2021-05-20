@@ -94,17 +94,22 @@ const getAllOrders = async (page, size) => {
   }
 
   try {
-    const orders = await getModels().orders.findAndCountAll({
-      limit: defaultSize,
-      offset: defaultPage * defaultSize
-    });
+
+    const orders = await Order.find({}).skip(defaultPage * defaultSize).limit(defaultSize);
+    
+    /*
+     * Estimates the number of documents in the collection. 
+     * estimatedDocumentCount() is faster than using countDocuments(), because it 
+     * uses collection metadata rather than scanning the entire collection
+     */
+    const ordersCount = await Order.estimatedDocumentCount();
 
     return {
       onPage: defaultPage,
       // rounds off the total of pages 
-      totalPages: Math.ceil(orders.count / defaultSize),
-      totalEntries: orders.count,
-      content: orders.rows
+      totalPages: Math.ceil(ordersCount / defaultSize),
+      totalEntries: ordersCount,
+      content: orders
     };
 
   } catch (error) {
@@ -130,14 +135,17 @@ const ordersSearch = async (key, value, page) => {
   }
 
   try {
-    
-    // return {
-    //   onPage: defaultPage,
-    //   // rounds off the total of pages 
-    //   totalPages: Math.ceil(orders.count / defaultSize),
-    //   totalEntries: orders.count,
-    //   content: orders.rows
-    // };
+    const orders = await Order.find({});
+    const ordersCount = await Order.estimatedDocumentCount();
+
+
+    return {
+      onPage: defaultPage,
+      // rounds off the total of pages 
+      totalPages: Math.ceil(ordersCount / defaultSize),
+      totalEntries: ordersCount,
+      content: orders
+    };
 
   } catch (error) {
     return { error: error.message };
@@ -147,7 +155,6 @@ const ordersSearch = async (key, value, page) => {
 // gets a overview of a certain users orders 
 const getUsersOrders = async (user_id) => {  
   try {
-
 
     //return orders;
 
