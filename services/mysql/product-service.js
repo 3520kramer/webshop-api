@@ -31,6 +31,7 @@ const getOneProduct = async (productId) => {
 
     const product = await getModels().products.findOne({ where: { product_id: productId } });
     if (!product) throw new Error("Error finding product");
+    console.log("product", product);
     return product;
 
   } catch (error) {

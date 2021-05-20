@@ -34,7 +34,7 @@ router.post("/user", checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, rol
             res.status(500).send({ response: created.error });
         }
     } catch (error) {
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ errorOut: error.message });
     }
 });
 
