@@ -1,53 +1,19 @@
 const Order = require('../../models/mongodb/orders');
 
 // works - user sends to own address
-const createOrderForUserToOwnAddress = async (newOrder, productsList, user_id) => {
-  console.log("createOrderForUserToOwnAddress", { newOrder, productsList, user_id });
+const createOrderForUserToOwnAddress = async (newOrder) => {
+  console.log("createOrderForUserToOwnAddress", {newOrder});
 
   try {
+    // take the current date/time and sets timestamp
+    newProduct.timestamp = new Date().toISOString();
 
+    const product = await new Order(newProduct).save();
+    console.log("product", product);
+
+    if (!product) throw new Error("Error finding product");
+    return product;
     //return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
-
-  } catch (error) {
-    return { error: error.message };
-  }
-}
-
-
-// works - customer (no user) sends to PO box
-const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) => {
-  console.log("createOrderForCustomerToPO", { newOrder, productsList, newCustomer });
-
-  try {
-    
-    //return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
-
-  } catch (error) {
-    return { error: error.message };
-  }
-}
-
-
-// handels creating the order, product. Return order_product
-const createOrderAndProducts = async (productsList, newOrder, t) => {
-
-  try {
-      // sets order_status to not processed
-      newOrder.order_status = "NOT PROCESSED";
-
-      //return createdOrderProduct;
-  } catch (error) {
-    return { error: error.message };
-  }
-}
-
-
-// works - gets the returned order with the product bought and a total 
-const getOrderOverView = async (orderId) => {
-  console.log("orderId", orderId);
-  try {
-    
-    //return { orderOverView: orderOverView, total: total };
 
   } catch (error) {
     return { error: error.message };
@@ -60,13 +26,13 @@ const getOneOrder = async (orderId) => {
   console.log("getOneOrder", orderId);
   try {
     const order = await Order.findById(orderId);
-    
+
     if (!order) throw new Error("No order");
 
     console.log("order", order);
 
     return order;
-    
+
   } catch (error) {
     return { error: error.message };
   }
@@ -130,7 +96,7 @@ const ordersSearch = async (key, value, page) => {
   }
 
   try {
-    
+
     // return {
     //   onPage: defaultPage,
     //   // rounds off the total of pages 
@@ -145,7 +111,7 @@ const ordersSearch = async (key, value, page) => {
 }
 
 // gets a overview of a certain users orders 
-const getUsersOrders = async (user_id) => {  
+const getUsersOrders = async (user_id) => {
   try {
 
 
@@ -159,9 +125,56 @@ const getUsersOrders = async (user_id) => {
 
 module.exports = {
   createOrderForUserToOwnAddress,
-  createOrderForCustomerToPO,
+  //createOrderForCustomerToPO,
   getOneOrder,
   getAllOrders,
   ordersSearch,
   getUsersOrders,
 }
+
+
+
+/*
+// works - customer (no user) sends to PO box
+const createOrderForCustomerToPO = async (newOrder, productsList, newCustomer) => {
+  console.log("createOrderForCustomerToPO", { newOrder, productsList, newCustomer });
+
+  try {
+
+    //return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
+
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+
+// handels creating the order, product. Return order_product
+const createOrderAndProducts = async (productsList, newOrder, t) => {
+
+  try {
+    // sets order_status to not processed
+    newOrder.order_status = "NOT PROCESSED";
+
+    //return createdOrderProduct;
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+
+// works - gets the returned order with the product bought and a total 
+const getOrderOverView = async (orderId) => {
+  console.log("orderId", orderId);
+  try {
+
+    //return { orderOverView: orderOverView, total: total };
+
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+
+
+
+*/
