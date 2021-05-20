@@ -1,4 +1,4 @@
-const Product = require('../../models/mongodb/products');
+const Product = require('../../models/mongodb/products').ProductModel;
 
 
 // works - create one product (probably needs a transaction) 
