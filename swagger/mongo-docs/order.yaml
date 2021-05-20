@@ -1,0 +1,97 @@
+paths:
+  # find one product - works
+  /order/{orderId}:  
+    get:
+      tags:
+      - Orders
+      summary: 'Roles required: Employee, Developer or Admin'
+      description: 'Numeric ID of the user to get'
+      parameters:
+        - in: path
+          name: orderId
+          schema:
+            type: string
+          required: true
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+
+
+# Schema defination for request body
+definitions:        
+  CreateProduct:
+    type: object
+    properties:
+      product:
+        type: object
+        properties:
+          name:
+            type: string
+            example: "wizard hat"
+          size:
+            type: "string"
+            example: "large"
+          brand:
+            type: "string"
+            example: "Maiar"
+          color: 
+            type: "string"
+            example: "gray"
+          price: 
+            type: "integer"
+            example: "125"
+          category: 
+            type: "string"
+            example: "hats"
+          
+          materials: 
+            type: array
+            example: [{"material": "wool"}, {"material": "magic"}]
+          timestamp: 
+            type: "date"
+            example: "3000/05/05"
+          description: 
+            type: "string"
+            example: "A wizard hat is never late"
+  
+  UpdateProduct:
+    type: object
+    properties:
+      product:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "60a60da2abcc1f36c4405faa"
+          name:
+            type: string
+            example: "extra cool wizard hat"
+          size:
+            type: "string"
+            example: "extra large"
+          brand:
+            type: "string"
+            example: "the bedst Maiar"
+          color: 
+            type: "string"
+            example: "white"
+          price: 
+            type: "integer"
+            example: "225"
+          category: 
+            type: "string"
+            example: "pointy hats"
+          materials: 
+            type: array
+            example: [{"material": "wool"}, {"material": "magic"}, {"material": "silk"}]
+          timestamp: 
+            type: "date"
+            example: "3020/05/05"
+          description: 
+            type: "string"
+            example: "A wizard hat is never late nor to early"    
+          isArchived:
+            type: "number"
+            example: "0"    
