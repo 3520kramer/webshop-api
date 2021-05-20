@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const material = new Schema({ material: String});
+const material = new Schema({ material: String }, { _id: false });
 
 const productSchema = new Schema({
     sqlId: Number,

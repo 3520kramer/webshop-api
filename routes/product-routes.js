@@ -44,7 +44,7 @@ router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPL
     // #swagger.description = 'This is the route for getting a specific product'
     console.log("get/product");
     try {
-        let id = Number.parseInt(req.params.product_id);
+        let id = config.isMongoUsed ? req.params.product_id : Number.parseInt(req.params.product_id);
         const product = config.isMongoUsed ? await productServiceMongo.getOneProduct(id) : productService.getOneProduct(id);
 
         if (!product.error) {
@@ -91,11 +91,9 @@ router.put("/product", checkAuth([role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), a
     schema: { $ref: "#/definitions/EditProduct" },
     }   */
     console.log("put/product");
-
-    let product = req.body.product;
-
     try {
-        const updatedProduct = await productService.updateProduct(product);
+        let product = req.body.product;
+        const updatedProduct = config.isMongoUsed ? await productServiceMongo.updateProduct(product) : await productService.updateProduct(product);
         if (!updatedProduct.error) {
             res.status(201).send(updatedProduct);
         } else {
@@ -113,8 +111,8 @@ router.delete("/product/:product_id", checkAuth([role.EMPLOYEE, role.DEVELOPER, 
     // #swagger.description = 'This is the route for deleting a product (if possible, else if in use archives it)'
     console.log("delete/product");
     try {
-        let id = Number.parseInt(req.params.product_id);
-        const deletedProduct = await productService.deleteProduct(id);
+        let id = config.isMongoUsed ? req.params.product_id : Number.parseInt(req.params.product_id);
+        const deletedProduct = config.isMongoUsed ? await productServiceMongo.deleteProduct(id) : await productService.deleteProduct(id);
 
         if (!deletedProduct.error) {
             res.status(202).send(deletedProduct);

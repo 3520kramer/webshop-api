@@ -9,6 +9,7 @@ console.log("environment", process.env.NODE_ENV);
 console.log("httpType", httpType);
 
 
+
 // Swagger definition
 const swaggerDefinitionMongo = {
     // info: General information about the API, such as: version, title and description.
