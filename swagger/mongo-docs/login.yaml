@@ -1,0 +1,69 @@
+paths:
+  # Login as user
+  /login/user:
+    post:
+      tags:
+        - Login
+      summary: 'Roles required: Visitor, Employee, Developer or Admin'
+      description: 'This is the route for creating a user'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: create userCustomer     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/LoginUser' 
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+  # Login as employee
+  /login/employee:
+    post:
+      tags:
+        - Login
+      summary: 'Roles required: Visitor, Employee, Developer or Admin'
+      description: 'This is the route for creating a user'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: create userCustomer     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/LoginEmployee' 
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
+
+  
+definitions:        # Schema defination for request body
+  LoginUser:
+    type: object
+    properties:
+      login:
+        type: object
+        properties:
+          username:
+            type: string
+            example: "user1"
+          password:
+            type: string
+            example: "user1kode"
+
+  LoginEmployee:
+    type: object
+    properties:
+      login:
+        type: object
+        properties:
+          email:
+            type: string
+            example: "3520.kramer@gmail.com"
+          password:
+            type: string
+            example: "oliverkode"

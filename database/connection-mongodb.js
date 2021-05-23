@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const createMongoConnection = () => {
     try{
-        mongoose.connect(process.env.MONGO_CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true});
+        mongoose.connect(config.mongoConnectionString, {useNewUrlParser: true, useUnifiedTopology: true});
         const db = mongoose.connection;
         
         db.on('error', console.error.bind(console, 'connection error:'));
@@ -25,8 +25,32 @@ const closeMongoConnection = () => {
         console.log(error);
     }
 }
+
+const updateMongoConnection = (role) => {
+    try{ 
+        const user = config.databaseSecretMongo[role].user;
+        const password = config.databaseSecretMongo[role].password;
+        // mads org: cluster0.tfmsf.mongodb.net
+        // oliver org: cluster0.u5fjb.mongodb.net
+        const newConnectionString = `mongodb+srv://${user}:${password}@cluster0.u5fjb.mongodb.net/webshop?retryWrites=true&w=majority`
+        console.log("updateMongoConnection")
+        
+        if(config.mongoConnectionString !== newConnectionString){
+            config.mongoConnectionString = newConnectionString
+            closeMongoConnection();
+            createMongoConnection();
+        }else{
+            console.log("MONGO CONNECTION KEPT OPEN");
+        }
+
+    }catch(error){
+        console.log(error);
+    }
+}
+
 // used in app.js to initialize connection
 module.exports = {
     createMongoConnection,
-    closeMongoConnection
+    closeMongoConnection,
+    updateMongoConnection
 }

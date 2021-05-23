@@ -2,9 +2,12 @@ const router = require('express').Router();
 
 // gets calls from service/controller layer
 const loginService = require('../services/mysql/login-service');
+const loginServiceMongo = require('../services/mongodb/login-service');
 
 // for auth
 const { checkAuth, role } = require('../database/authorization');
+
+const config = require('../configuration/config');
 
 router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Login'] 
@@ -23,7 +26,7 @@ router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPE
         if (!username) throw new Error("No username in body");
         if (!password) throw new Error("No password in body");
 
-        const result = await loginService.loginUser(username, password);
+        const result = config.isMongoUsed ? await loginServiceMongo.loginUser(username, password) : await loginService.loginUser(username, password);
         
         if (!result.error) {
             console.log("result.sessionSecret", result.sessionSecret);
