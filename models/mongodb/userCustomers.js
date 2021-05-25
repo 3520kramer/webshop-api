@@ -1,28 +1,30 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const orderSchema = new Schema({ sqlOrderId: Number }, { _id : false });
+const orderSchema = new Schema({ 
+    sqlOrderId: { type: Number, required: true }
+}, {_id : false });
 
 const userCustomerSchema = new Schema({
-    sqlUserId: Number,
-    username: String,
-    password: String,
-    createdDate: Date,
-    isArchived: Boolean,
-    lastLoggedIn: String,
-    firstName: String,
-    lastName: String,
-    street: String,
-    email: String,
-    phone: String,
-    citiesPostalCode: Number,
-    city: String,
-    countriesISO: String,
-    country: String,
+    sqlUserId: { type: Number },
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+    createdDate: { type: String, required: true },
+    isArchived: { type: Boolean, required: true },
+    lastLoggedIn: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    street: { type: String, required: true },
+    email: { type: String },
+    phone: { type: String },
+    citiesPostalCode: { type: Number, required: true },
+    city: { type: String, required: true },
+    countriesISO: { type: String, required: true },
+    country: { type: String, required: true },
     orders: [orderSchema]
 })
 
-const UserCustomerModel = mongoose.model('userCustomers', userCustomerSchema);
+const Model = mongoose.model('usercustomers', userCustomerSchema);
 
-module.exports.UserCustomerModel = UserCustomerModel;
+module.exports.UserCustomerModel = Model;
 module.exports.UserCustomerOrderSchema = orderSchema;

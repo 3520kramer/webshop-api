@@ -129,7 +129,7 @@ definitions:
             example: [{"material": "wool"}, {"material": "magic"}]
           timestamp: 
             type: "date"
-            example: "3000/05/05"
+            example: "05/05/2020"
           description: 
             type: "string"
             example: "A wizard hat is never late"
