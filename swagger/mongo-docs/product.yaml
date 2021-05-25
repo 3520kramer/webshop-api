@@ -110,7 +110,7 @@ definitions:
             example: "wizard hat"
           size:
             type: "string"
-            example: "large"
+            example: "L"
           brand:
             type: "string"
             example: "Maiar"
@@ -129,10 +129,13 @@ definitions:
             example: [{"material": "wool"}, {"material": "magic"}]
           timestamp: 
             type: "date"
-            example: "3000/05/05"
+            example: "05/05/2020"
           description: 
             type: "string"
             example: "A wizard hat is never late"
+          isArchived: 
+            type: "boolean"
+            example: false
   
   UpdateProduct:
     type: object
@@ -148,7 +151,7 @@ definitions:
             example: "extra cool wizard hat"
           size:
             type: "string"
-            example: "extra large"
+            example: "L"
           brand:
             type: "string"
             example: "the bedst Maiar"
@@ -171,5 +174,5 @@ definitions:
             type: "string"
             example: "A wizard hat is never late nor to early"    
           isArchived:
-            type: "number"
-            example: "0"    
+            type: "boolean"
+            example: false

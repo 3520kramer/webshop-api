@@ -118,7 +118,7 @@ router.get("/orders/:page/:size", checkAuth([role.EMPLOYEE, role.DEVELOPER, role
     try {
         let page = req.params.page;
         let size = req.params.size;
-        const orders = await orderService.getAllOrders(page, size);
+        const orders = config.isMongoUsed ? await orderServiceMongo.getAllOrders(page, size) : await orderService.getAllOrders(page, size);
 
         if (!orders.error) {
             res.status(201).send(orders);
@@ -143,7 +143,7 @@ router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DE
         let value = req.params.value;
         let page = req.params.page;
 
-        const ordersSearch = await orderService.ordersSearch(key, value, page);
+        const ordersSearch = config.isMongoUsed? await orderServiceMongo.ordersSearch(key, value, page) : await orderService.ordersSearch(key, value, page);
 
         if (!ordersSearch.error) {
             res.status(201).send(ordersSearch);

@@ -155,15 +155,15 @@ definitions:        # Schema defination for request body
           citiesPostalCode:
             type: number
             example: 1000
+          city:
+            type: string
+            example: København
           countriesISO:
             type: string
             example: "DK"
           country:
             type: string
             example: "Denmark"
-          orders:
-            type: array
-            example: [{"sqlOrderId": 1}]
 
   UpdateUserCustomer:
     type: object
