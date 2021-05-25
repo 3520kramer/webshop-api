@@ -34,7 +34,7 @@ paths:
       tags:
       - Orders
       summary: 'Roles required: Employee, Developer or Admin'
-      description: 'Numeric ID of the user to get'
+      description: 'This is the route for getting a specific order'
       parameters:
         - in: path
           name: orderId

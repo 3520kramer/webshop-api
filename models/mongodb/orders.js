@@ -27,6 +27,15 @@ const customerOrderSchema = new Schema({
     country: String,
 })
 
+const poBoxDeliverySchema = new Schema({
+    poBox: String,
+    street: String,
+    postalCode: Number,
+    city: Number,
+    country: Number
+
+})
+
 const orderSchema = new Schema({
     comment: String,
     created: Date,
@@ -36,11 +45,18 @@ const orderSchema = new Schema({
     sqlOrderid: Number,
     orderStatus: String,
     shippedDate: Date,
-    poBoxDelivery: String,
+    poBoxDelivery: [poBoxDeliverySchema],
     customerBilling: [customerOrderSchema],
     customerDelivery: [customerOrderSchema]
 })
 
 const Model = mongoose.model('Orders', orderSchema);
 
-module.exports = Model;
+module.exports.OrderModel = Model;
+module.exports.schemes = {
+    productSchema,
+    employeeOrderSchema,
+    shipmentSchema,
+    customerOrderSchema,
+    poBoxDeliverySchema,
+}
