@@ -35,6 +35,15 @@ const poBoxDeliverySchema = new Schema({
     country: { type: Number, required: true }
 })
 
+const poBoxDeliverySchema = new Schema({
+    poBox: String,
+    street: String,
+    postalCode: Number,
+    city: Number,
+    country: Number
+
+})
+
 const orderSchema = new Schema({
     comment: { type: String },
     created: { type: Date, required: true },
