@@ -98,10 +98,10 @@ definitions:        # Schema defination for request body
         properties:
           email:
             type: string
-            example: "3520.kramer@gmail.com"
+            example: "admin@gmail.com"
           password:
             type: string
-            example: "oliverkode"
+            example: "adminkode"
   
   RegisterUserCustomer:
     type: object
