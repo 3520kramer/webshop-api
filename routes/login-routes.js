@@ -6,6 +6,7 @@ const loginServiceMongo = require('../services/mongodb/login-service');
 
 // for auth
 const { checkAuth, role } = require('../database/authorization');
+const { updateMongoConnection } = require('../database/connection-mongodb');
 
 const config = require('../configuration/config');
 
@@ -68,7 +69,7 @@ router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVE
         if (!email) throw new Error("No email in body");
         if (!password) throw new Error("No password in body");
 
-        const result = await loginService.loginEmployee(email, password);
+        const result = config.isMongoUsed ? await loginServiceMongo.loginEmployee(email, password) : await loginService.loginEmployee(email, password);
 
         if (!result.error) {
             console.log("result.sessionSecret", result.sessionSecret);
@@ -105,11 +106,15 @@ router.post('/register/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVEL
 
     console.log("register/user");
     try {
-        const newUser = req.body.user;
+        const newUser = config.isMongoUsed ? req.body.userCustomer : req.body.user;
 
-        const created = await loginService.registerUser(newUser);
+        const created = config.isMongoUsed ? await loginServiceMongo.loginEmployee(newUser) : await loginService.registerUser(newUser);
         if (!created.error) {
-            res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+            config.isMongoUsed ?
+                res.status(200).send(`User with id: ${created._id} was created`)
+                :
+                res.status(200).send(`User with user_id: ${created.user.user_id} and customer_id: ${created.customer.customer_id} was created`);
+
         } else {
             res.status(500).send({ response: created.error });
         }
@@ -126,7 +131,9 @@ router.get('/logout', checkAuth([role.USER, role.EMPLOYEE, role.DEVELOPER, role.
     try {
         req.session.destroy((error) => {
             if (error) throw new Error(`Error destroying session: ${error}`);
-
+            
+            if(config.isMongoUsed) updateMongoConnection(role.VISITOR)
+            
             res.status(200).send({ response: "logout" })
         });
     } catch (error) {

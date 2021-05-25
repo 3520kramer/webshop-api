@@ -5,12 +5,12 @@ paths:
       tags:
         - Login
       summary: 'Roles required: Visitor, Employee, Developer or Admin'
-      description: 'This is the route for creating a user'
+      description: 'This is the route for the user login. This is needed for getting access to certain routes. <br><br> <b>Example login:</b> <br>username: user1<br>password: user1kode'
       produces:
       - application/json
       parameters:         # request parameters
       - in: body          # request body
-        name: create userCustomer     # name of request, can be any name
+        name: Login userCustomer     # name of request, can be any name
         required: true   # can also be true depending on user preference
         schema:           # Schema definition
           $ref: '#/definitions/LoginUser' 
@@ -25,12 +25,12 @@ paths:
       tags:
         - Login
       summary: 'Roles required: Visitor, Employee, Developer or Admin'
-      description: 'This is the route for creating a user'
+      description: 'This is the route for the employee login. This is needed for getting access to certain routes.<br><br><b>Example admin login:</b> <br>username: admin@gmail.com<br>password: adminkode<br><br> <b>Example developer login:</b> <br>username: madsrunefrederiksen@gmail.com<br>password: madskode <br><br> <b>Example employee login:</b> <br>username: employee@gmail.com<br>password: employeekode'
       produces:
       - application/json
       parameters:         # request parameters
       - in: body          # request body
-        name: create userCustomer     # name of request, can be any name
+        name: Login employee     # name of request, can be any name
         required: true   # can also be true depending on user preference
         schema:           # Schema definition
           $ref: '#/definitions/LoginEmployee' 
@@ -40,6 +40,41 @@ paths:
         500:
           description: ''
 
+  # Login as employee
+  /register/user:
+    post:
+      tags:
+        - Login
+      summary: 'Roles required: Visitor, Employee, Developer or Admin'
+      description: 'This is the route for creating a new user'
+      produces:
+      - application/json
+      parameters:         # request parameters
+      - in: body          # request body
+        name: create userCustomer     # name of request, can be any name
+        required: true   # can also be true depending on user preference
+        schema:           # Schema definition
+          $ref: '#/definitions/RegisterUserCustomer' 
+      responses:          # server responses
+        201:
+          description: ''
+        500:
+          description: ''
+
+  # Login as employee
+  /logout:
+    get:
+      tags:
+        - Login
+      summary: 'Roles required: User, Employee, Developer or Admin'
+      description: 'This is the route for the user/employee to logout'
+      produces:
+      - application/json
+      responses:          # server responses
+        200:
+          description: ''
+        500:
+          description: ''
   
 definitions:        # Schema defination for request body
   LoginUser:
@@ -67,3 +102,55 @@ definitions:        # Schema defination for request body
           password:
             type: string
             example: "oliverkode"
+  
+  RegisterUserCustomer:
+    type: object
+    properties:
+      userCustomer:
+        type: object
+        properties:
+          sqlUserId:
+            type: number
+            example: 80001
+          username:
+            type: string
+            example: "coolguy1"
+          password:
+            type: string
+            example: "c7230e5e7786d6d996a586b5a3616eec"
+          createdDate:
+            type: date
+            example: "2006-05-29"
+          isArchived:
+            type: boolean
+            example: false
+          lastLoggedIn:
+            type: string
+            example: "2011-07-29"
+          firstName:
+            type: string
+            example: "Jennifer"
+          lastName:
+            type: string
+            example: "Chandler"
+          street:
+            type: string
+            example: "8650 Michael Grove"
+          email:
+            type: string
+            example: "gjoseph@gmail.com"
+          phone:
+            type: string
+            example: "40949002"
+          citiesPostalCode:
+            type: number
+            example: 1000
+          city:
+            type: string
+            example: København
+          countriesISO:
+            type: string
+            example: "DK"
+          country:
+            type: string
+            example: "Denmark"

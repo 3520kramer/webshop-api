@@ -1,5 +1,8 @@
 const UserCustomer = require('../../models/mongodb/userCustomers').UserCustomerModel;
+const Employee = require('../../models/mongodb/employees');
 
+const { role } = require('../../database/authorization');
+const updateMongoConnection = require('../../database/connection-mongodb').updateMongoConnection;
 const userCustomerService = require('./userCustomer-service');
 
 // Connects to the session secret  
@@ -14,13 +17,9 @@ const saltRounds = 12;
 // works
 const loginUser = async (username, password) => {
     try {
-        const user = await UserCustomer.findOne({ username: username}) //({ where: { username: username } });
-        
+        const user = await UserCustomer.findOne({ email: 'stephaniewright@gmail.com' });
+
         if (!user) throw new Error("Something went wrong when getting information from database");
-        console.log("user", user)
-        console.log("username", username)
-        console.log("password", password)
-        console.log("user.password", user.password)
 
         const result = await bcrypt.compare(password, user.password);
 
@@ -29,6 +28,8 @@ const loginUser = async (username, password) => {
         user.last_logged_in = new Date().toISOString();
 
         await user.save();
+
+        updateMongoConnection(role.USER);
         
         // TODO: Generate random and hash that bitch
         //const generateRandomString = (length=36) =>Math.random().toString(20).substr(2, length)
@@ -48,7 +49,7 @@ const loginUser = async (username, password) => {
 const loginEmployee = async (email, password) => {
     try {
 
-        const employee = await getModels().employees.findOne({ where: { email: email } });
+        const employee = await Employee.findOne({ email: email });
 
         if (!employee) throw new Error("Something went wrong when getting information from database");
 
@@ -57,15 +58,19 @@ const loginEmployee = async (email, password) => {
         if (!result) throw new Error("email or password incorrect, try again");
 
         let _sessionSecret;
+        console.log("employee.jobTitle", employee.jobTitle);
 
-        if (employee.job_title.toLowerCase() === role.ADMIN) {
+        if (employee.jobTitle.toLowerCase() === role.ADMIN) {
             _sessionSecret = sessionSecret.admin;
+            updateMongoConnection(role.ADMIN);
         } 
-        else if (employee.job_title.toLowerCase() === role.DEVELOPER) {
+        else if (employee.jobTitle.toLowerCase() === role.DEVELOPER) {
             _sessionSecret = sessionSecret.developer;
+            updateMongoConnection(role.DEVELOPER);
         }
         else {
             _sessionSecret = sessionSecret.employee;
+            updateMongoConnection(role.EMPLOYEE);
         }
         
         return {

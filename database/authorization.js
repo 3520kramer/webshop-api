@@ -1,6 +1,5 @@
 const config = require("../configuration/config");
 const updateSequelizeConnection = require("./connection-mysql").updateSequelizeConnection;
-const updateMongoConnection = require('./connection-mongodb').updateMongoConnection;
 
 // Roles as constants to make sure we dont misspell it
 const role = {
@@ -16,14 +15,6 @@ const role = {
 const checkAuth = (roles) => {
   return async (req, res, next) => {
     
-    // If we are using mongo connection then we will not use roles for now.
-    // if(config.isMongoUsed){
-    //   console.log("HEY FROM MONGOAUTH")
-    //   console.log("config.isMongoUsed", config.isMongoUsed);
-    //   next();
-      
-    // } else {
-      //console.log("IF MONGO IS USED - THIS MUST NOT BE PRINTED")
       console.log("req.session.sessionSecret", req.session.sessionSecret);
       
       // if the session secret is undefined, then this is the first page we are visiting
@@ -43,7 +34,7 @@ const checkAuth = (roles) => {
           console.log("active role secret:", config.sessionSecret[role]);
 
           // Update the db connection
-          config.isMongoUsed ? updateMongoConnection(role) : updateSequelizeConnection(role);
+          if(!config.isMongoUsed) updateSequelizeConnection(role);
           
           hasRoleMatch = true;
 
@@ -53,7 +44,6 @@ const checkAuth = (roles) => {
         }
       }
       if (!hasRoleMatch) return res.status(401).send({ response: "not allowed" });
-    // }
   };
 };
 
