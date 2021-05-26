@@ -31,21 +31,19 @@ router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => 
     console.log("post/order");
     try {
 
+
         let customer = req.body.customer;
         let order = req.body.order;
         let product = req.body.product;
-        let key = Number.parseInt(req.body.shipment_type);
+        // temp. value for mongo until more types of orders gets added 
+        let key = config.isMongoUsed ? 2 : Number.parseInt(req.body.shipment_type);
         let userId = Number.parseInt(req.session.userId);
-
 
         switch (key) {
             case 1: // user sends to own address
 
                 if (!userId) throw new Error("user_id required");
-
-                const orderUser = config.isMongoUsed ? 
-                    await orderServiceMongo.getOneProduct(order) : 
-                    await orderService.createOrderForUserToOwnAddress(order, product, userId);
+                const orderUser = await orderService.createOrderForUserToOwnAddress(order, product, userId);
                 if (!orderUser.error) {
                     res.status(201).send(orderUser);
                 } else {
@@ -53,7 +51,9 @@ router.post("/order", checkAuth([role.VISITOR, role.USER]), async (req, res) => 
                 }
                 break;
             case 2:
-                const orderCustomer = await orderService.createOrderForCustomerToPO(order, product, customer);
+                const orderCustomer = config.isMongoUsed ?
+                await orderServiceMongo.createOrderForCustomerToOwnAddress(order) : 
+                await orderService.createOrderForCustomerToPO(order, product, customer);
                 console.log("orderCustomer", orderCustomer);
                 if (!orderCustomer.error) {
                     res.status(201).send(orderCustomer);
@@ -143,7 +143,7 @@ router.get("/orders/search/:key/:value/:page", checkAuth([role.EMPLOYEE, role.DE
         let value = req.params.value;
         let page = req.params.page;
 
-        const ordersSearch = config.isMongoUsed? await orderServiceMongo.ordersSearch(key, value, page) : await orderService.ordersSearch(key, value, page);
+        const ordersSearch = config.isMongoUsed ? await orderServiceMongo.ordersSearch(key, value, page) : await orderService.ordersSearch(key, value, page);
 
         if (!ordersSearch.error) {
             res.status(201).send(ordersSearch);
@@ -165,7 +165,7 @@ router.get("/orderoverview/user", checkAuth([role.USER, role.EMPLOYEE, role.DEVE
 
         // uses the session user id so that only the user who is logged in can see their own orderhistory
         let id = Number.parseInt(req.session.userId);
-        
+
         // this is for manual finding orderoverview for a user
         //const id = req.params.user_id;
         if (!id) throw new Error("No id, remember to be logged in as a user");
