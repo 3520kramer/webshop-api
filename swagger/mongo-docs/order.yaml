@@ -1,20 +1,14 @@
 paths:
   # Create product - works
-  /order/{userId}:
+  /order:
     post:
       tags:
         - Orders
-      summary: 'Roles required: Employee, Developer or Admin'
+      summary: 'Roles required: Visitor or User'
       description: 'This is the route for creating a new order'
       produces:
       - application/json
       parameters:         # request parameters
-      - in: path        # request header
-        name: userId
-        schema:
-        type: string
-        required: true
-
       - in: body          # request body
         name: create order     # name of request, can be any name
         required: true   # can also be true depending on user preference
@@ -65,35 +59,7 @@ definitions:
 
           products:
             type: array
-            items:
-              type: object  
-              properties:
-                name:
-                  type: string
-                  example: "wizard hat"
-                size:
-                  type: "string"
-                  example: "l"
-                brand:
-                  type: "string"
-                  example: "Maiar"
-                color: 
-                  type: "string"
-                  example: "gray"
-                price: 
-                  type: "integer"
-                  example: "125"
-                category: 
-                  type: "string"
-                  example: "hats"      
-                materials: 
-                  type: array
-                  example: [{"material": "wool"}, {"material": "magic"}]
-                description: 
-                  type: "string"
-                  example: "A wizard hat is never late"
-              example:
-                - type:
+            example: [{productId: "1234", name: "wizard hat", size: "L", brand: "Maiar", color: "gray", price: 125.5, category: "hats", materials: [{"material": "wool"}, {"material": "magic"}], description: "A wizard hat is never late", quantity: 2}, {productId: "123", name: "mithril vest", size: "XS", brand: "Darwen", color: "silver", price: 2500000, category: "vest", materials: [{"material": "silver"}, {"material": "magic"}, {"material": "mithril"}], description: "never leave home without it", quantity: 3}]
 
           shipment:
             type: object
@@ -114,9 +80,6 @@ definitions:
           shippedDate:
             type: "date"
             example:      
-          poBoxDelivery:
-            type: integer
-            nullable: true
               
           customerBilling:
             type: object
@@ -139,7 +102,7 @@ definitions:
               city:
                 type: string
                 example: "Roskilde"
-              citiesPostalCode:
+              postalCode:
                 type: number
                 example: 1000
               countriesISO:
@@ -148,6 +111,11 @@ definitions:
               country:
                 type: string
                 example: "Denmark"
+
+          isArchived: 
+            type: integer
+            nullable: true
+              
 
           customerDelivery:
             type: object
@@ -170,7 +138,7 @@ definitions:
               city:
                 type: string
                 example: "Roskilde"
-              citiesPostalCode:
+              postalCode:
                 type: number
                 example: 1000
               countriesISO:
