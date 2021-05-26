@@ -33,15 +33,17 @@ paths:
       tags:
       - Orders
       summary: 'Roles required: Employee, Developer or Admin'
-      description: 'This is the route for searching in orders with pagination. Key-value based. EX. KEY: "orderStatus" VALUE: "shipped"'
+      description: 'This is the route for getting all orders with pagination. Use 0 value if wanna use default values of p1/s100'
       parameters:
         - in: path
           name: page
+          default: 0
           schema:
             type: string
           required: true
         - in: path
           name: size
+          default: 0
           schema:
             type: string
           required: true

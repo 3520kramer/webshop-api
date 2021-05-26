@@ -1,46 +1,77 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const productSchema = require('./products').ProductSchema;
 
 const employeeOrderSchema = new Schema({
-    firstName: String,
-    sqlEmployeeId: Number
-})
+    firstName: { type: String, required: true },
+    employeeId: { type: Schema.Types.ObjectId, ref: 'Employee' },
+}, { _id: false })
 
 const shipmentSchema = new Schema({
-    shipper: String,
-    deliveryType: String,
-    shipmentPrice: Number
-})
+    shipper: { type: String, required: true },
+    deliveryType: { type: String, required: true },
+    shipmentPrice: { type: Number, required: true }
+}, { _id: false })
 
 const customerOrderSchema = new Schema({
-    sqlUserId: Number,
-    firstName: String,
-    lastName: String,
-    street: String,
-    email: String,
-    phone: String,
-    postalCode: Number,
-    city: String,
-    countriesISO: String,
-    country: String,
-})
+    userCustomerId: { type: String },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    street: { type: String, required: true },
+    email: { type: String },
+    phone: { type: String },
+    postalCode: { type: Number, required: true },
+    city: { type: String, required: true },
+    countriesISO: { type: String, required: true },
+    country: { type: String, required: true }
+}, { _id: false })
+
+
+const poBoxDeliverySchema = new Schema({
+    poBox: { type: String, required: true },
+    street: { type: String, required: true },
+    postalCode: { type: Number, required: true },
+    city: { type: Number, required: true },
+    country: { type: Number, required: true }
+}, { _id: false })
+
+const material = new Schema({ material: { type: String, required: true }, _id: false });
+
+const productSchema = new Schema({
+    productId: { type: String, required: true },
+    name: { type: String, required: true },
+    size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL'], required: true },
+    brand: { type: String, required: true },
+    color: { type: String, required: true },
+    price: { type: Number, required: true },
+    category: { type: String, required: true },
+    materials: [material],
+    description: { type: String, required: true },
+    quantity: { type: Number, required: true }
+}, { _id: false })
+
 
 const orderSchema = new Schema({
-    comment: String,
-    created: Date,
+    comment: { type: String },
+    created: { type: Date, required: true },
     shipment: [shipmentSchema],
-    employee: [employeeOrderSchema],
+    employee: { type: employeeOrderSchema },
     products: [productSchema],
-    sqlOrderid: Number,
-    orderStatus: String,
-    shippedDate: Date,
-    poBoxDelivery: String,
-    customerBilling: [customerOrderSchema],
-    customerDelivery: [customerOrderSchema]
+    sqlOrderid: { type: Number },
+    orderStatus: { type: String, enum: ['NOT PROCESSED', 'PROCESSING', 'SHIPPED', 'CANCELLED'], required: true },
+    shippedDate: { type: Date },
+    poBoxDelivery: { type: poBoxDeliverySchema },
+    customerBilling: { type: customerOrderSchema, required: true },
+    customerDelivery: { type: customerOrderSchema }
 })
 
-const Model = mongoose.model('Orders', orderSchema);
+const Model = mongoose.model('Order', orderSchema);
 
-module.exports = Model;
+module.exports.OrderModel = Model;
+module.exports.schemes = {
+    productSchema,
+    employeeOrderSchema,
+    shipmentSchema,
+    customerOrderSchema,
+    poBoxDeliverySchema,
+}

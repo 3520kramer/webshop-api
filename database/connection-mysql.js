@@ -36,7 +36,7 @@ const updateSequelizeConnection = (role) => {
     sequelizeConnection = createSequelizeConnection(config.databaseSecret[role].user, config.databaseSecret[role].password);
 
   }else{
-    console.log("CONNECTION KEPT OPEN");
+    console.log("MYSQL CONNECTION KEPT OPEN");
   }
 };
 

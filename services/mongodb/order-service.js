@@ -1,18 +1,27 @@
-const Order = require('../../models/mongodb/orders');
+const Order = require('../../models/mongodb/orders').OrderModel;
+const schemes = require('../../models/mongodb/orders').schemes;
 
 // works - user sends to own address
-const createOrderForUserToOwnAddress = async (newOrder) => {
-  console.log("createOrderForUserToOwnAddress", {newOrder});
+const createOrderForCustomerToOwnAddress = async (newOrder) => {
+  console.log("createOrderForCustomerToOwnAddress", { newOrder });
 
   try {
     // take the current date/time and sets timestamp
-    newProduct.timestamp = new Date().toISOString();
+    newOrder.created = new Date().toISOString();
 
-    const product = await new Order(newProduct).save();
-    console.log("product", product);
+    const createdOrder = await new Order(newOrder).save();
+    // console.log("order", createdOrder);
 
-    if (!product) throw new Error("Error finding product");
-    return product;
+    if (!createdOrder) throw new Error("Error creating order");
+
+
+    let total = 0;
+    // this calulates the total price of all the products bought
+    createdOrder.products.forEach(product => total += product.price * product.quantity);
+
+    console.log("total", total);
+
+    return {order_overview: createdOrder, total: total};
     //return { order_overview: orderOverView.orderOverView, total: orderOverView.total };
 
   } catch (error) {
@@ -54,7 +63,7 @@ const getAllOrders = async (page, size) => {
   }
 
   // default response size of rows
-  let defaultSize = 1000;
+  let defaultSize = 100;
   if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 100000) {
     defaultSize = sizeAsNumber;
   }
@@ -101,14 +110,77 @@ const ordersSearch = async (key, value, page) => {
   }
 
   try {
-    const orders = await Order.find({});
-    const ordersCount = await Order.estimatedDocumentCount();
+    // Mongo doesn't allow searching with 'like' as sql. To search strings we can use regex, 
+    // but with other datatypes we must search with operators such as $lt (less than), $gt (greater than) etc.
+    // Therefore we need to now the type of the key which is used to search (both in document and subdocuments)
+    let keyType;
+
+    // List containg the order schema and its subdocument schemes 
+    const schemaList = [
+      Order.schema,
+      schemes.employeeOrderSchema,
+      schemes.productSchema,
+      schemes.shipmentSchema,
+      schemes.poBoxDeliverySchema,
+      schemes.customerOrderSchema
+    ];
+
+    // Iterates the schemes to find if the key is present in one of them
+    // using some() instead of forEach() as some() breaks if true is returned
+    schemaList.some((schema, index) => {
+      console.log("hey", index)
+
+      // If there is a match we save the type of the key
+      if (schema.path(key) !== undefined) {
+        console.log("in if")
+        keyType = schema.path(key).instance;
+        return true;
+      }
+
+      if (index === schemaList.length - 1) {
+        throw new Error(`Database object does not contain key "${key}"`);
+      }
+    });
+
+    // List of sub document collections in the orders collection
+    const subDocumentCollections = [
+      'employee',
+      'products',
+      'shipment',
+      'poBoxDelivery',
+      'customerBilling',
+      'customerDelivery'
+    ]
+
+    // Here we handle searching strings with regex - and all other data types with an exact value
+    let orders;
+
+    // Sets the search to use regex if it's a string 
+    if (keyType === 'String') {
+      const subDocumentSearchCondition = subDocumentCollections.map((subDocCollection) => {
+        return { [`${subDocCollection}.${key}`]: { $regex: value } }
+      })
+
+      // We use the $or operator to search both documents and subdocuments 
+      orders = await Order.find({ $or: [{ [key]: { $regex: value } }, { ...subDocumentSearchCondition }] }).skip(defaultPage * defaultSize).limit(defaultSize);
+
+      // Sets the search to use exact values if it's not a string
+    } else {
+      const subDocumentSearchCondition = subDocumentCollections.map((subDocCollection) => {
+        return { [`${subDocCollection}.${key}`]: value }
+      })
+
+      // We use the $or operator to search both documents and subdocuments 
+      orders = await Order.find({ $or: [{ [key]: value }, { ...subDocumentSearchCondition }] }).skip(defaultPage * defaultSize).limit(defaultSize);
+    }
+
+    if (!orders || orders.length === 0) throw new Error("No orders");
 
     return {
       onPage: defaultPage,
       // rounds off the total of pages 
-      totalPages: Math.ceil(ordersCount / defaultSize),
-      totalEntries: ordersCount,
+      totalPages: Math.ceil(orders.length / defaultSize),
+      totalEntries: orders.length,
       content: orders
     };
 
@@ -130,8 +202,7 @@ const getUsersOrders = async (user_id) => {
 
 
 module.exports = {
-  createOrderForUserToOwnAddress,
-  //createOrderForCustomerToPO,
+  createOrderForCustomerToOwnAddress,
   getOneOrder,
   getAllOrders,
   ordersSearch,
@@ -169,7 +240,7 @@ const createOrderAndProducts = async (productsList, newOrder, t) => {
 }
 
 
-// works - gets the returned order with the product bought and a total 
+// works - gets the returned order with the product bought and a total
 const getOrderOverView = async (orderId) => {
   console.log("orderId", orderId);
   try {

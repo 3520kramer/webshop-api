@@ -17,6 +17,13 @@ module.exports = {
         "developer": {"user": process.env.DATABASE_SECRET_DEVELOPER_USERNAME, "password": process.env.DATABASE_SECRET_DEVELOPER_PASSWORD},
         "admin": {"user": process.env.DATABASE_SECRET_ADMIN_USERNAME, "password": process.env.DATABASE_SECRET_ADMIN_PASSWORD}
     },
+    "databaseSecretMongo": {
+        "visitor": {"user": process.env.MONGO_VISITOR_USERNAME, "password": process.env.MONGO_VISITOR_PASSWORD},
+        "user": {"user": process.env.MONGO_USER_USERNAME, "password": process.env.MONGO_USER_PASSWORD},
+        "employee": {"user": process.env.MONGO_EMPLOYEE_USERNAME, "password": process.env.MONGO_EMPLOYEE_PASSWORD},
+        "developer": {"user": process.env.MONGO_DEVELOPER_USERNAME, "password": process.env.MONGO_DEVELOPER_PASSWORD},
+        "admin": {"user": process.env.MONGO_ADMIN_USERNAME, "password": process.env.MONGO_ADMIN_PASSWORD}
+    },
     "mongoConnectionString": process.env.MONGO_CONNECTION_STRING,
     "rootURL": process.env.ROOT_URL
 }
