@@ -182,5 +182,5 @@ definitions:        # Schema defination for request body
             example: "Jensen"
           orders:
             type: array
-            example: [{"sqlOrderId": 1}]
+            example: [{"orderId": 1}]
 
