@@ -17,7 +17,7 @@ const userCustomerSchema = new Schema({
     street: { type: String, required: true },
     email: { type: String },
     phone: { type: String },
-    citiesPostalCode: { type: Number, required: true },
+    postalCode: { type: Number, required: true },
     city: { type: String, required: true },
     countriesISO: { type: String, required: true },
     country: { type: String, required: true },
