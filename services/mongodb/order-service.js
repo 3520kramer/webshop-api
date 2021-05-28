@@ -71,7 +71,7 @@ const getAllOrders = async (page, size) => {
   try {
 
     const orders = await Order.find({}).skip(defaultPage * defaultSize).limit(defaultSize);
-
+    
     /*
      * Estimates the number of documents in the collection. 
      * estimatedDocumentCount() is faster than using countDocuments(), because it 
