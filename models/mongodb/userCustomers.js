@@ -11,7 +11,7 @@ const userCustomerSchema = new Schema({
     password: { type: String, required: true },
     createdDate: { type: String, required: true },
     isArchived: { type: Boolean, required: true },
-    lastLoggedIn: { type: String, required: true },
+    lastLoggedIn: { type: Date, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     street: { type: String, required: true },
