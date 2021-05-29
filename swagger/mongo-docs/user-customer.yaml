@@ -152,7 +152,7 @@ definitions:        # Schema defination for request body
           phone:
             type: string
             example: "40949002"
-          citiesPostalCode:
+          postalCode:
             type: number
             example: 1000
           city:
@@ -182,5 +182,5 @@ definitions:        # Schema defination for request body
             example: "Jensen"
           orders:
             type: array
-            example: [{"sqlOrderId": 1}]
+            example: [{"orderId": "60ae3719bb14ceb8abbb47c4"}]
 
