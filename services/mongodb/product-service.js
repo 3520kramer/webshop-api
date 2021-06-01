@@ -51,17 +51,17 @@ const getAllProducts = async () => {
 // works - update product
 const updateProduct = async (productToUpdate) => {
     console.log("Mongo updateProduct", productToUpdate);
-    
+
     try {
         // finds and updates document. returns the old document data that it finds
         const updatedProduct = await Product.findByIdAndUpdate(productToUpdate._id, productToUpdate);
         if (!updatedProduct) throw new Error("Error updating product");
-        
+
         // finds the new updated product in collection
         const product = await Product.findById(productToUpdate._id);
         if (product === null) throw new Error("Error finding product");
         return product;
-    
+
     } catch (error) {
         return { error: error.message };
     }

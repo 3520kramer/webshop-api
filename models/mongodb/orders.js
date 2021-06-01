@@ -14,7 +14,7 @@ const shipmentSchema = new Schema({
 }, { _id: false })
 
 const customerOrderSchema = new Schema({
-    userCustomerId: { type: String },
+    userCustomerId: { type: Schema.Types.ObjectId },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     street: { type: String, required: true },
@@ -31,8 +31,8 @@ const poBoxDeliverySchema = new Schema({
     poBox: { type: String, required: true },
     street: { type: String, required: true },
     postalCode: { type: Number, required: true },
-    city: { type: Number, required: true },
-    country: { type: Number, required: true }
+    city: { type: String, required: true },
+    country: { type: String, required: true }
 }, { _id: false })
 
 const material = new Schema({ material: { type: String, required: true }, _id: false });
@@ -54,7 +54,7 @@ const productSchema = new Schema({
 const orderSchema = new Schema({
     comment: { type: String },
     created: { type: Date, required: true },
-    shipment: [shipmentSchema],
+    shipment: {type: shipmentSchema, required: true },
     employee: { type: employeeOrderSchema },
     products: [productSchema],
     sqlOrderid: { type: Number },

@@ -1,5 +1,5 @@
 paths:
-  # find one product - works
+  # find one order - works
   /orders/search/{key}/{value}/{page}:  
     get:
       tags:
