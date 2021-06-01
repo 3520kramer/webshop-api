@@ -1,11 +1,11 @@
 paths:
-  # Create product - works
+  # Create order - works
   /order:
     post:
       tags:
         - Orders
-      summary: 'Roles required: Visitor or User'
-      description: 'This is the route for creating a new order'
+      summary: 'Roles required: Visitor'
+      description: 'This is the route for creating a new order - only works with visitor'
       produces:
       - application/json
       parameters:         # request parameters
