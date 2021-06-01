@@ -613,7 +613,7 @@
           "User"
         ],
         "summary": "Roles required: User, Employee, Developer or Admin",
-        "description": "This is the route for getting a single users information. (has to be logged in as x)",
+        "description": "This is the route for getting a single users information",
         "parameters": [
           {
             "name": "user_id",
@@ -639,7 +639,7 @@
           "User"
         ],
         "summary": "Roles required: User, Employee, Developer or Admin",
-        "description": "This is the route for deleting a user (archives it and uses a stored prodcedure that is triggered by an event that deletes user/customer/orders/order_product",
+        "description": "This is the route for deleting a user (archives it and uses a stored procedure that is triggered by an event that deletes user/customer/orders/order_product",
         "parameters": [
           {
             "name": "user_id",
@@ -688,7 +688,7 @@
           "User"
         ],
         "summary": "Roles required: Employee, Developer or Admin",
-        "description": "This is the route for seaching users",
+        "description": "This is the route for searching users",
         "parameters": [
           {
             "name": "property",

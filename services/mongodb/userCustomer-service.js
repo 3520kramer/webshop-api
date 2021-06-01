@@ -182,37 +182,3 @@ module.exports = {
     searchUsers,
     createUserCustomerTransaction  
 }
-
-
-try {
-    // Section 1
-    let propertyType;
-
-    if(UserCustomer.schema.path(property) !== undefined){
-        console.log("user");
-        propertyType = UserCustomer.schema.path(property).instance;
-
-    }else if (UserCustomerOrderSchema.path(property) !== undefined){
-        console.log("order");
-        propertyType = UserCustomerOrderSchema.path(property).instance;
-
-    }else{
-        throw new Error(`Database object does not contain property "${property}"`);
-    }                 
-    
-    // Section 2
-    let userCustomer;
-
-    if(propertyType === 'String'){
-        userCustomer = await UserCustomer.find({ $or: [ {[property]: { $regex: value }}, {[`orders.${property}`]: { $regex: value }} ]}).limit(1000);
-    }else{
-        userCustomer = await UserCustomer.find({ $or: [ {[property]: value }, { [[`orders.${property}`]]: value }] }).limit(1000);
-    }
-
-    if (!userCustomer) throw new Error("No userCustomer");
-
-    return userCustomer;
-
-} catch (error) {
-    return { error: error.message };
-}

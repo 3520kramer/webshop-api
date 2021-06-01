@@ -180,7 +180,3 @@ definitions:        # Schema defination for request body
           lastName:
             type: string
             example: "Jensen"
-          orders:
-            type: array
-            example: [{"orderId": "60ae3719bb14ceb8abbb47c4"}]
-
