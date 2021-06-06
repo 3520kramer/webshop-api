@@ -33,15 +33,40 @@ const getOneProduct = async (productId) => {
     }
 }
 
+// Switch to determine the sort order
+// ascending = “1” -- descending = “-1”
+const getSortOrder = {
+    "1": "1",
+    asc: "1",
+    ascending: "1",
+    "-1": "-1",
+    desc: "-1",
+    descending: "-1",
+}
 
 // works - get all products
-const getAllProducts = async () => {
+const getAllProducts = async (sortBy, sortOrder) => {
     console.log("Mongo getAllProducts");
     try {
+        let products;
 
-        const product = await Product.find({});
-        if (!product) throw new Error("Error finding product");
-        return product;
+        if(sortBy){
+            // Checks if the model contains the field to sort by
+            if(!Product.schema.path(sortBy)) throw new Error(`Error: product does not contain field '${sortBy}'`);
+
+            // if the sortOrder from the request is valid then the value will be used
+            // If not valid then the sortOrder will default to ascending order
+            sortOrder = sortOrder.toLowerCase();
+            const order = getSortOrder[sortOrder] !== undefined ? getSortOrder[sortOrder] : getSortOrder["ascending"];
+
+            // Finds the product sorted by the column and in the order specified in the request
+            products = await Product.find({}).sort({[sortBy]: order});  
+        }else{
+            products = await Product.find({});
+        }
+        
+        if (!products) throw new Error("Error finding product");
+        return products;
 
     } catch (error) {
         return { error: error.message };
