@@ -5,10 +5,7 @@ const config = require('../configuration/config');
 const MongoDb = require('../database/connection-mongodb');
 
 const httpType = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-console.log("environment", process.env.NODE_ENV);
-console.log("httpType", httpType);
-
-
+console.log("ENV:", process.env.NODE_ENV);
 
 // Swagger definition
 const swaggerDefinitionMongo = {
@@ -47,22 +44,18 @@ const swaggerFileMongo = swaggerJSDoc({swaggerDefinition: swaggerDefinitionMongo
 
 router.use('/swagger', swaggerUi.serve, swaggerUi.setup(null, options));
 
-router.get('/swagger-sql-json', (req, res) => {
-    console.log("environment", process.env.NODE_ENV);
-    console.log("httpType", httpType);
-    
+router.get('/swagger-sql-json', (req, res) => {    
     config.isMongoUsed = false;
+
+    // Closes mongo connection
     MongoDb.closeMongoConnection();
 
     res.json(swaggerFileSql);
 });
 
-router.get('/swagger-mongo-json', (req, res) => {
-    console.log("environment", process.env.NODE_ENV);
-    console.log("httpType", httpType);
-    
+router.get('/swagger-mongo-json', (req, res) => {    
     config.isMongoUsed = true;
-    
+
     // Connects to mongo
     MongoDb.createMongoConnection();
 
