@@ -61,10 +61,14 @@ router.get("/product/:product_id", checkAuth([role.VISITOR, role.USER, role.EMPL
 router.get("/products", checkAuth([role.VISITOR, role.USER, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
     // #swagger.tags = ['Product']
     // #swagger.summary = 'Roles required: Visitor, User, Employee, Developer or Admin'
-    // #swagger.description = 'This is the route for getting all products'
+    // #swagger.description = 'This is the route for getting all products <br><br><b> Query parameters input </b><br> sortBy: field to sort by <br> sortOrder: <br>&nbsp;&nbsp;&nbsp;&nbsp; If sortOrder is not specified default will be ascending. <br>&nbsp;&nbsp;&nbsp;&nbsp; To sort ascending input values: \'asc\', \'ascending\' or \'1\' <br>&nbsp;&nbsp;&nbsp;&nbsp; To sort descending input values: \'desc\', \'descending\' or \'-1\'
+
     console.log("get/products");
-    try {
-        const products = config.isMongoUsed ? await productServiceMongo.getAllProducts() : await productService.getAllProducts();
+    try {        
+        const sortBy = req.query.sortBy;
+        const sortOrder = req.query.sortOrder;
+
+        const products = config.isMongoUsed ? await productServiceMongo.getAllProducts(sortBy, sortOrder) : await productService.getAllProducts(sortBy, sortOrder);
 
         if (!products.error) {
             res.status(201).send(products);
