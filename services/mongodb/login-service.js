@@ -17,7 +17,7 @@ const saltRounds = 12;
 // works
 const loginUser = async (username, password) => {
     try {
-        const user = await UserCustomer.findOne({ email: 'stephaniewright@gmail.com' });
+        const user = await UserCustomer.findOne({ username: username });
 
         if (!user) throw new Error("Something went wrong when getting information from database");
 
@@ -91,7 +91,7 @@ const registerUser = async (newUser) => {
 
         newUser.password = hashedPassword
 
-        const createdUser = await userCustomerService.createUser(newUser);
+        const createdUser = await userCustomerService.createUserCustomer(newUser);
         return createdUser;
 
     } catch (error) {
