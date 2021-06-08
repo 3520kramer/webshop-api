@@ -63,7 +63,8 @@ const getAllProducts = async (sortBy, sortOrder) => {
 
       // if the sortOrder from the request is valid then the value will be used
       // If not valid then the sortOrder will default to ascending order
-      sortOrder = sortOrder.toLowerCase();
+
+      if (sortOrder) sortOrder.toLowerCase();
       const order = getSortOrder[sortOrder] !== undefined ? getSortOrder[sortOrder] : getSortOrder["ascending"];
 
       // Finds the product sorted by the column and in the order specified in the request
