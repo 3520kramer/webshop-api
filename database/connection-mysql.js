@@ -9,7 +9,7 @@ const createSequelizeConnection = (user, password) => {
     port: config.sqlConnectionPort,
     dialect: "mysql",
     pool: {
-      max: 10, // Maximum number of connection in pool
+      max: 100, // Maximum number of connection in pool
       min: 0, // Minimum number of connection in pool
       idle: 20000, // The maximum time, in milliseconds, that a connection can be idle before being released.
       acquire: 60000, // The maximum time, in milliseconds, that pool will try to get connection before throwing error
