@@ -10,9 +10,9 @@ const { updateMongoConnection } = require('../database/connection-mongodb');
 
 const config = require('../configuration/config');
 
-router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post('/login/user', checkAuth([role.VISITOR]), async (req, res) => {
     // #swagger.tags = ['Login'] 
-    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
+    // #swagger.summary = 'Roles required: Visitor' 
     // #swagger.description = 'This is the route for the user login. This is needed for getting access to certain routes. <br><br> <b>Example login:</b> <br>username: user1<br>password: user1kode'
 
     /* #swagger.parameters['login'] = {
@@ -49,9 +49,9 @@ router.post('/login/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPE
     }
 });
 
-router.post('/login/employee', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVELOPER, role.ADMIN]), async (req, res) => {
+router.post('/login/employee', checkAuth([role.VISITOR]), async (req, res) => {
     // #swagger.tags = ['Login']
-    // #swagger.summary = 'Roles required: Visitor, Employee, Developer or Admin' 
+    // #swagger.summary = 'Roles required: Visitor' 
     // #swagger.description = 'This is the route for the employee login. this is needed for getting access to certain routes.<br><br><b>Example admin login:</b> <br>username: admin@gmail.com<br>password: adminkode<br><br> <b>Example developer login:</b> <br>username: madsrunefrederiksen@gmail.com<br>password: madskode <br><br> <b>Example employee login:</b> <br>username: employee@gmail.com<br>password: employeekode'
 
     /* #swagger.parameters['login'] = {
@@ -108,7 +108,7 @@ router.post('/register/user', checkAuth([role.VISITOR, role.EMPLOYEE, role.DEVEL
     try {
         const newUser = config.isMongoUsed ? req.body.userCustomer : req.body.user;
 
-        const created = config.isMongoUsed ? await loginServiceMongo.loginEmployee(newUser) : await loginService.registerUser(newUser);
+        const created = config.isMongoUsed ? await loginServiceMongo.registerUser(newUser) : await loginService.registerUser(newUser);
         if (!created.error) {
             config.isMongoUsed ?
                 res.status(200).send(`User with id: ${created._id} was created`)

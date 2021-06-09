@@ -39,14 +39,42 @@ const getOneProduct = async (productId) => {
   }
 }
 
+// Switch to determine the sort order
+const getSortOrder = {
+  "1": "ASC",
+  asc: "ASC",
+  ascending: "ASC",
+  "-1": "DESC",
+  desc: "DESC",
+  descending: "DESC",
+}
 
 // works - gets all products (could have a search function also)
-const getAllProducts = async () => {
+const getAllProducts = async (sortBy, sortOrder) => {
   console.log("getAllProducts");
   try {
+    let products;
 
-    const products = await getModels().products.findAll();
-    if (!products) throw new Error("Error finding products");
+    if(sortBy){
+      // Checks if the model contains the field to sort by
+      let productHasSortField = getModels().products.rawAttributes.hasOwnProperty(sortBy) ? true : false;
+
+      if(!productHasSortField) throw new Error(`Error: product does not contain field '${sortBy}'`);
+
+      // if the sortOrder from the request is valid then the value will be used
+      // If not valid then the sortOrder will default to ascending order
+
+      if (sortOrder) sortOrder.toLowerCase();
+      const order = getSortOrder[sortOrder] !== undefined ? getSortOrder[sortOrder] : getSortOrder["ascending"];
+
+      // Finds the product sorted by the column and in the order specified in the request
+      //product = await Product.find({}).sort({[sortBy]: order}); 
+      products = await getModels().products.findAll({order: [[sortBy, order]] }); 
+  }else{
+      products = await getModels().products.findAll();
+  }
+
+  if (!products) throw new Error("Error finding products");
     return products;
 
   } catch (error) {
