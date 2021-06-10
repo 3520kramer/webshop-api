@@ -97,8 +97,8 @@ const doc = {
         },
         LoginEmployee: {
             login: {
-                "email": "admin@gmail.com",
-                "password": "adminkode"
+                "email": "madsrunefrederiksen@gmail.com",
+                "password": "madskode"
             }
         },
         RegisterUser: {
